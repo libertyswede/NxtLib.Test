@@ -47,7 +47,9 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ServerInfo\GetBlockchainStatusTest.cs" />
     <Compile Include="ServerInfo\GetConstantsTest.cs" />
+    <Compile Include="ServerInfo\GetStateTest.cs" />
     <Compile Include="ServerInfo\ServerInfoServiceTest.cs" />
   </ItemGroup>
   <ItemGroup>
