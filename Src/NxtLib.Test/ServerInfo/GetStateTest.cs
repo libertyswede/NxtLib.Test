@@ -35,6 +35,7 @@ namespace NxtLib.Test.ServerInfo
         private void VerifyStateCounts(GetStateReply getStateReply)
         {
             ExpectMoreThanZero(getStateReply.NumberOfAccounts, "NumberOfAccounts");
+            ExpectMoreThanZero(getStateReply.NumberOfActivePeers, "NumberOfActivePeers");
             ExpectMoreThanZero(getStateReply.NumberOfAliases, "NumberOfAliases");
             ExpectMoreThanZero(getStateReply.NumberOfAskOrders, "NumberOfAskOrders");
             ExpectMoreThanZero(getStateReply.NumberOfAssets, "NumberOfAssets");
