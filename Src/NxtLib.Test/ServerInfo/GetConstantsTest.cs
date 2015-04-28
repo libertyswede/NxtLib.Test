@@ -208,7 +208,7 @@ namespace NxtLib.Test.ServerInfo
                 .GetType()
                 .GetTypeInfo()
                 .GetDeclaredField(expected.ToString())
-                .GetCustomAttribute<DescriptionAttribute>().Name;
+                .GetCustomAttribute<NxtApiAttribute>().Name;
         }
     }
 }
