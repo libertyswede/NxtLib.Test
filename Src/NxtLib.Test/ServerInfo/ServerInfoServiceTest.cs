@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using NLog;
 using NxtLib.ServerInfo;
 
@@ -18,8 +19,22 @@ namespace NxtLib.Test.ServerInfo
         {
             GetConstantsTest();
             GetBlockchainStatusTest();
+            GetPluginsTest();
             GetStateTest();
             GetTimeTest();
+        }
+
+        private void GetPluginsTest()
+        {
+            var getPluginsReply = _serverInfoService.GetPlugins().Result;
+            if (getPluginsReply.Plugins.Count != 1)
+            {
+                Logger.Error("Unexpected number of plugins, expected: 1, actual: {0}", getPluginsReply.Plugins.Count);
+            }
+            if (!getPluginsReply.Plugins.Single().Equals("hello_world"))
+            {
+                Logger.Error("Unexpected name of plugin, expected: hello_world, actual: {0}", getPluginsReply.Plugins.Single());
+            }
         }
 
         private void GetTimeTest()
