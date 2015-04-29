@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using NLog;
 using NxtLib.ServerInfo;
@@ -17,11 +18,67 @@ namespace NxtLib.Test.ServerInfo
 
         internal void RunAllTests()
         {
+            EventRegisterTest();
+            EventWaitTest();
             GetConstantsTest();
             GetBlockchainStatusTest();
             GetPluginsTest();
             GetStateTest();
             GetTimeTest();
+        }
+
+        private void EventRegisterTest()
+        {
+            try
+            {
+                var eventRegisterResponse = _serverInfoService.EventRegister(new List<string>(), "", "").Result;
+                Logger.Error("Test code for EventRegister is not implemented yet");
+            }
+            catch (AggregateException ae)
+            {
+                ae.Handle(x =>
+                {
+                    if (x is NotImplementedException)
+                    {
+                        Logger.Error("EventRegister is not implemented yet");
+                        return true;
+                    }
+                    return false;
+                });
+            }
+        }
+
+        private void EventWaitTest()
+        {
+            try
+            {
+                var eventRegisterResponse = _serverInfoService.EventWait(123).Result;
+                Logger.Error("Test code for EventWait is not implemented yet");
+            }
+            catch (AggregateException ae)
+            {
+                ae.Handle(x =>
+                {
+                    if (x is NotImplementedException)
+                    {
+                        Logger.Error("EventWait is not implemented yet");
+                        return true;
+                    }
+                    return false;
+                });
+            }
+        }
+
+        private void GetBlockchainStatusTest()
+        {
+            var getBlockchainStatusTest = new GetBlockchainStatusTest(_serverInfoService);
+            getBlockchainStatusTest.RunAllTests();
+        }
+
+        void GetConstantsTest()
+        {
+            var getConstantsTest = new GetConstantsTest(_serverInfoService);
+            getConstantsTest.RunAllTests();
         }
 
         private void GetPluginsTest()
@@ -37,6 +94,12 @@ namespace NxtLib.Test.ServerInfo
             }
         }
 
+        private void GetStateTest()
+        {
+            var getStateTest = new GetStateTest(_serverInfoService);
+            getStateTest.RunAllTests();
+        }
+
         private void GetTimeTest()
         {
             var getTimeReply = _serverInfoService.GetTime().Result;
@@ -45,24 +108,6 @@ namespace NxtLib.Test.ServerInfo
                 Logger.Error("Unexpected Time, expected to be within 10 seconds ({0}), actual: {1}",
                     DateTime.UtcNow.ToLongTimeString(), getTimeReply.Time.ToLongTimeString());
             }
-        }
-
-        private void GetStateTest()
-        {
-            var getStateTest = new GetStateTest(_serverInfoService);
-            getStateTest.RunAllTests();
-        }
-
-        private void GetBlockchainStatusTest()
-        {
-            var getBlockchainStatusTest = new GetBlockchainStatusTest(_serverInfoService);
-            getBlockchainStatusTest.RunAllTests();
-        }
-
-        void GetConstantsTest()
-        {
-            var getConstantsTest = new GetConstantsTest(_serverInfoService);
-            getConstantsTest.RunAllTests();
         }
     }
 }
