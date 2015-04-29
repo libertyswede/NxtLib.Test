@@ -2,6 +2,7 @@
 using System.Configuration;
 using NLog;
 using NxtLib.Test.ServerInfo;
+using NxtLib.Test.VotingSystem;
 
 namespace NxtLib.Test
 {
@@ -18,8 +19,12 @@ namespace NxtLib.Test
             var nxtServer = ConfigurationManager.AppSettings["NxtServerUrl"];
             var serviceFactory = new ServiceFactory(nxtServer);
 
+            var searchAccountsResult = serviceFactory.CreateAccountService().SearchAccounts("test").Result;
+
             var serverInfoServiceTest = new ServerInfoServiceTest(serviceFactory.CreateServerInfoService());
             serverInfoServiceTest.RunAllTests();
+            var votingSystemServiceTest = new VotingSystemServiceTest(serviceFactory.CreateVotingSystemService());
+            votingSystemServiceTest.RunAllTests();
 
             Logger.Info("Test run complete");
             Console.ReadLine();
