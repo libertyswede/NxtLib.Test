@@ -12,6 +12,8 @@ namespace NxtLib.Test
         static void Main()
         {
             Logger.Info("Starting test run");
+            Logger.Warn("Have you rememberd to switch on MissingMemberHandling in NxtLib?");
+            Console.ReadLine();
 
             var nxtServer = ConfigurationManager.AppSettings["NxtServerUrl"];
             var serviceFactory = new ServiceFactory(nxtServer);
