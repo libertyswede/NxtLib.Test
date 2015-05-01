@@ -52,6 +52,10 @@
     <Compile Include="ServerInfo\GetConstantsTest.cs" />
     <Compile Include="ServerInfo\GetStateTest.cs" />
     <Compile Include="ServerInfo\ServerInfoServiceTest.cs" />
+    <Compile Include="TestInitializer.cs" />
+    <Compile Include="TestSettings.cs" />
+    <Compile Include="Utils.cs" />
+    <Compile Include="VotingSystem\CreatePollTest.cs" />
     <Compile Include="VotingSystem\VotingSystemServiceTest.cs" />
   </ItemGroup>
   <ItemGroup>

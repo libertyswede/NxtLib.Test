@@ -22,9 +22,13 @@ namespace NxtLib.Test
             return new CreateTransactionByPublicKey(1440, Amount.OneNxt, PublicKey);
         }
 
-        public static CreateTransactionBySecretPhrase CreateTransactionBySecretPhrase()
+        public static CreateTransactionBySecretPhrase CreateTransactionBySecretPhrase(bool broadcast = false, Amount fee = null)
         {
-            return new CreateTransactionBySecretPhrase(false, 1440, Amount.OneNxt, SecretPhrase);
+            if (fee == null)
+            {
+                fee = Amount.OneNxt;
+            }
+            return new CreateTransactionBySecretPhrase(broadcast, 1440, fee, SecretPhrase);
         }
     }
 }

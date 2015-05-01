@@ -11,9 +11,9 @@ namespace NxtLib.Test.ServerInfo
         private readonly IServerInfoService _serverInfoService;
         protected static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        internal ServerInfoServiceTest(IServerInfoService serverInfoService)
+        internal ServerInfoServiceTest()
         {
-            _serverInfoService = serverInfoService;
+            _serverInfoService = TestSettings.ServiceFactory.CreateServerInfoService();
         }
 
         internal void RunAllTests()

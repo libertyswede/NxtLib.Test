@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Configuration;
 using NLog;
 using NxtLib.Test.ServerInfo;
 using NxtLib.Test.VotingSystem;
@@ -16,14 +15,12 @@ namespace NxtLib.Test
             Logger.Warn("Have you rememberd to switch on MissingMemberHandling in NxtLib?");
             Console.ReadLine();
 
-            var nxtServer = ConfigurationManager.AppSettings["NxtServerUrl"];
-            var serviceFactory = new ServiceFactory(nxtServer);
+            TestSettings.ServiceFactory = new ServiceFactory(TestSettings.NxtServerUrl);
+            TestInitializer.InitializeTest();
 
-            var searchAccountsResult = serviceFactory.CreateAccountService().SearchAccounts("test").Result;
-
-            var serverInfoServiceTest = new ServerInfoServiceTest(serviceFactory.CreateServerInfoService());
+            var serverInfoServiceTest = new ServerInfoServiceTest();
             serverInfoServiceTest.RunAllTests();
-            var votingSystemServiceTest = new VotingSystemServiceTest(serviceFactory.CreateVotingSystemService());
+            var votingSystemServiceTest = new VotingSystemServiceTest();
             votingSystemServiceTest.RunAllTests();
 
             Logger.Info("Test run complete");
