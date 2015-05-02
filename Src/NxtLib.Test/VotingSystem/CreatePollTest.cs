@@ -4,7 +4,7 @@ using NxtLib.VotingSystem;
 
 namespace NxtLib.Test.VotingSystem
 {
-    internal class CreatePollTest
+    internal class CreatePollTest : TestBase
     {
         private readonly IVotingSystemService _votingSystemService;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
@@ -16,28 +16,59 @@ namespace NxtLib.Test.VotingSystem
 
         public void Test()
         {
+            Logger.Info("Starting CreatePoll test");
             CreatePollByCurrency();
+            CreatePollByNqt();
+            CreatePollByAsset();
         }
 
         private void CreatePollByCurrency()
         {
+            const VotingModel votingModel = VotingModel.Account;
+            const MinBalanceModel balanceModel = MinBalanceModel.Currency;
+            var currencyId = TestSettings.ExistingCurrencyId;
+
+            CreatePoll(votingModel, balanceModel, currencyId);
+        }
+
+        private void CreatePollByNqt()
+        {
+            const VotingModel votingModel = VotingModel.Nqt;
+            const MinBalanceModel balanceModel = MinBalanceModel.Nqt;
+
+            CreatePoll(votingModel, balanceModel, null);
+        }
+
+        private void CreatePollByAsset()
+        {
+            const VotingModel votingModel = VotingModel.Asset;
+            const MinBalanceModel balanceModel = MinBalanceModel.Asset;
+            var assetId = TestSettings.ExistingAssetId;
+
+            CreatePoll(votingModel, balanceModel, assetId);
+        }
+
+        private void CreatePoll(VotingModel votingModel, MinBalanceModel balanceModel, ulong? holdingId)
+        {
             var name = Utils.GenerateRandomString(10);
             var description = Utils.GenerateRandomString(30);
             var finishHeight = TestSettings.MaxHeight + 1000;
-            const VotingModel votingModel = VotingModel.Account;
             const int minNumberOfOptions = 1;
             const int maxNumberOfOptions = 1;
             const int minRangeValue = 0;
             const int maxRangeValue = 1;
-            var options = new List<string> {"How are you doing?"};
+            var options = new List<string> { "How are you doing?" };
             const int minBalance = 1;
-            const MinBalanceModel balanceModel = MinBalanceModel.Currency;
-            var currencyId = TestSettings.ExistingCurrencyId;
 
-            var createPollParameters = new CreatePollParameters(name, description, finishHeight, votingModel, minNumberOfOptions,
-                maxNumberOfOptions, minRangeValue, maxRangeValue, options, minBalance, balanceModel, currencyId);
+            var createPollParameters = new CreatePollParameters(name, description, finishHeight, votingModel,
+                minNumberOfOptions, maxNumberOfOptions, minRangeValue, maxRangeValue, options)
+            {
+                MinBalance = minBalance,
+                MinBalanceModel = balanceModel,
+                HoldingId = holdingId
+            };
 
-            var createPollReply = _votingSystemService.CreatePoll(createPollParameters, 
+            var createPollReply = _votingSystemService.CreatePoll(createPollParameters,
                 CreateTransaction.CreateTransactionBySecretPhrase(fee: Amount.CreateAmountFromNxt(10))).Result;
 
             VerifyCreatePollParameters(createPollParameters, createPollReply.Transaction.Attachment as MessagingPollCreationAttachment);
@@ -57,53 +88,6 @@ namespace NxtLib.Test.VotingSystem
             Compare(createPollParameters.MinBalance, pollCreation.MinBalance, "poll MinRangeValue");
             Compare(createPollParameters.MinBalanceModel, pollCreation.MinBalanceModel, "poll MinBalanceModel");
             Compare(createPollParameters.HoldingId, pollCreation.HoldingId, "poll HoldingId");
-        }
-
-        private static void Compare(string expected, string actual, string propertyName)
-        {
-            if (!string.Equals(expected, actual))
-            {
-                Logger.Error("Unexpected {0}, expected: {1}, actual: {2}", propertyName, expected, actual);
-            }
-        }
-
-        private static void Compare(long? expected, long? actual, string propertyName)
-        {
-            if (expected != actual)
-            {
-                Logger.Error("Unexpected {0}, expected: {1}, actual: {2}", propertyName, expected, actual);
-            }
-        }
-
-        private static void Compare<T>(T expected, T actual, string propertyName) where T : struct
-        {
-            if (!expected.Equals(actual))
-            {
-                Logger.Error("Unexpected {0}, expected: {1}, actual: {2}", propertyName, expected, actual);
-            }
-        }
-
-        private static void Compare<T>(T? expected, T? actual, string propertyName) where T : struct
-        {
-            if (!expected.Equals(actual))
-            {
-                Logger.Error("Unexpected {0}, expected: {1}, actual: {2}", propertyName, expected, actual);
-            }
-        }
-
-        private static void Compare(List<string> expected, List<string> actual, string propertyName)
-        {
-            if (expected.Count != actual.Count)
-            {
-                Logger.Error("Unexpected length of {0}, expected: {1}, actual: {2}", propertyName, expected.Count, actual.Count);
-            }
-            for (var i = 0; i < expected.Count; i++)
-            {
-                if (string.Equals(expected[i], actual[i]))
-                {
-                    Logger.Error("Unexpected string value of {0}, index {1}, expected: {2}, actual{3}", propertyName, i, expected[i], actual[i]);
-                }
-            }
         }
     }
 }
