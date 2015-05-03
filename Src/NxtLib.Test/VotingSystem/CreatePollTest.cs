@@ -16,9 +16,11 @@ namespace NxtLib.Test.VotingSystem
 
         public void Test()
         {
-            Logger.Info("Starting CreatePoll test");
+            Logger.Info("Starting CreatePollByCurrency test");
             CreatePollByCurrency();
+            Logger.Info("Starting CreatePollByNqt test");
             CreatePollByNqt();
+            Logger.Info("Starting CreatePollByAsset test");
             CreatePollByAsset();
         }
 
@@ -87,7 +89,7 @@ namespace NxtLib.Test.VotingSystem
             Compare(createPollParameters.Options, pollCreation.Options, "poll Options");
             Compare(createPollParameters.MinBalance, pollCreation.MinBalance, "poll MinRangeValue");
             Compare(createPollParameters.MinBalanceModel, pollCreation.MinBalanceModel, "poll MinBalanceModel");
-            Compare(createPollParameters.HoldingId, pollCreation.HoldingId, "poll HoldingId");
+            Compare(createPollParameters.HoldingId ?? 0, pollCreation.HoldingId, "poll HoldingId");
         }
     }
 }
