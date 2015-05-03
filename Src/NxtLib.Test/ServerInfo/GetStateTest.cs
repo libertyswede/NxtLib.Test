@@ -1,12 +1,10 @@
-﻿using NLog;
-using NxtLib.ServerInfo;
+﻿using NxtLib.ServerInfo;
 
 namespace NxtLib.Test.ServerInfo
 {
-    internal class GetStateTest
+    internal class GetStateTest : TestBase
     {
         private readonly IServerInfoService _serverInfoService;
-        protected static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly GetBlockchainStatusTest _getBlockchainStatusTest;
 
         public GetStateTest(IServerInfoService serverInfoService)
@@ -17,76 +15,81 @@ namespace NxtLib.Test.ServerInfo
 
         public void RunAllTests()
         {
-            var getStateReplyNoCounts = _serverInfoService.GetState(false).Result;
-            _getBlockchainStatusTest.RunAllTests(getStateReplyNoCounts);
-            VerifyStateReply(getStateReplyNoCounts);
+            GetStateNoCounts();
+            GetStateDefaultParameter();
+            GetStateWithCounts();
+        }
 
-            var getStateReplyWithImplicitCounts = _serverInfoService.GetState().Result;
-            _getBlockchainStatusTest.RunAllTests(getStateReplyWithImplicitCounts);
-            VerifyStateReply(getStateReplyWithImplicitCounts);
-            VerifyStateCounts(getStateReplyWithImplicitCounts);
+        private void GetStateWithCounts()
+        {
+            using (Logger = new TestsessionLogger())
+            {
+                var getStateReplyWithExplicitCounts = _serverInfoService.GetState(true).Result;
+                _getBlockchainStatusTest.Test(getStateReplyWithExplicitCounts);
+                VerifyStateReply(getStateReplyWithExplicitCounts);
+                VerifyStateCounts(getStateReplyWithExplicitCounts);
+            }
+        }
 
-            var getStateReplyWithExplicitCounts = _serverInfoService.GetState(true).Result;
-            _getBlockchainStatusTest.RunAllTests(getStateReplyWithExplicitCounts);
-            VerifyStateReply(getStateReplyWithExplicitCounts);
-            VerifyStateCounts(getStateReplyWithImplicitCounts);
+        private void GetStateDefaultParameter()
+        {
+            using (Logger = new TestsessionLogger())
+            {
+                var getStateReplyWithImplicitCounts = _serverInfoService.GetState().Result;
+                _getBlockchainStatusTest.Test(getStateReplyWithImplicitCounts);
+                VerifyStateReply(getStateReplyWithImplicitCounts);
+                VerifyStateCounts(getStateReplyWithImplicitCounts);
+            }
+        }
+
+        private void GetStateNoCounts()
+        {
+            using (Logger = new TestsessionLogger())
+            {
+                var getStateReplyNoCounts = _serverInfoService.GetState(false).Result;
+                _getBlockchainStatusTest.Test(getStateReplyNoCounts);
+                VerifyStateReply(getStateReplyNoCounts);
+            }
         }
 
         private void VerifyStateCounts(GetStateReply getStateReply)
         {
-            ExpectMoreThanZero(getStateReply.NumberOfAccounts, "NumberOfAccounts");
-            ExpectMoreThanZero(getStateReply.NumberOfActivePeers, "NumberOfActivePeers");
-            ExpectMoreThanZero(getStateReply.NumberOfAliases, "NumberOfAliases");
-            ExpectMoreThanZero(getStateReply.NumberOfAskOrders, "NumberOfAskOrders");
-            ExpectMoreThanZero(getStateReply.NumberOfAssets, "NumberOfAssets");
-            ExpectMoreThanZero(getStateReply.NumberOfBidOrders, "NumberOfBidOrders");
-            ExpectMoreThanZero(getStateReply.NumberOfCurrencies, "NumberOfCurrencies");
-            ExpectMoreThanZero(getStateReply.NumberOfCurrencyTransfers, "NumberOfCurrencyTransfers");
-            ExpectMoreThanZero(getStateReply.NumberOfDataTags, "NumberOfDataTags");
-            ExpectMoreThanZero(getStateReply.NumberOfExchanges, "NumberOfExchanges");
-            ExpectMoreThanZero(getStateReply.NumberOfGoods, "NumberOfGoods");
-            ExpectMoreThanZero(getStateReply.NumberOfOffers, "NumberOfOffers");
-            ExpectMoreThanZero(getStateReply.NumberOfOrders, "NumberOfOrders");
-            ExpectMoreThanZero(getStateReply.NumberOfPhasedTransactions, "NumberOfPhasedTransactions");
-            ExpectMoreThanZero(getStateReply.NumberOfPolls, "NumberOfPolls");
-            ExpectMoreThanZero(getStateReply.NumberOfPrunableMessages, "NumberOfPrunableMessages");
-            ExpectMoreThanZero(getStateReply.NumberOfPurchases, "NumberOfPurchases");
-            ExpectMoreThanZero(getStateReply.NumberOfTaggedData, "NumberOfTaggedData");
-            ExpectMoreThanZero(getStateReply.NumberOfTags, "NumberOfTags");
-            ExpectMoreThanZero(getStateReply.NumberOfTrades, "NumberOfTrades");
-            ExpectMoreThanZero(getStateReply.NumberOfTransactions, "NumberOfTransactions");
-            ExpectMoreThanZero(getStateReply.NumberOfTransfers, "NumberOfTransfers");
-            ExpectMoreThanZero(getStateReply.NumberOfVotes, "NumberOfVotes");
-        }
-
-        private static void ExpectMoreThanZero(long i, string propertyName)
-        {
-            if (i <= 0)
-            {
-                Logger.Error("Unexpected {0}, expected > 0, actual: {1}", propertyName, i);
-            }
+            CheckLargerThanZero(getStateReply.NumberOfAccounts, "NumberOfAccounts");
+            CheckLargerThanZero(getStateReply.NumberOfActivePeers, "NumberOfActivePeers");
+            CheckLargerThanZero(getStateReply.NumberOfAliases, "NumberOfAliases");
+            CheckLargerThanZero(getStateReply.NumberOfAskOrders, "NumberOfAskOrders");
+            CheckLargerThanZero(getStateReply.NumberOfAssets, "NumberOfAssets");
+            CheckLargerThanZero(getStateReply.NumberOfBidOrders, "NumberOfBidOrders");
+            CheckLargerThanZero(getStateReply.NumberOfCurrencies, "NumberOfCurrencies");
+            CheckLargerThanZero(getStateReply.NumberOfCurrencyTransfers, "NumberOfCurrencyTransfers");
+            CheckLargerThanZero(getStateReply.NumberOfDataTags, "NumberOfDataTags");
+            CheckLargerThanZero(getStateReply.NumberOfExchanges, "NumberOfExchanges");
+            CheckLargerThanZero(getStateReply.NumberOfGoods, "NumberOfGoods");
+            CheckLargerThanZero(getStateReply.NumberOfOffers, "NumberOfOffers");
+            CheckLargerThanZero(getStateReply.NumberOfOrders, "NumberOfOrders");
+            CheckLargerThanZero(getStateReply.NumberOfPhasedTransactions, "NumberOfPhasedTransactions");
+            CheckLargerThanZero(getStateReply.NumberOfPolls, "NumberOfPolls");
+            CheckLargerThanZero(getStateReply.NumberOfPrunableMessages, "NumberOfPrunableMessages");
+            CheckLargerThanZero(getStateReply.NumberOfPurchases, "NumberOfPurchases");
+            CheckLargerThanZero(getStateReply.NumberOfTaggedData, "NumberOfTaggedData");
+            CheckLargerThanZero(getStateReply.NumberOfTags, "NumberOfTags");
+            CheckLargerThanZero(getStateReply.NumberOfTrades, "NumberOfTrades");
+            CheckLargerThanZero(getStateReply.NumberOfTransactions, "NumberOfTransactions");
+            CheckLargerThanZero(getStateReply.NumberOfTransfers, "NumberOfTransfers");
+            CheckLargerThanZero(getStateReply.NumberOfVotes, "NumberOfVotes");
         }
 
         private void VerifyStateReply(GetStateReply getStateReply)
         {
-            ExpectMoreThanZero(getStateReply.AvailableProcessors, "AvailableProcessors");
-            if (getStateReply.FreeMemory == 0)
-            {
-                Logger.Error("Unexpected FreeMemory, expected > 0, actual: 0");
-            }
-            if (getStateReply.IsOffline)
-            {
-                Logger.Error("Unexpected IsOffline, expected false, actual: true");
-            }
-            ExpectMoreThanZero(getStateReply.MaxMemory, "MaxMemory");
-            if (getStateReply.NeedsAdminPassword)
-            {
-                Logger.Error("Unexpected NeedsAdminPassword, expected false, actual: true");
-            }
-            ExpectMoreThanZero(getStateReply.NumberOfPeers, "NumberOfPeers");
+            CheckLargerThanZero(getStateReply.AvailableProcessors, "AvailableProcessors");
+            CheckLargerThanZero(getStateReply.FreeMemory, "FreeMemory");
+            CheckIsFalse(getStateReply.IsOffline, "IsOffline");
+            CheckLargerThanZero(getStateReply.MaxMemory, "MaxMemory");
+            CheckIsFalse(getStateReply.NeedsAdminPassword, "NeedsAdminPassword");
+            CheckLargerThanZero(getStateReply.NumberOfPeers, "NumberOfPeers");
             // getStateReply.NumberOfUnlockedAccounts
-            ExpectMoreThanZero(getStateReply.PeerPort, "PeerPort");
-            ExpectMoreThanZero(getStateReply.TotalMemory, "TotalMemory");
+            CheckLargerThanZero(getStateReply.PeerPort, "PeerPort");
+            CheckLargerThanZero(getStateReply.TotalMemory, "TotalMemory");
         }
     }
 }

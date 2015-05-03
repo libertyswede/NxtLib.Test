@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using NLog;
 using NxtLib.VotingSystem;
 
 namespace NxtLib.Test.VotingSystem
@@ -7,7 +6,6 @@ namespace NxtLib.Test.VotingSystem
     internal class CreatePollTest : TestBase
     {
         private readonly IVotingSystemService _votingSystemService;
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public CreatePollTest()
         {
@@ -16,38 +14,44 @@ namespace NxtLib.Test.VotingSystem
 
         public void Test()
         {
-            Logger.Info("Starting CreatePollByCurrency test");
             CreatePollByCurrency();
-            Logger.Info("Starting CreatePollByNqt test");
             CreatePollByNqt();
-            Logger.Info("Starting CreatePollByAsset test");
             CreatePollByAsset();
         }
 
         private void CreatePollByCurrency()
         {
-            const VotingModel votingModel = VotingModel.Account;
-            const MinBalanceModel balanceModel = MinBalanceModel.Currency;
-            var currencyId = TestSettings.ExistingCurrencyId;
+            using (Logger = new TestsessionLogger())
+            {
+                const VotingModel votingModel = VotingModel.Account;
+                const MinBalanceModel balanceModel = MinBalanceModel.Currency;
+                var currencyId = TestSettings.ExistingCurrencyId;
 
-            CreatePoll(votingModel, balanceModel, currencyId);
+                CreatePoll(votingModel, balanceModel, currencyId);
+            }
         }
 
         private void CreatePollByNqt()
         {
-            const VotingModel votingModel = VotingModel.Nqt;
-            const MinBalanceModel balanceModel = MinBalanceModel.Nqt;
+            using (Logger = new TestsessionLogger())
+            {
+                const VotingModel votingModel = VotingModel.Nqt;
+                const MinBalanceModel balanceModel = MinBalanceModel.Nqt;
 
-            CreatePoll(votingModel, balanceModel, null);
+                CreatePoll(votingModel, balanceModel, null);
+            }
         }
 
         private void CreatePollByAsset()
         {
-            const VotingModel votingModel = VotingModel.Asset;
-            const MinBalanceModel balanceModel = MinBalanceModel.Asset;
-            var assetId = TestSettings.ExistingAssetId;
+            using (Logger = new TestsessionLogger())
+            {
+                const VotingModel votingModel = VotingModel.Asset;
+                const MinBalanceModel balanceModel = MinBalanceModel.Asset;
+                var assetId = TestSettings.ExistingAssetId;
 
-            CreatePoll(votingModel, balanceModel, assetId);
+                CreatePoll(votingModel, balanceModel, assetId);
+            }
         }
 
         private void CreatePoll(VotingModel votingModel, MinBalanceModel balanceModel, ulong? holdingId)

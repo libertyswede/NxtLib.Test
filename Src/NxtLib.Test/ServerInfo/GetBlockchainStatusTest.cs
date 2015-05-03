@@ -5,70 +5,56 @@ using NxtLib.ServerInfo;
 
 namespace NxtLib.Test.ServerInfo
 {
-    internal class GetBlockchainStatusTest
+    internal class GetBlockchainStatusTest : TestBase
     {
         private readonly GetBlockchainStatusReply _getBlockchainStatusReply;
-        protected static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public GetBlockchainStatusTest(IServerInfoService serverInfoService)
         {
             _getBlockchainStatusReply = serverInfoService.GetBlockchainStatus().Result;
         }
 
-        public void RunAllTests()
+        public void Test()
         {
-            RunAllTests(_getBlockchainStatusReply);
+           Test(_getBlockchainStatusReply);
         }
 
-        public void RunAllTests(BlockchainStatus blockchainStatus)
+        public void Test(BlockchainStatus blockchainStatus)
         {
-            if (!blockchainStatus.Application.Equals("NRS"))
+            using (Logger = new TestsessionLogger())
             {
-                Logger.Error("Unexpected Application, expected: NRS, actual: {0}", blockchainStatus.Application);
+                Compare("NRS", blockchainStatus.Application, "Application");
+                CheckLargerThanZero(blockchainStatus.CumulativeDifficulty, "CumulativeDifficulty");
+                CheckLargerThanZero(blockchainStatus.CurrentMinRollbackHeight, "CurrentMinRollbackHeight");
+                // blockchainStatus.IncludeExpiredPrunable
+                // blockchainStatus.IsScanning
+                // blockchainStatus.IsTestnet
+                CheckLargerThanZero(blockchainStatus.LastBlockId, "LastBlockId");
+                CheckIsNullOrEmpty(blockchainStatus.LastBlockchainFeeder, "LastBlockchainFeeder");
+                CheckLargerThanZero(blockchainStatus.LastBlockchainFeederHeight, "LastBlockchainFeederHeight");
+                Compare(86400, blockchainStatus.MaxPrunableLifetime, "MaxPrunableLifetime");
+                Compare(800, blockchainStatus.MaxRollback, "MaxRollback");
+                CheckLargerThanZero(blockchainStatus.NumberOfBlocks, "NumberOfBlocks");
+                CheckTimeShouldBeAroundNow(blockchainStatus);
+                CheckVersionFormat(blockchainStatus);
             }
-            if (blockchainStatus.CumulativeDifficulty == 0)
-            {
-                Logger.Error("Unexpected CumulativeDifficulty, expected > 0, actual: 0");
-            }
-            if (blockchainStatus.CurrentMinRollbackHeight <= 0)
-            {
-                Logger.Error("Unexpected CurrentMinRollbackHeight, expected > 0, actual: {0}", blockchainStatus.CurrentMinRollbackHeight);
-            }
-            // blockchainStatus.IncludeExpiredPrunable
-            // blockchainStatus.IsScanning
-            // blockchainStatus.IsTestnet
-            if (blockchainStatus.LastBlockId == 0)
-            {
-                Logger.Error("Unexpected LastBlockId, expected > 0, actual: 0");
-            }
-            if (string.IsNullOrEmpty(blockchainStatus.LastBlockchainFeeder))
-            {
-                Logger.Error("Unexpected LastBlockchainFeeded, expected: something, actual: nothing");
-            }
-            if (blockchainStatus.LastBlockchainFeederHeight <= 0)
-            {
-                Logger.Error("Unexpected LastBlockchainFeederHeight, expected > 0, actual: {0}", blockchainStatus.LastBlockchainFeederHeight);
-            }
-            if (blockchainStatus.MaxPrunableLifetime != 86400)
-            {
-                Logger.Error("Unexpected MaxPrunableLifetime, expected: 86400, actual: {0}", blockchainStatus.MaxPrunableLifetime);
-            }
-            if (blockchainStatus.MaxRollback != 800)
-            {
-                Logger.Error("Unexpected MaxRollback, expected: 800, actual: {0}", blockchainStatus.MaxRollback);
-            }
-            if (blockchainStatus.NumberOfBlocks <= 0)
-            {
-                Logger.Error("Unexpected NumberOfBlocks, expected > 0, actual: {0}");
-            }
-            if (Math.Abs(blockchainStatus.Time.Subtract(DateTime.UtcNow).TotalSeconds) > 10)
-            {
-                Logger.Error("Unexpected Time, expected to be within 10 seconds ({0}), actual: {1}",
-                    DateTime.UtcNow.ToLongTimeString(), blockchainStatus.Time.ToLongTimeString());
-            }
+        }
+
+        private static void CheckVersionFormat(BlockchainStatus blockchainStatus)
+        {
             if (!Regex.Match(blockchainStatus.Version, "([0-9]+)\\.([0-9]+)\\.([0-9]+)(\\.([0-9]+))?(e?)").Success)
             {
-                Logger.Error("Unexpected version format, expected: x.x.x(.x)(e), actual: {0}", blockchainStatus.Version);
+                Logger.Fail(string.Format("Unexpected version format, expected: x.x.x(.x)(e), actual: {0}",
+                    blockchainStatus.Version));
+            }
+        }
+
+        private static void CheckTimeShouldBeAroundNow(BlockchainStatus blockchainStatus)
+        {
+            if (Math.Abs(blockchainStatus.Time.Subtract(DateTime.UtcNow).TotalSeconds) > 10)
+            {
+                Logger.Fail(string.Format("Unexpected Time, expected to be within 10 seconds ({0}), actual: {1}",
+                    DateTime.UtcNow.ToLongTimeString(), blockchainStatus.Time.ToLongTimeString()));
             }
         }
     }

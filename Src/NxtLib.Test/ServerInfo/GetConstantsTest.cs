@@ -2,18 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using NLog;
 using NxtLib.Networking;
 using NxtLib.ServerInfo;
 using NxtLib.VotingSystem;
 
 namespace NxtLib.Test.ServerInfo
 {
-    internal class GetConstantsTest
+    internal class GetConstantsTest : TestBase
     {
         private readonly IServerInfoService _serverInfoService;
         private GetConstantsReply _getConstantsReply;
-        protected static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private static readonly Dictionary<TransactionSubType, TransactionType> TransactionTypes = new Dictionary<TransactionSubType, TransactionType>();
 
         static GetConstantsTest()
@@ -77,61 +75,86 @@ namespace NxtLib.Test.ServerInfo
 
         private void CheckConstants()
         {
-            const ulong genesisAccountId = 1739068987193023818;
-            const ulong genesisBlockId = 2680262203532249785;
-            const int maxArbitraryMessageLength = 1000;
-            const int maxBlockPayloadLength = 44880;
+            using (Logger = new TestsessionLogger())
+            {
+                const ulong genesisAccountId = 1739068987193023818;
+                const ulong genesisBlockId = 2680262203532249785;
+                const int maxArbitraryMessageLength = 1000;
+                const int maxBlockPayloadLength = 44880;
 
-            CheckConstant(genesisAccountId, _getConstantsReply.GenesisAccountId, "GenesisAccountId");
-            CheckConstant(genesisBlockId, _getConstantsReply.GenesisBlockId, "GenesisBlockId");
-            CheckConstant(maxArbitraryMessageLength, _getConstantsReply.MaxArbitraryMessageLength, "MaxArbitraryMessageLength");
-            CheckConstant(maxBlockPayloadLength, _getConstantsReply.MaxBlockPayloadLength, "MaxBlockPayloadLength");
+                Compare(genesisAccountId, _getConstantsReply.GenesisAccountId, "GenesisAccountId");
+                Compare(genesisBlockId, _getConstantsReply.GenesisBlockId, "GenesisBlockId");
+                Compare(maxArbitraryMessageLength, _getConstantsReply.MaxArbitraryMessageLength,
+                    "MaxArbitraryMessageLength");
+                Compare(maxBlockPayloadLength, _getConstantsReply.MaxBlockPayloadLength, "MaxBlockPayloadLength");
+            }
         }
 
         private void CheckCurrencyTypes()
         {
-            var expected = Enum.GetValues(typeof(CurrencyType)).Cast<CurrencyType>().ToList();
-            CheckEnumCount(expected.Count, _getConstantsReply.CurrencyTypes.Count, "currency types");
-            expected.ForEach(e => CheckEnumValues(e, _getConstantsReply.CurrencyTypes));
+            using (Logger = new TestsessionLogger())
+            {
+                var expected = Enum.GetValues(typeof (CurrencyType)).Cast<CurrencyType>().ToList();
+                CheckEnumCount(expected.Count, _getConstantsReply.CurrencyTypes.Count, "currency types");
+                expected.ForEach(e => CheckEnumValues(e, _getConstantsReply.CurrencyTypes));
+            }
         }
 
         private void CheckHashAlgorithms()
         {
-            var expected = Enum.GetValues(typeof(HashAlgorithm)).Cast<HashAlgorithm>().ToList();
-            CheckEnumCount(expected.Count(), _getConstantsReply.HashAlgorithms.Count, "hash algorithms");
-            expected.ForEach(e => CheckEnumValues(e, _getConstantsReply.HashAlgorithms));
+            using (Logger = new TestsessionLogger())
+            {
+                var expected = Enum.GetValues(typeof (HashAlgorithm)).Cast<HashAlgorithm>().ToList();
+                CheckEnumCount(expected.Count(), _getConstantsReply.HashAlgorithms.Count, "hash algorithms");
+                expected.ForEach(e => CheckEnumValues(e, _getConstantsReply.HashAlgorithms));
+            }
         }
 
         private void CheckMinBalanceModels()
         {
-            var expected = Enum.GetValues(typeof(MinBalanceModel)).Cast<MinBalanceModel>().ToList();
-            CheckEnumCount(expected.Count, _getConstantsReply.MinBalanceModels.Count, "min balances");
-            expected.ForEach(e => CheckEnumValues(e, _getConstantsReply.MinBalanceModels));
+            using (Logger = new TestsessionLogger())
+            {
+                var expected = Enum.GetValues(typeof (MinBalanceModel)).Cast<MinBalanceModel>().ToList();
+                CheckEnumCount(expected.Count, _getConstantsReply.MinBalanceModels.Count, "min balances");
+                expected.ForEach(e => CheckEnumValues(e, _getConstantsReply.MinBalanceModels));
+            }
         }
 
         private void CheckPeerStates()
         {
-            var expected = Enum.GetValues(typeof(PeerInfo.PeerState)).Cast<PeerInfo.PeerState>().ToList();
-            CheckEnumCount(expected.Count, _getConstantsReply.PeerStates.Count, "peer states");
-            expected.ForEach(e => CheckEnumValues(e, _getConstantsReply.PeerStates));
+            using (Logger = new TestsessionLogger())
+            {
+                var expected = Enum.GetValues(typeof (PeerInfo.PeerState)).Cast<PeerInfo.PeerState>().ToList();
+                CheckEnumCount(expected.Count, _getConstantsReply.PeerStates.Count, "peer states");
+                expected.ForEach(e => CheckEnumValues(e, _getConstantsReply.PeerStates));
+            }
         }
 
         private void CheckVotingModels()
         {
-            var expected = Enum.GetValues(typeof(VotingModel)).Cast<VotingModel>().ToList();
-            CheckEnumCount(expected.Count, _getConstantsReply.VotingModels.Count, "voting models");
-            expected.ForEach(e => CheckEnumValues(e, _getConstantsReply.VotingModels));
+            using (Logger = new TestsessionLogger())
+            {
+                var expected = Enum.GetValues(typeof (VotingModel)).Cast<VotingModel>().ToList();
+                CheckEnumCount(expected.Count, _getConstantsReply.VotingModels.Count, "voting models");
+                expected.ForEach(e => CheckEnumValues(e, _getConstantsReply.VotingModels));
+            }
         }
 
         private void CheckTransactionTypes()
         {
-            var expectedMainTypes = Enum.GetValues(typeof(TransactionMainType)).Cast<TransactionMainType>().ToList();
-            CheckEnumCount(expectedMainTypes.Count, _getConstantsReply.TransactionTypes.Count, "main transaction types");
+            using (Logger = new TestsessionLogger())
+            {
+                var expectedMainTypes =
+                    Enum.GetValues(typeof (TransactionMainType)).Cast<TransactionMainType>().ToList();
+                CheckEnumCount(expectedMainTypes.Count, _getConstantsReply.TransactionTypes.Count,
+                    "main transaction types");
 
-            var expectedSubTypes = Enum.GetValues(typeof(TransactionSubType)).Cast<TransactionSubType>().ToList();
-            CheckEnumCount(expectedSubTypes.Count, _getConstantsReply.TransactionTypes.SelectMany(t => t.Value.Values).Count(), "sub transaction types");
+                var expectedSubTypes = Enum.GetValues(typeof (TransactionSubType)).Cast<TransactionSubType>().ToList();
+                CheckEnumCount(expectedSubTypes.Count,
+                    _getConstantsReply.TransactionTypes.SelectMany(t => t.Value.Values).Count(), "sub transaction types");
 
-            expectedSubTypes.ForEach(CheckTransactionTypeValues);
+                expectedSubTypes.ForEach(CheckTransactionTypeValues);
+            }
         }
 
         private void CheckTransactionTypeValues(TransactionSubType expectedSubType)
@@ -144,27 +167,19 @@ namespace NxtLib.Test.ServerInfo
 
             if (actual == null)
             {
-                Logger.Error("Did not find expected transaction type {0}", expectedName);
+                Logger.Fail(string.Format("Did not find expected transaction type {0}", expectedName));
                 return;
             }
             if (!actual.Name.Equals(expectedName))
             {
-                Logger.Error("Transaction type name mismatch, expected: {0}, actual: {1}", expectedName, actual.Name);
+                Logger.Fail(string.Format("Transaction type name mismatch, expected: {0}, actual: {1}", expectedName, actual.Name));
             }
             else
             {
                 var expectedValues = TransactionTypes[expectedSubType];
-                CheckBool(expectedValues.CanHaveRecipient, actual.CanHaveRecipient, "CanHaveRecipient");
-                CheckBool(expectedValues.IsPhasingSafe, actual.IsPhasingSafe, "IsPhasingSafe");
-                CheckBool(expectedValues.MustHaveRecipient, actual.MustHaveRecipient, "MustHaveRecipient");
-            }
-        }
-
-        private static void CheckBool(bool expected, bool actual, string propertyName)
-        {
-            if (expected != actual)
-            {
-                Logger.Error("Unexpected value {0}, expected: {1}, actual: {2}", propertyName, expected, actual);
+                Compare(expectedValues.CanHaveRecipient, actual.CanHaveRecipient, "CanHaveRecipient");
+                Compare(expectedValues.IsPhasingSafe, actual.IsPhasingSafe, "IsPhasingSafe");
+                Compare(expectedValues.MustHaveRecipient, actual.MustHaveRecipient, "MustHaveRecipient");
             }
         }
 
@@ -172,15 +187,7 @@ namespace NxtLib.Test.ServerInfo
         {
             if (expected != actual)
             {
-                Logger.Error("Incorrect number of {0}, expected: {1}, actual: {2}", typeName, expected, actual);
-            }
-        }
-
-        private static void CheckConstant<T>(T expected, T actual, string typeName)
-        {
-            if (!expected.Equals(actual))
-            {
-                Logger.Error("Unexpected {0}, expected: {1}, actual: {2}", typeName, expected, actual);
+                Logger.Fail(string.Format("Incorrect number of {0}, expected: {1}, actual: {2}", typeName, expected, actual));
             }
         }
 
@@ -193,12 +200,12 @@ namespace NxtLib.Test.ServerInfo
 
             if (!actuals.TryGetValue(enumName, out value))
             {
-                Logger.Error("Could not find expected currency type {0}", enumName);
+                Logger.Fail(string.Format("Could not find expected currency type {0}", enumName));
             }
             else if (expectedValue != value)
             {
-                Logger.Error("Currency type {0} was found but with wrong value. Expected {1}, but actual was {2}",
-                    enumName, expectedValue, value);
+                Logger.Fail(string.Format("Currency type {0} was found but with wrong value. Expected {1}, but actual was {2}",
+                    enumName, expectedValue, value));
             }
         }
 

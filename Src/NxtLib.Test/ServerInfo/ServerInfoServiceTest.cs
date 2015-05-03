@@ -72,7 +72,7 @@ namespace NxtLib.Test.ServerInfo
         private void GetBlockchainStatusTest()
         {
             var getBlockchainStatusTest = new GetBlockchainStatusTest(_serverInfoService);
-            getBlockchainStatusTest.RunAllTests();
+            getBlockchainStatusTest.Test();
         }
 
         void GetConstantsTest()

@@ -14,20 +14,22 @@ namespace NxtLib.Test.VotingSystem
 
         public void Test()
         {
-            if (!TestSettings.RunCostlyTests)
+            using (Logger = new TestsessionLogger())
             {
-                Logger.Warn("RunCostlyTests is set to false, skipping CastVote");
-                return;
-            }
-            Logger.Info("Starting CastVote test");
+                if (!TestSettings.RunCostlyTests)
+                {
+                    Logger.Fail("RunCostlyTests is set to false, skipping CastVote");
+                    return;
+                }
 
-            var castVoteReply = _votingSystemService.CastVote(TestSettings.PollId, new Dictionary<int, int> {{0, 1}},
+                var castVoteReply = _votingSystemService.CastVote(TestSettings.PollId, new Dictionary<int, int> { { 0, 1 } },
                 CreateTransaction.CreateTransactionBySecretPhrase(true)).Result;
 
-            var attachment = (MessagingVoteCastingAttachment)castVoteReply.Transaction.Attachment;
-            Compare(2, attachment.Votes.Count, "vote count");
-            Compare(1, attachment.Votes[0], "vote value at index 0");
-            Compare(-128, attachment.Votes[1], "vote value at index 1");
+                var attachment = (MessagingVoteCastingAttachment)castVoteReply.Transaction.Attachment;
+                Compare(2, attachment.Votes.Count, "vote count");
+                Compare(1, attachment.Votes[0], "vote value at index 0");
+                Compare(-128, attachment.Votes[1], "vote value at index 1");
+            }
         }
     }
 }
