@@ -33,6 +33,11 @@ namespace NxtLib.Test
 
         public static string PublicKey { get; set; }
 
+        public static bool RunCostlyTests
+        {
+            get { return Convert.ToBoolean(ConfigurationManager.AppSettings["RunCostlyTests"]); }
+        }
+
         public static string SecretPhrase
         {
             get { return ConfigurationManager.AppSettings["SecretPhrase"]; }
