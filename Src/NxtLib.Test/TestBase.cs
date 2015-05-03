@@ -47,9 +47,9 @@ namespace NxtLib.Test
             }
             for (var i = 0; i < expected.Count; i++)
             {
-                if (string.Equals(expected[i], actual[i]))
+                if (!string.Equals(expected[i], actual[i]))
                 {
-                    Logger.Error("Unexpected string value of {0}, index {1}, expected: {2}, actual{3}", propertyName, i, expected[i], actual[i]);
+                    Logger.Error("Unexpected string value of {0}, index {1}, expected: {2}, actual: {3}", propertyName, i, expected[i], actual[i]);
                 }
             }
         }
