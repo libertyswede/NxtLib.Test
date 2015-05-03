@@ -6,7 +6,13 @@
         {
             TestCastVote();
             TestCreatePoll();
+            TestGetPoll();
+        }
 
+        private void TestGetPoll()
+        {
+            var getPollTest = new GetPollTest();
+            getPollTest.Test();
         }
 
         private void TestCastVote()

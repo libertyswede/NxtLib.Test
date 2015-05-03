@@ -19,6 +19,8 @@ namespace NxtLib.Test.VotingSystem
                 Logger.Warn("RunCostlyTests is set to false, skipping CastVote");
                 return;
             }
+            Logger.Info("Starting CastVote test");
+
             var castVoteReply = _votingSystemService.CastVote(TestSettings.PollId, new Dictionary<int, int> {{0, 1}},
                 CreateTransaction.CreateTransactionBySecretPhrase(true)).Result;
 
