@@ -9,9 +9,9 @@ namespace NxtLib.Test.VotingSystem
         private readonly IVotingSystemService _votingSystemService;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public CreatePollTest(IVotingSystemService votingSystemService)
+        public CreatePollTest()
         {
-            _votingSystemService = votingSystemService;
+            _votingSystemService = TestSettings.ServiceFactory.CreateVotingSystemService();
         }
 
         public void Test()

@@ -31,6 +31,7 @@ namespace NxtLib.Test
             get { return ConfigurationManager.AppSettings["NxtServerUrl"]; }
         }
 
+        public static ulong PollId { get; set; }
         public static string PublicKey { get; set; }
 
         public static bool RunCostlyTests

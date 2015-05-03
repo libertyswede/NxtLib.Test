@@ -5,7 +5,7 @@ namespace NxtLib.Test
 {
     public abstract class TestBase
     {
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        protected static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         protected static void Compare(string expected, string actual, string propertyName)
         {
