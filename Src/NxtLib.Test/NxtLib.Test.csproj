@@ -59,6 +59,7 @@
     <Compile Include="Utils.cs" />
     <Compile Include="VotingSystem\CastVoteTest.cs" />
     <Compile Include="VotingSystem\CreatePollTest.cs" />
+    <Compile Include="VotingSystem\GetPollResultTest.cs" />
     <Compile Include="VotingSystem\GetPollTest.cs" />
     <Compile Include="VotingSystem\VotingSystemServiceTest.cs" />
   </ItemGroup>

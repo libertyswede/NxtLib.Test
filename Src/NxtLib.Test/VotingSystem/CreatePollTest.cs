@@ -82,18 +82,18 @@ namespace NxtLib.Test.VotingSystem
 
         private static void VerifyCreatePollParameters(CreatePollParameters createPollParameters, MessagingPollCreationAttachment pollCreation)
         {
-            Compare(createPollParameters.Name, pollCreation.Name, "poll Name");
-            Compare(createPollParameters.Description, pollCreation.Description, "poll Description");
-            Compare(createPollParameters.FinishHeight, pollCreation.FinishHeight, "poll FinishHeight");
-            Compare(createPollParameters.VotingModel, pollCreation.VotingModel, "poll VotingModel");
-            Compare(createPollParameters.MinNumberOfOptions, pollCreation.MinNumberOfOptions, "poll MinNumberOfOptions");
-            Compare(createPollParameters.MaxNumberOfOptions, pollCreation.MaxNumberOfOptions, "poll MaxNumberOfOptions");
-            Compare(createPollParameters.MinRangeValue, pollCreation.MinRangeValue, "poll MinRangeValue");
-            Compare(createPollParameters.MaxRangeValue, pollCreation.MaxRangeValue, "poll MaxRangeValue");
-            Compare(createPollParameters.Options, pollCreation.Options, "poll Options");
-            Compare(createPollParameters.MinBalance, pollCreation.MinBalance, "poll MinRangeValue");
-            Compare(createPollParameters.MinBalanceModel, pollCreation.MinBalanceModel, "poll MinBalanceModel");
-            Compare(createPollParameters.HoldingId ?? 0, pollCreation.HoldingId, "poll HoldingId");
+            AssertEquals(createPollParameters.Name, pollCreation.Name, "poll Name");
+            AssertEquals(createPollParameters.Description, pollCreation.Description, "poll Description");
+            AssertEquals(createPollParameters.FinishHeight, pollCreation.FinishHeight, "poll FinishHeight");
+            AssertEquals(createPollParameters.VotingModel, pollCreation.VotingModel, "poll VotingModel");
+            AssertEquals(createPollParameters.MinNumberOfOptions, pollCreation.MinNumberOfOptions, "poll MinNumberOfOptions");
+            AssertEquals(createPollParameters.MaxNumberOfOptions, pollCreation.MaxNumberOfOptions, "poll MaxNumberOfOptions");
+            AssertEquals(createPollParameters.MinRangeValue, pollCreation.MinRangeValue, "poll MinRangeValue");
+            AssertEquals(createPollParameters.MaxRangeValue, pollCreation.MaxRangeValue, "poll MaxRangeValue");
+            AssertEquals(createPollParameters.Options, pollCreation.Options, "poll Options");
+            AssertEquals(createPollParameters.MinBalance, pollCreation.MinBalance, "poll MinRangeValue");
+            AssertEquals(createPollParameters.MinBalanceModel, pollCreation.MinBalanceModel, "poll MinBalanceModel");
+            AssertEquals(createPollParameters.HoldingId ?? 0, pollCreation.HoldingId, "poll HoldingId");
         }
     }
 }

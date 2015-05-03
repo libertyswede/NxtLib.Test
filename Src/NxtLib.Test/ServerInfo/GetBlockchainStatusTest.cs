@@ -23,18 +23,18 @@ namespace NxtLib.Test.ServerInfo
         {
             using (Logger = new TestsessionLogger())
             {
-                Compare("NRS", blockchainStatus.Application, "Application");
-                CheckLargerThanZero(blockchainStatus.CumulativeDifficulty, "CumulativeDifficulty");
-                CheckLargerThanZero(blockchainStatus.CurrentMinRollbackHeight, "CurrentMinRollbackHeight");
+                AssertEquals("NRS", blockchainStatus.Application, "Application");
+                AssertIsLargerThanZero(blockchainStatus.CumulativeDifficulty, "CumulativeDifficulty");
+                AssertIsLargerThanZero(blockchainStatus.CurrentMinRollbackHeight, "CurrentMinRollbackHeight");
                 // blockchainStatus.IncludeExpiredPrunable
                 // blockchainStatus.IsScanning
                 // blockchainStatus.IsTestnet
-                CheckLargerThanZero(blockchainStatus.LastBlockId, "LastBlockId");
-                CheckIsNullOrEmpty(blockchainStatus.LastBlockchainFeeder, "LastBlockchainFeeder");
-                CheckLargerThanZero(blockchainStatus.LastBlockchainFeederHeight, "LastBlockchainFeederHeight");
-                Compare(86400, blockchainStatus.MaxPrunableLifetime, "MaxPrunableLifetime");
-                Compare(800, blockchainStatus.MaxRollback, "MaxRollback");
-                CheckLargerThanZero(blockchainStatus.NumberOfBlocks, "NumberOfBlocks");
+                AssertIsLargerThanZero(blockchainStatus.LastBlockId, "LastBlockId");
+                AssertIsNullOrEmpty(blockchainStatus.LastBlockchainFeeder, "LastBlockchainFeeder");
+                AssertIsLargerThanZero(blockchainStatus.LastBlockchainFeederHeight, "LastBlockchainFeederHeight");
+                AssertEquals(86400, blockchainStatus.MaxPrunableLifetime, "MaxPrunableLifetime");
+                AssertEquals(800, blockchainStatus.MaxRollback, "MaxRollback");
+                AssertIsLargerThanZero(blockchainStatus.NumberOfBlocks, "NumberOfBlocks");
                 CheckTimeShouldBeAroundNow(blockchainStatus);
                 CheckVersionFormat(blockchainStatus);
             }

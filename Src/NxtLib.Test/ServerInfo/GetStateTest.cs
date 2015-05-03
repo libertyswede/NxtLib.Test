@@ -54,42 +54,42 @@ namespace NxtLib.Test.ServerInfo
 
         private void VerifyStateCounts(GetStateReply getStateReply)
         {
-            CheckLargerThanZero(getStateReply.NumberOfAccounts, "NumberOfAccounts");
-            CheckLargerThanZero(getStateReply.NumberOfActivePeers, "NumberOfActivePeers");
-            CheckLargerThanZero(getStateReply.NumberOfAliases, "NumberOfAliases");
-            CheckLargerThanZero(getStateReply.NumberOfAskOrders, "NumberOfAskOrders");
-            CheckLargerThanZero(getStateReply.NumberOfAssets, "NumberOfAssets");
-            CheckLargerThanZero(getStateReply.NumberOfBidOrders, "NumberOfBidOrders");
-            CheckLargerThanZero(getStateReply.NumberOfCurrencies, "NumberOfCurrencies");
-            CheckLargerThanZero(getStateReply.NumberOfCurrencyTransfers, "NumberOfCurrencyTransfers");
-            CheckLargerThanZero(getStateReply.NumberOfDataTags, "NumberOfDataTags");
-            CheckLargerThanZero(getStateReply.NumberOfExchanges, "NumberOfExchanges");
-            CheckLargerThanZero(getStateReply.NumberOfGoods, "NumberOfGoods");
-            CheckLargerThanZero(getStateReply.NumberOfOffers, "NumberOfOffers");
-            CheckLargerThanZero(getStateReply.NumberOfOrders, "NumberOfOrders");
-            CheckLargerThanZero(getStateReply.NumberOfPhasedTransactions, "NumberOfPhasedTransactions");
-            CheckLargerThanZero(getStateReply.NumberOfPolls, "NumberOfPolls");
-            CheckLargerThanZero(getStateReply.NumberOfPrunableMessages, "NumberOfPrunableMessages");
-            CheckLargerThanZero(getStateReply.NumberOfPurchases, "NumberOfPurchases");
-            CheckLargerThanZero(getStateReply.NumberOfTaggedData, "NumberOfTaggedData");
-            CheckLargerThanZero(getStateReply.NumberOfTags, "NumberOfTags");
-            CheckLargerThanZero(getStateReply.NumberOfTrades, "NumberOfTrades");
-            CheckLargerThanZero(getStateReply.NumberOfTransactions, "NumberOfTransactions");
-            CheckLargerThanZero(getStateReply.NumberOfTransfers, "NumberOfTransfers");
-            CheckLargerThanZero(getStateReply.NumberOfVotes, "NumberOfVotes");
+            AssertIsLargerThanZero(getStateReply.NumberOfAccounts, "NumberOfAccounts");
+            AssertIsLargerThanZero(getStateReply.NumberOfActivePeers, "NumberOfActivePeers");
+            AssertIsLargerThanZero(getStateReply.NumberOfAliases, "NumberOfAliases");
+            AssertIsLargerThanZero(getStateReply.NumberOfAskOrders, "NumberOfAskOrders");
+            AssertIsLargerThanZero(getStateReply.NumberOfAssets, "NumberOfAssets");
+            AssertIsLargerThanZero(getStateReply.NumberOfBidOrders, "NumberOfBidOrders");
+            AssertIsLargerThanZero(getStateReply.NumberOfCurrencies, "NumberOfCurrencies");
+            AssertIsLargerThanZero(getStateReply.NumberOfCurrencyTransfers, "NumberOfCurrencyTransfers");
+            AssertIsLargerThanZero(getStateReply.NumberOfDataTags, "NumberOfDataTags");
+            AssertIsLargerThanZero(getStateReply.NumberOfExchanges, "NumberOfExchanges");
+            AssertIsLargerThanZero(getStateReply.NumberOfGoods, "NumberOfGoods");
+            AssertIsLargerThanZero(getStateReply.NumberOfOffers, "NumberOfOffers");
+            AssertIsLargerThanZero(getStateReply.NumberOfOrders, "NumberOfOrders");
+            AssertIsLargerThanZero(getStateReply.NumberOfPhasedTransactions, "NumberOfPhasedTransactions");
+            AssertIsLargerThanZero(getStateReply.NumberOfPolls, "NumberOfPolls");
+            AssertIsLargerThanZero(getStateReply.NumberOfPrunableMessages, "NumberOfPrunableMessages");
+            AssertIsLargerThanZero(getStateReply.NumberOfPurchases, "NumberOfPurchases");
+            AssertIsLargerThanZero(getStateReply.NumberOfTaggedData, "NumberOfTaggedData");
+            AssertIsLargerThanZero(getStateReply.NumberOfTags, "NumberOfTags");
+            AssertIsLargerThanZero(getStateReply.NumberOfTrades, "NumberOfTrades");
+            AssertIsLargerThanZero(getStateReply.NumberOfTransactions, "NumberOfTransactions");
+            AssertIsLargerThanZero(getStateReply.NumberOfTransfers, "NumberOfTransfers");
+            AssertIsLargerThanZero(getStateReply.NumberOfVotes, "NumberOfVotes");
         }
 
         private void VerifyStateReply(GetStateReply getStateReply)
         {
-            CheckLargerThanZero(getStateReply.AvailableProcessors, "AvailableProcessors");
-            CheckLargerThanZero(getStateReply.FreeMemory, "FreeMemory");
-            CheckIsFalse(getStateReply.IsOffline, "IsOffline");
-            CheckLargerThanZero(getStateReply.MaxMemory, "MaxMemory");
-            CheckIsFalse(getStateReply.NeedsAdminPassword, "NeedsAdminPassword");
-            CheckLargerThanZero(getStateReply.NumberOfPeers, "NumberOfPeers");
+            AssertIsLargerThanZero(getStateReply.AvailableProcessors, "AvailableProcessors");
+            AssertIsLargerThanZero(getStateReply.FreeMemory, "FreeMemory");
+            AssertIsFalse(getStateReply.IsOffline, "IsOffline");
+            AssertIsLargerThanZero(getStateReply.MaxMemory, "MaxMemory");
+            AssertIsFalse(getStateReply.NeedsAdminPassword, "NeedsAdminPassword");
+            AssertIsLargerThanZero(getStateReply.NumberOfPeers, "NumberOfPeers");
             // getStateReply.NumberOfUnlockedAccounts
-            CheckLargerThanZero(getStateReply.PeerPort, "PeerPort");
-            CheckLargerThanZero(getStateReply.TotalMemory, "TotalMemory");
+            AssertIsLargerThanZero(getStateReply.PeerPort, "PeerPort");
+            AssertIsLargerThanZero(getStateReply.TotalMemory, "TotalMemory");
         }
     }
 }

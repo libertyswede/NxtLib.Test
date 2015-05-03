@@ -20,12 +20,12 @@ namespace NxtLib.Test.VotingSystem
                 foreach (var expected in _getPollsReply.Polls)
                 {
                     var getPollReply = _votingSystemService.GetPoll(expected.PollId).Result;
-                    CheckIsNullOrEmpty(getPollReply.Name, "Name");
-                    CheckIsNullOrEmpty(getPollReply.Description, "Description");
-                    CheckLargerThanZero(getPollReply.FinishHeight, "FinishHeight");
-                    CheckLargerThanZero(getPollReply.MinNumberOfOptions, "MinNumberOfOptions");
-                    CheckLargerThanZero(getPollReply.MaxNumberOfOptions, "MaxNumberOfOptions");
-                    CheckListHasValues(getPollReply.Options, "Options");
+                    AssertIsNullOrEmpty(getPollReply.Name, "Name");
+                    AssertIsNullOrEmpty(getPollReply.Description, "Description");
+                    AssertIsLargerThanZero(getPollReply.FinishHeight, "FinishHeight");
+                    AssertIsLargerThanZero(getPollReply.MinNumberOfOptions, "MinNumberOfOptions");
+                    AssertIsLargerThanZero(getPollReply.MaxNumberOfOptions, "MaxNumberOfOptions");
+                    AssertListHasValues(getPollReply.Options, "Options");
                 }
             }
         }

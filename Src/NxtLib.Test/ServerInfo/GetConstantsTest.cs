@@ -82,11 +82,11 @@ namespace NxtLib.Test.ServerInfo
                 const int maxArbitraryMessageLength = 1000;
                 const int maxBlockPayloadLength = 44880;
 
-                Compare(genesisAccountId, _getConstantsReply.GenesisAccountId, "GenesisAccountId");
-                Compare(genesisBlockId, _getConstantsReply.GenesisBlockId, "GenesisBlockId");
-                Compare(maxArbitraryMessageLength, _getConstantsReply.MaxArbitraryMessageLength,
+                AssertEquals(genesisAccountId, _getConstantsReply.GenesisAccountId, "GenesisAccountId");
+                AssertEquals(genesisBlockId, _getConstantsReply.GenesisBlockId, "GenesisBlockId");
+                AssertEquals(maxArbitraryMessageLength, _getConstantsReply.MaxArbitraryMessageLength,
                     "MaxArbitraryMessageLength");
-                Compare(maxBlockPayloadLength, _getConstantsReply.MaxBlockPayloadLength, "MaxBlockPayloadLength");
+                AssertEquals(maxBlockPayloadLength, _getConstantsReply.MaxBlockPayloadLength, "MaxBlockPayloadLength");
             }
         }
 
@@ -177,9 +177,9 @@ namespace NxtLib.Test.ServerInfo
             else
             {
                 var expectedValues = TransactionTypes[expectedSubType];
-                Compare(expectedValues.CanHaveRecipient, actual.CanHaveRecipient, "CanHaveRecipient");
-                Compare(expectedValues.IsPhasingSafe, actual.IsPhasingSafe, "IsPhasingSafe");
-                Compare(expectedValues.MustHaveRecipient, actual.MustHaveRecipient, "MustHaveRecipient");
+                AssertEquals(expectedValues.CanHaveRecipient, actual.CanHaveRecipient, "CanHaveRecipient");
+                AssertEquals(expectedValues.IsPhasingSafe, actual.IsPhasingSafe, "IsPhasingSafe");
+                AssertEquals(expectedValues.MustHaveRecipient, actual.MustHaveRecipient, "MustHaveRecipient");
             }
         }
 

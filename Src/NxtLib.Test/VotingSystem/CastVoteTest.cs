@@ -26,9 +26,9 @@ namespace NxtLib.Test.VotingSystem
                 CreateTransaction.CreateTransactionBySecretPhrase(true)).Result;
 
                 var attachment = (MessagingVoteCastingAttachment)castVoteReply.Transaction.Attachment;
-                Compare(2, attachment.Votes.Count, "vote count");
-                Compare(1, attachment.Votes[0], "vote value at index 0");
-                Compare(-128, attachment.Votes[1], "vote value at index 1");
+                AssertEquals(2, attachment.Votes.Count, "vote count");
+                AssertEquals(1, attachment.Votes[0], "vote value at index 0");
+                AssertEquals(-128, attachment.Votes[1], "vote value at index 1");
             }
         }
     }
