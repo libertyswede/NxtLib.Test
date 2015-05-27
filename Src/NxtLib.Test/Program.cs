@@ -1,6 +1,7 @@
 ﻿using System;
 using NLog;
 using NxtLib.Test.ServerInfo;
+using NxtLib.Test.TaggedData;
 using NxtLib.Test.VotingSystem;
 
 namespace NxtLib.Test
@@ -22,6 +23,8 @@ namespace NxtLib.Test
             serverInfoServiceTest.RunAllTests();
             var votingSystemServiceTest = new VotingSystemServiceTest();
             votingSystemServiceTest.RunAllTests();
+            var taggedDataServiceTest = new TaggedDataServiceTest();
+            taggedDataServiceTest.RunAllTests();
 
             Logger.Info("Test run complete");
             Console.ReadLine();
