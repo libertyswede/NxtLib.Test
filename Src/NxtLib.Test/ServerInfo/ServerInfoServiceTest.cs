@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using NLog;
 using NxtLib.ServerInfo;
 
 namespace NxtLib.Test.ServerInfo
 {
-    class ServerInfoServiceTest
+    class ServerInfoServiceTest : TestBase
     {
         private readonly IServerInfoService _serverInfoService;
-        protected static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         internal ServerInfoServiceTest()
         {
@@ -29,43 +26,21 @@ namespace NxtLib.Test.ServerInfo
 
         private void EventRegisterTest()
         {
-            try
+            using (Logger = new TestsessionLogger())
             {
-                var eventRegisterResponse = _serverInfoService.EventRegister(new List<string>(), "", "").Result;
-                Logger.Error("Test code for EventRegister is not implemented yet");
-            }
-            catch (AggregateException ae)
-            {
-                ae.Handle(x =>
+                var eventRegisterResponse = _serverInfoService.EventRegister().Result;
+                if (!eventRegisterResponse.Registered)
                 {
-                    if (x is NotImplementedException)
-                    {
-                        Logger.Error("EventRegister is not implemented yet");
-                        return true;
-                    }
-                    return false;
-                });
+                    Logger.Fail("EventRegister.Registered is false");
+                }
             }
         }
 
         private void EventWaitTest()
         {
-            try
+            using (Logger = new TestsessionLogger())
             {
-                var eventRegisterResponse = _serverInfoService.EventWait(123).Result;
-                Logger.Error("Test code for EventWait is not implemented yet");
-            }
-            catch (AggregateException ae)
-            {
-                ae.Handle(x =>
-                {
-                    if (x is NotImplementedException)
-                    {
-                        Logger.Error("EventWait is not implemented yet");
-                        return true;
-                    }
-                    return false;
-                });
+                _serverInfoService.EventWait(2).Wait();
             }
         }
 
@@ -86,11 +61,11 @@ namespace NxtLib.Test.ServerInfo
             var getPluginsReply = _serverInfoService.GetPlugins().Result;
             if (getPluginsReply.Plugins.Count != 1)
             {
-                Logger.Error("Unexpected number of plugins, expected: 1, actual: {0}", getPluginsReply.Plugins.Count);
+                Logger.Fail(string.Format("Unexpected number of plugins, expected: 1, actual: {0}", getPluginsReply.Plugins.Count));
             }
             if (!getPluginsReply.Plugins.Single().Equals("hello_world"))
             {
-                Logger.Error("Unexpected name of plugin, expected: hello_world, actual: {0}", getPluginsReply.Plugins.Single());
+                Logger.Fail(string.Format("Unexpected name of plugin, expected: hello_world, actual: {0}", getPluginsReply.Plugins.Single()));
             }
         }
 
@@ -105,8 +80,8 @@ namespace NxtLib.Test.ServerInfo
             var getTimeReply = _serverInfoService.GetTime().Result;
             if (Math.Abs(getTimeReply.Time.Subtract(DateTime.UtcNow).TotalSeconds) > 10)
             {
-                Logger.Error("Unexpected Time, expected to be within 10 seconds ({0}), actual: {1}",
-                    DateTime.UtcNow.ToLongTimeString(), getTimeReply.Time.ToLongTimeString());
+                Logger.Fail(string.Format("Unexpected Time, expected to be within 10 seconds ({0}), actual: {1}",
+                    DateTime.UtcNow.ToLongTimeString(), getTimeReply.Time.ToLongTimeString()));
             }
         }
     }
