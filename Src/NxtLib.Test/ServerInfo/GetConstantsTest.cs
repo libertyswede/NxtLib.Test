@@ -81,12 +81,14 @@ namespace NxtLib.Test.ServerInfo
                 const ulong genesisBlockId = 2680262203532249785;
                 const int maxArbitraryMessageLength = 1000;
                 const int maxBlockPayloadLength = 44880;
+                const int maxTaggedDataDataLength = 43008;
 
                 AssertEquals(genesisAccountId, _getConstantsReply.GenesisAccountId, "GenesisAccountId");
                 AssertEquals(genesisBlockId, _getConstantsReply.GenesisBlockId, "GenesisBlockId");
                 AssertEquals(maxArbitraryMessageLength, _getConstantsReply.MaxArbitraryMessageLength,
                     "MaxArbitraryMessageLength");
                 AssertEquals(maxBlockPayloadLength, _getConstantsReply.MaxBlockPayloadLength, "MaxBlockPayloadLength");
+                AssertEquals(maxTaggedDataDataLength, _getConstantsReply.MaxTaggedDataDataLength, "MaxTaggedDataDataLength");
             }
         }
 
