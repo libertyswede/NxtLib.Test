@@ -21,8 +21,24 @@ namespace NxtLib.Test.TaggedData
 
         internal void RunAllTests()
         {
+            ExtendTaggedData();
             UploadTaggedData();
             VerifyTaggedData();
+        }
+
+        private void ExtendTaggedData()
+        {
+            using (Logger = new TestsessionLogger())
+            {
+                var parameters = CreateTransaction.CreateTransactionByPublicKey();
+
+                var transaction = _taggedDataService.ExtendTaggedData(TestSettings.TaggedDataTransactionId, parameters, Name, Data,
+                        Description, Tags, Channel, Type, IsText, Filename).Result.Transaction;
+                var attachment = (TaggedDataExtendAttachment)transaction.Attachment;
+
+                VerifyMembers(attachment);
+                AssertEquals(TestSettings.TaggedDataTransactionId, attachment.TaggedDataId, "TaggedDataId");
+            }
         }
 
         internal void UploadTaggedData()
@@ -39,18 +55,6 @@ namespace NxtLib.Test.TaggedData
             }
         }
 
-        private static void VerifyMembers(TaggedDataAttachment attachment)
-        {
-            AssertEquals(Name, attachment.Name, "Name");
-            AssertEquals(Data, attachment.Data, "Data");
-            AssertEquals(Description, attachment.Description, "Description");
-            AssertEquals(Tags, attachment.Tags, "Tags");
-            AssertEquals(Channel, attachment.Channel, "Channel");
-            AssertEquals(Type, attachment.Type, "DataType");
-            AssertIsTrue(attachment.IsText, "IsText");
-            AssertEquals(Filename, attachment.Filename, "Filename");
-        }
-
         internal void VerifyTaggedData()
         {
             using (Logger = new TestsessionLogger())
@@ -61,6 +65,18 @@ namespace NxtLib.Test.TaggedData
                 VerifyMembers(verifyTaggedDataReply);
                 AssertIsTrue(verifyTaggedDataReply.Verify, "Verify");
             }
+        }
+
+        private static void VerifyMembers(TaggedDataAttachment attachment)
+        {
+            AssertEquals(Name, attachment.Name, "Name");
+            AssertEquals(Data, attachment.Data, "Data");
+            AssertEquals(Description, attachment.Description, "Description");
+            AssertEquals(Tags, attachment.Tags, "Tags");
+            AssertEquals(Channel, attachment.Channel, "Channel");
+            AssertEquals(Type, attachment.Type, "DataType");
+            AssertIsTrue(attachment.IsText, "IsText");
+            AssertEquals(Filename, attachment.Filename, "Filename");
         }
     }
 }
