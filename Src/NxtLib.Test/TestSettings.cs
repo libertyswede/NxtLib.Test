@@ -45,5 +45,10 @@ namespace NxtLib.Test
         }
 
         public static IServiceFactory ServiceFactory { get; set; }
+
+        public static ulong TaggedDataTransactionId
+        {
+            get { return Convert.ToUInt64(ConfigurationManager.AppSettings["TaggedDataTransactionId"]); }
+        }
     }
 }

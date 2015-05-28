@@ -12,6 +12,7 @@ namespace NxtLib.Test.TaggedData
         const string Channel = "channel?";
         const string Type = "type?";
         const string Filename = "test.txt";
+        const bool IsText = true;
 
         internal TaggedDataServiceTest()
         {
@@ -21,40 +22,44 @@ namespace NxtLib.Test.TaggedData
         internal void RunAllTests()
         {
             UploadTaggedData();
+            VerifyTaggedData();
         }
 
         internal void UploadTaggedData()
         {
             using (Logger = new TestsessionLogger())
             {
-                CreateTransactionParameters parameters = CreateTransaction.CreateTransactionByPublicKey();
-                if (TestSettings.RunCostlyTests)
-                {
-                    parameters = CreateTransaction.CreateTransactionBySecretPhrase(true);
-                }
-                var transaction = _taggedDataService.UploadTaggedData(Name, Data, parameters, Description, Tags, Channel, Type, true,
+                var parameters = CreateTransaction.CreateTransactionByPublicKey();
+
+                var transaction = _taggedDataService.UploadTaggedData(Name, Data, parameters, Description, Tags, Channel, Type, IsText,
                         Filename).Result.Transaction;
                 var attachment = (TaggedDataUploadAttachment)transaction.Attachment;
 
-                AssertEquals(Name, attachment.Name, "Name");
-                AssertEquals(Data, attachment.Data, "Data");
-                AssertEquals(Description, attachment.Description, "Description");
-                AssertEquals(Tags, attachment.Tags, "Tags");
-                AssertEquals(Channel, attachment.Channel, "Channel");
-                AssertEquals(Type, attachment.DataType, "DataType");
-                AssertIsTrue(attachment.IsText, "IsText");
-                AssertEquals(Filename, attachment.Filename, "Filename");
+                VerifyMembers(attachment);
             }
+        }
+
+        private static void VerifyMembers(TaggedDataAttachment attachment)
+        {
+            AssertEquals(Name, attachment.Name, "Name");
+            AssertEquals(Data, attachment.Data, "Data");
+            AssertEquals(Description, attachment.Description, "Description");
+            AssertEquals(Tags, attachment.Tags, "Tags");
+            AssertEquals(Channel, attachment.Channel, "Channel");
+            AssertEquals(Type, attachment.Type, "DataType");
+            AssertIsTrue(attachment.IsText, "IsText");
+            AssertEquals(Filename, attachment.Filename, "Filename");
         }
 
         internal void VerifyTaggedData()
         {
             using (Logger = new TestsessionLogger())
             {
-                if (TestSettings.RunCostlyTests)
-                {
-                    // TODO: Stuff
-                }
+                var verifyTaggedDataReply = _taggedDataService.VerifyTaggedData(TestSettings.TaggedDataTransactionId, Name, Data,
+                        Description, Tags, Channel, Type, IsText, Filename).Result;
+
+                VerifyMembers(verifyTaggedDataReply);
+                AssertIsTrue(verifyTaggedDataReply.Verify, "Verify");
             }
         }
     }
