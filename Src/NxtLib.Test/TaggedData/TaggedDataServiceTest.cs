@@ -67,16 +67,16 @@ namespace NxtLib.Test.TaggedData
             }
         }
 
-        private static void VerifyMembers(TaggedDataAttachment attachment)
+        private static void VerifyMembers(ITaggedData taggedData)
         {
-            AssertEquals(Name, attachment.Name, "Name");
-            AssertEquals(Data, attachment.Data, "Data");
-            AssertEquals(Description, attachment.Description, "Description");
-            AssertEquals(Tags, attachment.Tags, "Tags");
-            AssertEquals(Channel, attachment.Channel, "Channel");
-            AssertEquals(Type, attachment.Type, "DataType");
-            AssertIsTrue(attachment.IsText, "IsText");
-            AssertEquals(Filename, attachment.Filename, "Filename");
+            AssertEquals(Name, taggedData.Name, "Name");
+            AssertEquals(Data, taggedData.Data, "Data");
+            AssertEquals(Description, taggedData.Description, "Description");
+            AssertEquals(Tags, taggedData.Tags, "Tags");
+            AssertEquals(Channel, taggedData.Channel, "Channel");
+            AssertEquals(Type, taggedData.Type, "DataType");
+            AssertIsTrue(taggedData.IsText, "IsText");
+            AssertEquals(Filename, taggedData.Filename, "Filename");
         }
     }
 }

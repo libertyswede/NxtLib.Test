@@ -54,8 +54,10 @@ namespace NxtLib.Test.ServerInfo
 
         private void VerifyStateCounts(GetStateReply getStateReply)
         {
+            AssertIsLargerThanZero(getStateReply.NumberOfAccountLeases, "NumberOfAccountLeases");
             AssertIsLargerThanZero(getStateReply.NumberOfAccounts, "NumberOfAccounts");
             AssertIsLargerThanZero(getStateReply.NumberOfActivePeers, "NumberOfActivePeers");
+            AssertIsLargerThanZero(getStateReply.NumberOfActiveAccountLeases, "NumberOfActiveAccountLeases");
             AssertIsLargerThanZero(getStateReply.NumberOfAliases, "NumberOfAliases");
             AssertIsLargerThanZero(getStateReply.NumberOfAskOrders, "NumberOfAskOrders");
             AssertIsLargerThanZero(getStateReply.NumberOfAssets, "NumberOfAssets");
@@ -63,6 +65,7 @@ namespace NxtLib.Test.ServerInfo
             AssertIsLargerThanZero(getStateReply.NumberOfCurrencies, "NumberOfCurrencies");
             AssertIsLargerThanZero(getStateReply.NumberOfCurrencyTransfers, "NumberOfCurrencyTransfers");
             AssertIsLargerThanZero(getStateReply.NumberOfDataTags, "NumberOfDataTags");
+            AssertIsLargerThanZero(getStateReply.NumberOfExchangeRequests, "NumberOfExchangeRequests");
             AssertIsLargerThanZero(getStateReply.NumberOfExchanges, "NumberOfExchanges");
             AssertIsLargerThanZero(getStateReply.NumberOfGoods, "NumberOfGoods");
             AssertIsLargerThanZero(getStateReply.NumberOfOffers, "NumberOfOffers");

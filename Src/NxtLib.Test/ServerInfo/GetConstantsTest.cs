@@ -67,7 +67,9 @@ namespace NxtLib.Test.ServerInfo
             CheckConstants();
             CheckCurrencyTypes();
             CheckHashAlgorithms();
+            CheckMintingHashAlgorithms();
             CheckMinBalanceModels();
+            CheckPhasingHashAlgorithms();
             CheckPeerStates();
             CheckVotingModels();
             CheckTransactionTypes();
@@ -79,10 +81,12 @@ namespace NxtLib.Test.ServerInfo
             {
                 const ulong genesisAccountId = 1739068987193023818;
                 const ulong genesisBlockId = 2680262203532249785;
+                const long epochBeginning = 1385294400000;
                 const int maxArbitraryMessageLength = 1000;
                 const int maxBlockPayloadLength = 44880;
                 const int maxTaggedDataDataLength = 43008;
 
+                AssertEquals(epochBeginning, _getConstantsReply.EpochBeginning, "EpochBeginning");
                 AssertEquals(genesisAccountId, _getConstantsReply.GenesisAccountId, "GenesisAccountId");
                 AssertEquals(genesisBlockId, _getConstantsReply.GenesisBlockId, "GenesisBlockId");
                 AssertEquals(maxArbitraryMessageLength, _getConstantsReply.MaxArbitraryMessageLength,
@@ -109,6 +113,26 @@ namespace NxtLib.Test.ServerInfo
                 var expected = Enum.GetValues(typeof (HashAlgorithm)).Cast<HashAlgorithm>().ToList();
                 CheckEnumCount(expected.Count(), _getConstantsReply.HashAlgorithms.Count, "hash algorithms");
                 expected.ForEach(e => CheckEnumValues(e, _getConstantsReply.HashAlgorithms));
+            }
+        }
+
+        private void CheckMintingHashAlgorithms()
+        {
+            using (Logger = new TestsessionLogger())
+            {
+                var expected = Enum.GetValues(typeof(MintingHashAlgorithm)).Cast<MintingHashAlgorithm>().ToList();
+                CheckEnumCount(expected.Count(), _getConstantsReply.MintingHashAlgorithms.Count, "minting hash algorithms");
+                expected.ForEach(e => CheckEnumValues(e, _getConstantsReply.MintingHashAlgorithms));
+            }
+        }
+
+        private void CheckPhasingHashAlgorithms()
+        {
+            using (Logger = new TestsessionLogger())
+            {
+                var expected = Enum.GetValues(typeof(PhasingHashAlgorithm)).Cast<PhasingHashAlgorithm>().ToList();
+                CheckEnumCount(expected.Count(), _getConstantsReply.PhasingHashAlgorithms.Count, "phasing hash algorithms");
+                expected.ForEach(e => CheckEnumValues(e, _getConstantsReply.PhasingHashAlgorithms));
             }
         }
 

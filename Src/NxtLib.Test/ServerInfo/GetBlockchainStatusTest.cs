@@ -27,6 +27,7 @@ namespace NxtLib.Test.ServerInfo
                 AssertIsLargerThanZero(blockchainStatus.CumulativeDifficulty, "CumulativeDifficulty");
                 AssertIsLargerThanZero(blockchainStatus.CurrentMinRollbackHeight, "CurrentMinRollbackHeight");
                 // blockchainStatus.IncludeExpiredPrunable
+                // blockchainStatus.IsDownloading
                 // blockchainStatus.IsScanning
                 // blockchainStatus.IsTestnet
                 AssertIsLargerThanZero(blockchainStatus.LastBlockId, "LastBlockId");
