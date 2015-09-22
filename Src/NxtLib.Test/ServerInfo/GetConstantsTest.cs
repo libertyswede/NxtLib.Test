@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using NxtLib.Accounts;
+using NxtLib.Aliases;
+using NxtLib.AssetExchange;
 using NxtLib.Networking;
 using NxtLib.ServerInfo;
 using NxtLib.VotingSystem;
@@ -71,6 +74,7 @@ namespace NxtLib.Test.ServerInfo
             CheckMinBalanceModels();
             CheckPhasingHashAlgorithms();
             CheckPeerStates();
+            CheckRequestTypes();
             CheckVotingModels();
             CheckTransactionTypes();
         }
@@ -163,6 +167,80 @@ namespace NxtLib.Test.ServerInfo
                 var expected = Enum.GetValues(typeof (VotingModel)).Cast<VotingModel>().ToList();
                 CheckEnumCount(expected.Count, _getConstantsReply.VotingModels.Count, "voting models");
                 expected.ForEach(e => CheckEnumValues(e, _getConstantsReply.VotingModels));
+            }
+        }
+
+        private void CheckRequestTypes()
+        {
+            using (Logger = new TestsessionLogger())
+            {
+                var expectedRequestTypes = new List<string>
+                {
+                    "addPeer", "approveTransaction", "blacklistPeer", "broadcastTransaction", "buyAlias",
+                    "calculateFullHash", "cancelAskOrder", "cancelBidOrder", "canDeleteCurrency", "castVote",
+                    "clearUnconfirmedTransactions", "createPoll", "currencyBuy", "currencyMint", "currencyReserveClaim",
+                    "currencyReserveIncrease", "currencySell", "decodeFileToken-notexist", "decodeHallmark", "decodeQRCode-notexist",
+                    "decodeToken", "decryptFrom", "deleteAlias", "deleteAssetShares-notexist", "deleteCurrency", "dgsDelisting",
+                    "dgsDelivery", "dgsFeedback", "dgsListing", "dgsPriceChange", "dgsPurchase", "dgsQuantityChange",
+                    "dgsRefund", "dividendPayment", "downloadTaggedData", "dumpPeers", "encodeQRCode-notexist", "encryptTo",
+                    "eventRegister", "eventWait", "extendTaggedData", "fullHashToId-notexist", "fullReset", "generateFileToken-notexist",
+                    "generateToken", "getAccount", "getAccountAssetCount", "getAccountAssets", "getAccountBlockCount",
+                    "getAccountBlockIds", "getAccountBlocks", "getAccountCurrencies", "getAccountCurrencyCount",
+                    "getAccountCurrentAskOrderIds", "getAccountCurrentAskOrders", "getAccountCurrentBidOrderIds",
+                    "getAccountCurrentBidOrders", "getAccountExchangeRequests", "getAccountId", "getAccountLedger-notexist",
+                    "getAccountLedgerEntry-notexist", "getAccountLessors", "getAccountPhasedTransactionCount",
+                    "getAccountPhasedTransactions", "getAccountPublicKey", "getAccountTaggedData", "getAlias",
+                    "getAliasCount", "getAliases", "getAliasesLike", "getAllAssets", "getAllBroadcastedTransactions",
+                    "getAllCurrencies", "getAllExchanges", "getAllOpenAskOrders", "getAllOpenBidOrders",
+
+
+                    "getAllPrunableMessages", "getAllTaggedData", "getAllTrades", "getAllWaitingTransactions",
+                    "getAskOrder", "getAskOrderIds", "getAskOrders", "getAsset", "getAssetAccountCount",
+                    "getAssetAccounts", "getAssetIds", "getAssetPhasedTransactions", "getAssets", "getAssetsByIssuer",
+                    "getAssetTransfers", "getBalance", "getBidOrder", "getBidOrderIds", "getBidOrders", "getBlock",
+                    "getBlockchainStatus", "getBlockchainTransactions", "getBlockId", "getBlocks", "getBuyOffers",
+                    "getChannelTaggedData", "getConstants", "getCurrencies", "getCurrenciesByIssuer", "getCurrency",
+                    "getCurrencyAccountCount", "getCurrencyAccounts", "getCurrencyFounders", "getCurrencyIds",
+                    "getCurrencyPhasedTransactions", "getCurrencyTransfers", "getDataTagCount", "getDataTags",
+                    "getDataTagsLike", "getDGSExpiredPurchases", "getDGSGood", "getDGSGoods", "getDGSGoodsCount",
+                    "getDGSGoodsPurchaseCount", "getDGSGoodsPurchases", "getDGSPendingPurchases", "getDGSPurchase",
+                    "getDGSPurchaseCount", "getDGSPurchases", "getDGSTagCount", "getDGSTags", "getDGSTagsLike",
+                    "getECBlock", "getExchanges", "getExchangesByExchangeRequest", "getExchangesByOffer",
+                    "getExpectedAskOrders", "getExpectedAssetTransfers", "getExpectedBidOrders", "getExpectedBuyOffers",
+                    "getExpectedCurrencyTransfers", "getExpectedExchangeRequests", "getExpectedOrderCancellations",
+                    "getExpectedSellOffers", "getForging", "getGuaranteedBalance", "getInboundPeers", "getLastExchanges",
+                    "getLastTrades", "getLog", "getMintingTarget", "getMyInfo", "getOffer", "getOrderTrades", "getPeer",
+                    "getPeers", "getPhasingPoll", "getPhasingPolls", "getPhasingPollVote", "getPhasingPollVotes",
+                    "getPlugins", "getPoll", "getPollResult", "getPolls", "getPollVote", "getPollVotes",
+                    "getPrunableMessage", "getPrunableMessages", "getSellOffers", "getStackTraces", "getState",
+                    "getTaggedData", "getTaggedDataExtendTransactions", "getTime", "getTrades", "getTransaction",
+                    "getTransactionBytes", "getUnconfirmedTransactionIds", "getUnconfirmedTransactions",
+                    "getVoterPhasedTransactions", "hash", "hexConvert", "issueAsset", "issueCurrency", "leaseBalance",
+                    "longConvert", "luceneReindex", "markHost", "parseTransaction", "placeAskOrder", "placeBidOrder",
+                    "popOff", "publishExchangeOffer", "readMessage", "rebroadcastUnconfirmedTransactions",
+                    "requeueUnconfirmedTransactions", "retrievePrunedData", "rsConvert", "scan", "searchAccounts",
+                    "searchAssets", "searchCurrencies", "searchDGSGoods", "searchPolls", "searchTaggedData", "sellAlias",
+                    "sendMessage", "sendMoney", "setAccountInfo", "setAlias", "setLogging", "shutdown",
+                    "signTransaction", "startForging", "stopForging", "transferAsset", "transferCurrency",
+                    "trimDerivedTables", "uploadTaggedData", "verifyPrunableMessage", "verifyTaggedData"
+                };
+
+                var requestTypes = _getConstantsReply.RequestTypes.ToList();
+
+                foreach (var requestType in requestTypes)
+                {
+                    if (expectedRequestTypes.All(expected => expected != requestType.Name))
+                    {
+                        Logger.Fail($"Missing request type: {requestType.Name}");
+                    }
+                }
+                foreach (var expectedRequestType in expectedRequestTypes)
+                {
+                    if (requestTypes.All(rt => rt.Name != expectedRequestType))
+                    {
+                        Logger.Fail($"Missing request type: {expectedRequestType}");
+                    }
+                }
             }
         }
 
