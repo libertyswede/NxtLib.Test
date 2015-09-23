@@ -204,7 +204,7 @@ namespace NxtLib.Test.ServerInfo
                     "getDGSGoodsPurchaseCount", "getDGSGoodsPurchases", "getDGSPendingPurchases", "getDGSPurchase",
                     "getDGSPurchaseCount", "getDGSPurchases", "getDGSTagCount", "getDGSTags", "getDGSTagsLike",
                     "getECBlock", "getExchanges", "getExchangesByExchangeRequest", "getExchangesByOffer",
-                    "getExpectedAskOrders-notexisting", "getExpectedAssetTransfers-notexisting", "getExpectedBidOrders-notexisting", "getExpectedBuyOffers-notexisting",
+                    "getExpectedAskOrders", "getExpectedAssetTransfers", "getExpectedBidOrders-notexisting", "getExpectedBuyOffers-notexisting",
                     "getExpectedCurrencyTransfers-notexisting", "getExpectedExchangeRequests-notexisting", "getExpectedOrderCancellations-notexisting",
                     "getExpectedSellOffers-notexisting", "getForging", "getGuaranteedBalance", "getInboundPeers", "getLastExchanges",
                     "getLastTrades-notexisting", "getLog", "getMintingTarget", "getMyInfo", "getOffer", "getOrderTrades-notexisting", "getPeer",
