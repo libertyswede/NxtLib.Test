@@ -2,6 +2,7 @@
 using NLog;
 using NxtLib.Test.ServerInfo;
 using NxtLib.Test.TaggedData;
+using NxtLib.Test.Tokens;
 using NxtLib.Test.VotingSystem;
 
 namespace NxtLib.Test
@@ -25,6 +26,8 @@ namespace NxtLib.Test
             votingSystemServiceTest.RunAllTests();
             var taggedDataServiceTest = new TaggedDataServiceTest();
             taggedDataServiceTest.RunAllTests();
+            var tokenServiceTest = new TokenServiceTest();
+            tokenServiceTest.RunAllTests();
 
             Logger.Info("Test run complete");
             Console.ReadLine();

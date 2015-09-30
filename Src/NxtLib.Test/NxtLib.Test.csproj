@@ -57,6 +57,7 @@
     <Compile Include="TestInitializer.cs" />
     <Compile Include="TestsessionLogger.cs" />
     <Compile Include="TestSettings.cs" />
+    <Compile Include="Tokens\TokenServiceTest.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="VotingSystem\CastVoteTest.cs" />
     <Compile Include="VotingSystem\CreatePollTest.cs" />
@@ -76,6 +77,11 @@
       <Project>{0af03b81-f676-41ce-b16d-dacab3d926d9}</Project>
       <Name>NxtLib</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Files\test.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
