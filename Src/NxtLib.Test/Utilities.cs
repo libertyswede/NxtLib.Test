@@ -3,7 +3,7 @@ using System.Text;
 
 namespace NxtLib.Test
 {
-    public static class Utils
+    public static class Utilities
     {
         public static  string GenerateRandomString(int length)
         {

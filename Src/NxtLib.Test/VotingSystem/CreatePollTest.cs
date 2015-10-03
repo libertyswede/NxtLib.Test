@@ -56,8 +56,8 @@ namespace NxtLib.Test.VotingSystem
 
         private void CreatePoll(VotingModel votingModel, MinBalanceModel balanceModel, ulong? holdingId)
         {
-            var name = Utils.GenerateRandomString(10);
-            var description = Utils.GenerateRandomString(30);
+            var name = Utilities.GenerateRandomString(10);
+            var description = Utilities.GenerateRandomString(30);
             var finishHeight = TestSettings.MaxHeight + 1000;
             const int minNumberOfOptions = 1;
             const int maxNumberOfOptions = 1;

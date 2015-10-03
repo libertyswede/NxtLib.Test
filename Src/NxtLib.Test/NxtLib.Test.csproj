@@ -58,7 +58,8 @@
     <Compile Include="TestsessionLogger.cs" />
     <Compile Include="TestSettings.cs" />
     <Compile Include="Tokens\TokenServiceTest.cs" />
-    <Compile Include="Utils.cs" />
+    <Compile Include="Utilities.cs" />
+    <Compile Include="Utils\UtilsServiceTest.cs" />
     <Compile Include="VotingSystem\CastVoteTest.cs" />
     <Compile Include="VotingSystem\CreatePollTest.cs" />
     <Compile Include="VotingSystem\GetPollResultTest.cs" />

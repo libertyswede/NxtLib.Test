@@ -3,6 +3,7 @@ using NLog;
 using NxtLib.Test.ServerInfo;
 using NxtLib.Test.TaggedData;
 using NxtLib.Test.Tokens;
+using NxtLib.Test.Utils;
 using NxtLib.Test.VotingSystem;
 
 namespace NxtLib.Test
@@ -20,6 +21,8 @@ namespace NxtLib.Test
             TestSettings.ServiceFactory = new ServiceFactory(TestSettings.NxtServerUrl);
             TestInitializer.InitializeTest();
 
+            var utilsServiceTest = new UtilsServiceTest();
+            utilsServiceTest.RunAllTests();
             var serverInfoServiceTest = new ServerInfoServiceTest();
             serverInfoServiceTest.RunAllTests();
             var votingSystemServiceTest = new VotingSystemServiceTest();
