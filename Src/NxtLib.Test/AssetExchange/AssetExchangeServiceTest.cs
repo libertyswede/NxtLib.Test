@@ -4,7 +4,7 @@ namespace NxtLib.Test.AssetExchange
 {
     class AssetExchangeServiceTest : TestBase
     {
-        private IAssetExchangeService _service;
+        private readonly IAssetExchangeService _service;
 
         internal AssetExchangeServiceTest()
         {
@@ -14,15 +14,23 @@ namespace NxtLib.Test.AssetExchange
         public void RunAllTests()
         {
             TestDeleteAssetShares();
+            TestGetExpectedOrderCancellations();
+        }
+
+        private void TestGetExpectedOrderCancellations()
+        {
+            using (Logger = new TestsessionLogger())
+            {
+                var result = _service.GetExpectedOrderCancellations().Result;
+            }
         }
 
         private void TestDeleteAssetShares()
         {
             using (Logger = new TestsessionLogger())
             {
-                var deleteAssetSharesReply = _service.DeleteAssetShares(6926770479287491943, 1,
-                    new CreateTransactionByPublicKey(1440, Amount.OneNxt,
-                        new BinaryHexString("4e919871578a02cb2afc600c5c03414aa026d93a338ad0d098513ea0fe1b3056"))).Result;
+                var deleteAssetSharesReply = _service.DeleteAssetShares(TestSettings.ExistingAssetId, 1, 
+                    CreateTransaction.CreateTransactionByPublicKey()).Result;
             }
         }
     }
