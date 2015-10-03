@@ -40,7 +40,7 @@ namespace NxtLib.Test.ServerInfo
         {
             using (Logger = new TestsessionLogger())
             {
-                _serverInfoService.EventWait(2).Wait();
+                //_serverInfoService.EventWait(2).Wait();
             }
         }
 

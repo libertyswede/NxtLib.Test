@@ -17,6 +17,25 @@ namespace NxtLib.Test.Utils
         {
             TestDecodeQrCode();
             TestEncodeQrCode();
+            TestFullHashToId();
+        }
+
+        private void TestFullHashToId()
+        {
+            using (Logger = new TestsessionLogger())
+            {
+                const ulong expected = 15471138873922485091;
+                const long expectedLong = unchecked ((long) expected);
+                var fullHashToIdResult = _service.FullHashToId("63fbe212d686b4d6fb2cb316058fd983e577d3ad3ffeaa5b904afe5ff2ff9f66").Result;
+                if (fullHashToIdResult.Id != expected)
+                {
+                    Logger.Fail($"Expected: {expected}, but got: {fullHashToIdResult.Id}");
+                }
+                if (fullHashToIdResult.LongId != expectedLong)
+                {
+                    Logger.Fail($"Expected: {expectedLong}, but got: {fullHashToIdResult.LongId}");
+                }
+            }
         }
 
         private void TestEncodeQrCode()
