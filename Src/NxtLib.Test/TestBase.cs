@@ -11,7 +11,7 @@ namespace NxtLib.Test
         {
             if (!string.Equals(expected, actual))
             {
-                Logger.Fail(string.Format("Unexpected {0}, expected: {1}, actual: {2}", propertyName, expected, actual));
+                Logger.Fail($"Unexpected {propertyName}, expected: {expected}, actual: {actual}");
             }
         }
 
@@ -19,7 +19,7 @@ namespace NxtLib.Test
         {
             if (expected != actual)
             {
-                Logger.Fail(string.Format("Unexpected {0}, expected: {1}, actual: {2}", propertyName, expected, actual));
+                Logger.Fail($"Unexpected {propertyName}, expected: {expected}, actual: {actual}");
             }
         }
 
@@ -27,7 +27,7 @@ namespace NxtLib.Test
         {
             if (expected != actual)
             {
-                Logger.Fail(string.Format("Unexpected {0}, expected: {1}, actual: {2}", propertyName, expected, actual));
+                Logger.Fail($"Unexpected {propertyName}, expected: {expected}, actual: {actual}");
             }
         }
 
@@ -35,7 +35,7 @@ namespace NxtLib.Test
         {
             if (!expected.Equals(actual))
             {
-                Logger.Fail(string.Format("Unexpected {0}, expected: {1}, actual: {2}", propertyName, expected, actual));
+                Logger.Fail($"Unexpected {propertyName}, expected: {expected}, actual: {actual}");
             }
         }
 
@@ -43,7 +43,7 @@ namespace NxtLib.Test
         {
             if (!expected.Equals(actual))
             {
-                Logger.Fail(string.Format("Unexpected {0}, expected: {1}, actual: {2}", propertyName, expected, actual));
+                Logger.Fail($"Unexpected {propertyName}, expected: {expected}, actual: {actual}");
             }
         }
 
@@ -51,7 +51,7 @@ namespace NxtLib.Test
         {
             if (actual != null)
             {
-                Logger.Fail(string.Format("Unexpected {0}, expected: null, actual: {1}", propertyName, actual));
+                Logger.Fail($"Unexpected {propertyName}, expected: null, actual: {actual}");
             }
         }
 
@@ -59,13 +59,14 @@ namespace NxtLib.Test
         {
             if (expected.Count != actual.Count)
             {
-                Logger.Fail(string.Format("Unexpected length of {0}, expected: {1}, actual: {2}", propertyName, expected.Count, actual.Count));
+                Logger.Fail($"Unexpected length of {propertyName}, expected: {expected.Count}, actual: {actual.Count}");
             }
             for (var i = 0; i < expected.Count; i++)
             {
                 if (!string.Equals(expected[i], actual[i]))
                 {
-                    Logger.Fail(string.Format("Unexpected string value of {0}, index {1}, expected: {2}, actual: {3}", propertyName, i, expected[i], actual[i]));
+                    Logger.Fail(
+                        $"Unexpected string value of {propertyName}, index {i}, expected: {expected[i]}, actual: {actual[i]}");
                 }
             }
         }
@@ -74,7 +75,7 @@ namespace NxtLib.Test
         {
             if (string.IsNullOrEmpty(value))
             {
-                Logger.Fail(string.Format("Unexpected {0}, expected: Something, actual: {1}", propertyName, value));
+                Logger.Fail($"Unexpected {propertyName}, expected: Something, actual: {value}");
             }
         }
 
@@ -82,11 +83,11 @@ namespace NxtLib.Test
         {
             if (!value.HasValue)
             {
-                Logger.Fail(string.Format("Unexpected {0}, expected: > 0, actual: null", propertyName));
+                Logger.Fail($"Unexpected {propertyName}, expected: > 0, actual: null");
             }
             else if (value == 0)
             {
-                Logger.Fail(string.Format("Unexpected {0}, expected: > 0, actual: {1}", propertyName, value));
+                Logger.Fail($"Unexpected {propertyName}, expected: > 0, actual: {value}");
             }
         }
 
@@ -94,7 +95,7 @@ namespace NxtLib.Test
         {
             if (value == 0)
             {
-                Logger.Fail(string.Format("Unexpected {0}, expected: > 0, actual: {1}", propertyName, value));
+                Logger.Fail($"Unexpected {propertyName}, expected: > 0, actual: {value}");
             }
         }
 
@@ -102,7 +103,7 @@ namespace NxtLib.Test
         {
             if (value <= 0)
             {
-                Logger.Fail(string.Format("Unexpected {0}, expected: > 0, actual: {1}", propertyName, value));
+                Logger.Fail($"Unexpected {propertyName}, expected: > 0, actual: {value}");
             }
         }
 
@@ -110,7 +111,7 @@ namespace NxtLib.Test
         {
             if (value)
             {
-                Logger.Fail(string.Format("Unexpected {0}, expected: false, actual: true", propertyName));
+                Logger.Fail($"Unexpected {propertyName}, expected: false, actual: true");
             }
         }
 
@@ -118,7 +119,7 @@ namespace NxtLib.Test
         {
             if (!value)
             {
-                Logger.Fail(string.Format("Unexpected {0}, expected: true, actual: false", propertyName));
+                Logger.Fail($"Unexpected {propertyName}, expected: true, actual: false");
             }
         }
 
@@ -126,7 +127,7 @@ namespace NxtLib.Test
         {
             if (!values.Any())
             {
-                Logger.Fail(string.Format("Unexpected number of values in list {0}, expected: Any(), actual: 0", propertyName));
+                Logger.Fail($"Unexpected number of values in list {propertyName}, expected: Any(), actual: 0");
             }
         }
 
@@ -134,8 +135,8 @@ namespace NxtLib.Test
         {
             if (largerValue < smallerValue)
             {
-                Logger.Fail(string.Format("Unexpected relative values {0} and {1}. Expected: {2} >= {3}", 
-                    largerPropertyName, smallerPropertyName, largerValue, smallerValue));
+                Logger.Fail(
+                    $"Unexpected relative values {largerPropertyName} and {smallerPropertyName}. Expected: {largerValue} >= {smallerValue}");
             }
         }
     }

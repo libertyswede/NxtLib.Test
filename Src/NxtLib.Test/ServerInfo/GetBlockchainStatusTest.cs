@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Text.RegularExpressions;
-using NLog;
 using NxtLib.ServerInfo;
 
 namespace NxtLib.Test.ServerInfo
@@ -45,8 +44,7 @@ namespace NxtLib.Test.ServerInfo
         {
             if (!Regex.Match(blockchainStatus.Version, "([0-9]+)\\.([0-9]+)\\.([0-9]+)(\\.([0-9]+))?(e?)").Success)
             {
-                Logger.Fail(string.Format("Unexpected version format, expected: x.x.x(.x)(e), actual: {0}",
-                    blockchainStatus.Version));
+                Logger.Fail($"Unexpected version format, expected: x.x.x(.x)(e), actual: {blockchainStatus.Version}");
             }
         }
 
@@ -54,8 +52,7 @@ namespace NxtLib.Test.ServerInfo
         {
             if (Math.Abs(blockchainStatus.Time.Subtract(DateTime.UtcNow).TotalSeconds) > 10)
             {
-                Logger.Fail(string.Format("Unexpected Time, expected to be within 10 seconds ({0}), actual: {1}",
-                    DateTime.UtcNow.ToLongTimeString(), blockchainStatus.Time.ToLongTimeString()));
+                Logger.Fail($"Unexpected Time, expected to be within 10 seconds ({DateTime.UtcNow.ToLongTimeString()}), actual: {blockchainStatus.Time.ToLongTimeString()}");
             }
         }
     }

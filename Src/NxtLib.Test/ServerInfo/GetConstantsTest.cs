@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using NxtLib.Accounts;
-using NxtLib.Aliases;
-using NxtLib.AssetExchange;
 using NxtLib.Networking;
 using NxtLib.ServerInfo;
 using NxtLib.VotingSystem;
@@ -269,12 +266,12 @@ namespace NxtLib.Test.ServerInfo
 
             if (actual == null)
             {
-                Logger.Fail(string.Format("Did not find expected transaction type {0}", expectedName));
+                Logger.Fail($"Did not find expected transaction type {expectedName}");
                 return;
             }
             if (!actual.Name.Equals(expectedName))
             {
-                Logger.Fail(string.Format("Transaction type name mismatch, expected: {0}, actual: {1}", expectedName, actual.Name));
+                Logger.Fail($"Transaction type name mismatch, expected: {expectedName}, actual: {actual.Name}");
             }
             else
             {
@@ -289,7 +286,7 @@ namespace NxtLib.Test.ServerInfo
         {
             if (expected != actual)
             {
-                Logger.Fail(string.Format("Incorrect number of {0}, expected: {1}, actual: {2}", typeName, expected, actual));
+                Logger.Fail($"Incorrect number of {typeName}, expected: {expected}, actual: {actual}");
             }
         }
 
@@ -302,12 +299,11 @@ namespace NxtLib.Test.ServerInfo
 
             if (!actuals.TryGetValue(enumName, out value))
             {
-                Logger.Fail(string.Format("Could not find expected currency type {0}", enumName));
+                Logger.Fail($"Could not find expected currency type {enumName}");
             }
             else if (expectedValue != value)
             {
-                Logger.Fail(string.Format("Currency type {0} was found but with wrong value. Expected {1}, but actual was {2}",
-                    enumName, expectedValue, value));
+                Logger.Fail($"Currency type {enumName} was found but with wrong value. Expected {expectedValue}, but actual was {value}");
             }
         }
 

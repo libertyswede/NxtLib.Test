@@ -61,11 +61,11 @@ namespace NxtLib.Test.ServerInfo
             var getPluginsReply = _serverInfoService.GetPlugins().Result;
             if (getPluginsReply.Plugins.Count != 1)
             {
-                Logger.Fail(string.Format("Unexpected number of plugins, expected: 1, actual: {0}", getPluginsReply.Plugins.Count));
+                Logger.Fail($"Unexpected number of plugins, expected: 1, actual: {getPluginsReply.Plugins.Count}");
             }
             if (!getPluginsReply.Plugins.Single().Equals("hello_world"))
             {
-                Logger.Fail(string.Format("Unexpected name of plugin, expected: hello_world, actual: {0}", getPluginsReply.Plugins.Single()));
+                Logger.Fail($"Unexpected name of plugin, expected: hello_world, actual: {getPluginsReply.Plugins.Single()}");
             }
         }
 
@@ -80,8 +80,7 @@ namespace NxtLib.Test.ServerInfo
             var getTimeReply = _serverInfoService.GetTime().Result;
             if (Math.Abs(getTimeReply.Time.Subtract(DateTime.UtcNow).TotalSeconds) > 10)
             {
-                Logger.Fail(string.Format("Unexpected Time, expected to be within 10 seconds ({0}), actual: {1}",
-                    DateTime.UtcNow.ToLongTimeString(), getTimeReply.Time.ToLongTimeString()));
+                Logger.Fail($"Unexpected Time, expected to be within 10 seconds ({DateTime.UtcNow.ToLongTimeString()}), actual: {getTimeReply.Time.ToLongTimeString()}");
             }
         }
     }
