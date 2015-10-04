@@ -6,6 +6,7 @@ using NxtLib.Test.Debug;
 using NxtLib.Test.ServerInfo;
 using NxtLib.Test.TaggedData;
 using NxtLib.Test.Tokens;
+using NxtLib.Test.Transactions;
 using NxtLib.Test.Utils;
 using NxtLib.Test.VotingSystem;
 
@@ -24,6 +25,8 @@ namespace NxtLib.Test
             TestSettings.ServiceFactory = new ServiceFactory(TestSettings.NxtServerUrl);
             TestInitializer.InitializeTest();
 
+            var transactionServiceTest = new TransactionServiceTest();
+            transactionServiceTest.RunAllTests();
             var serverInfoServiceTest = new ServerInfoServiceTest();
             serverInfoServiceTest.RunAllTests();
             var debugService = new DebugServiceTest();
