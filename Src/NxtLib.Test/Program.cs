@@ -1,6 +1,8 @@
 ﻿using System;
 using NLog;
+using NxtLib.Test.Accounts;
 using NxtLib.Test.AssetExchange;
+using NxtLib.Test.Debug;
 using NxtLib.Test.ServerInfo;
 using NxtLib.Test.TaggedData;
 using NxtLib.Test.Tokens;
@@ -22,12 +24,16 @@ namespace NxtLib.Test
             TestSettings.ServiceFactory = new ServiceFactory(TestSettings.NxtServerUrl);
             TestInitializer.InitializeTest();
 
-            var assetExchangeServiceTest = new AssetExchangeServiceTest();
-            assetExchangeServiceTest.RunAllTests();
-            var utilsServiceTest = new UtilsServiceTest();
-            utilsServiceTest.RunAllTests();
             var serverInfoServiceTest = new ServerInfoServiceTest();
             serverInfoServiceTest.RunAllTests();
+            var debugService = new DebugServiceTest();
+            debugService.RunAllTests();
+            var utilsServiceTest = new UtilsServiceTest();
+            utilsServiceTest.RunAllTests();
+            var accountServiceTest = new AccountServiceTest();
+            accountServiceTest.RunAllTests();
+            var assetExchangeServiceTest = new AssetExchangeServiceTest();
+            assetExchangeServiceTest.RunAllTests();
             var votingSystemServiceTest = new VotingSystemServiceTest();
             votingSystemServiceTest.RunAllTests();
             var taggedDataServiceTest = new TaggedDataServiceTest();

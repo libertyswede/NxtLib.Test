@@ -15,6 +15,15 @@ namespace NxtLib.Test.AssetExchange
         {
             TestDeleteAssetShares();
             TestGetExpectedOrderCancellations();
+            TestGetOrderTrades();
+        }
+
+        private void TestGetOrderTrades()
+        {
+            using (Logger = new TestsessionLogger())
+            {
+                var result = _service.GetOrderTrades(OrderIdLocator.ByAskOrderId(3388049137599128377), includeAssetInfo:true).Result;
+            }
         }
 
         private void TestGetExpectedOrderCancellations()

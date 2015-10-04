@@ -18,6 +18,20 @@ namespace NxtLib.Test.Utils
             TestDecodeQrCode();
             TestEncodeQrCode();
             TestFullHashToId();
+            TestHash();
+        }
+
+        private void TestHash()
+        {
+            using (Logger = new TestsessionLogger())
+            {
+                const string expected = "6ca13d52ca70c883e0f0bb101e425a89e8624de51db2d2392593af6a84118090";
+                var result = _service.Hash(HashAlgorithm.Sha256, new BinaryHexString("abc123"), true).Result;
+                if (!result.Hash.ToString().Equals(expected))
+                {
+                    Logger.Fail($"Expected: {expected}, but got: {result.Hash}");
+                }
+            }
         }
 
         private void TestFullHashToId()
