@@ -2,7 +2,6 @@
 using NLog;
 using NxtLib.Test.Accounts;
 using NxtLib.Test.AssetExchange;
-using NxtLib.Test.Debug;
 using NxtLib.Test.ServerInfo;
 using NxtLib.Test.TaggedData;
 using NxtLib.Test.Tokens;
@@ -29,8 +28,8 @@ namespace NxtLib.Test
             transactionServiceTest.RunAllTests();
             var serverInfoServiceTest = new ServerInfoServiceTest();
             serverInfoServiceTest.RunAllTests();
-            var debugService = new DebugServiceTest();
-            debugService.RunAllTests();
+            //var debugService = new DebugServiceTest();
+            //debugService.RunAllTests();
             var utilsServiceTest = new UtilsServiceTest();
             utilsServiceTest.RunAllTests();
             var accountServiceTest = new AccountServiceTest();
