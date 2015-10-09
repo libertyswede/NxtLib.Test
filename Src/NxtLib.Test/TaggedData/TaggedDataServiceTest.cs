@@ -21,18 +21,29 @@ namespace NxtLib.Test.TaggedData
 
         internal void RunAllTests()
         {
-            ExtendTaggedData();
-            UploadTaggedData();
-            VerifyTaggedData();
+            TestGetTaggedDataExtendTransactions();
+            TestExtendTaggedData();
+            TestUploadTaggedData();
+            TestVerifyTaggedData();
+        }
+        
+        private void TestGetTaggedDataExtendTransactions()
+        {
+            using (Logger = new TestsessionLogger())
+            {
+                var result = _taggedDataService.GetTaggedDataExtendTransactions(8870885735414850668).Result;
+                // Verify result
+            }
         }
 
-        private void ExtendTaggedData()
+        private void TestExtendTaggedData()
+
         {
             using (Logger = new TestsessionLogger())
             {
                 var parameters = CreateTransaction.CreateTransactionByPublicKey();
 
-                var transaction = _taggedDataService.ExtendTaggedData(TestSettings.TaggedDataTransactionId, parameters, Name, Data,
+                var transaction = _taggedDataService.ExtendTaggedData(TestSettings.TaggedDataTransactionId, parameters, Name, Data, null,
                         Description, Tags, Channel, Type, IsText, Filename).Result.Transaction;
                 var attachment = (TaggedDataExtendAttachment)transaction.Attachment;
 
@@ -41,13 +52,13 @@ namespace NxtLib.Test.TaggedData
             }
         }
 
-        internal void UploadTaggedData()
+        internal void TestUploadTaggedData()
         {
             using (Logger = new TestsessionLogger())
             {
                 var parameters = CreateTransaction.CreateTransactionByPublicKey();
 
-                var transaction = _taggedDataService.UploadTaggedData(Name, Data, parameters, Description, Tags, Channel, Type, IsText,
+                var transaction = _taggedDataService.UploadTaggedData(Name, Data, parameters, null, Description, Tags, Channel, Type, IsText,
                         Filename).Result.Transaction;
                 var attachment = (TaggedDataUploadAttachment)transaction.Attachment;
 
@@ -55,11 +66,11 @@ namespace NxtLib.Test.TaggedData
             }
         }
 
-        internal void VerifyTaggedData()
+        internal void TestVerifyTaggedData()
         {
             using (Logger = new TestsessionLogger())
             {
-                var verifyTaggedDataReply = _taggedDataService.VerifyTaggedData(TestSettings.TaggedDataTransactionId, Name, Data,
+                var verifyTaggedDataReply = _taggedDataService.VerifyTaggedData(TestSettings.TaggedDataTransactionId, Name, Data, null,
                         Description, Tags, Channel, Type, IsText, Filename).Result;
 
                 VerifyMembers(verifyTaggedDataReply);
