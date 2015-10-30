@@ -1,14 +1,21 @@
-﻿using NxtLib.AssetExchange;
+﻿using Microsoft.Framework.Logging;
+using NxtLib.AssetExchange;
 
 namespace NxtLib.Test.AssetExchange
 {
-    class AssetExchangeServiceTest : TestBase
+    public interface IAssetExchangeServiceTest : ITest
+    {
+    }
+
+    public class AssetExchangeServiceTest : TestBase, IAssetExchangeServiceTest
     {
         private readonly IAssetExchangeService _service;
+        private readonly ILogger _logger;
 
-        internal AssetExchangeServiceTest()
+        public AssetExchangeServiceTest(IAssetExchangeService service, ILogger logger)
         {
-            _service = TestSettings.ServiceFactory.CreateAssetExchangeService();
+            _service = service;
+            _logger = logger;
         }
 
         public void RunAllTests()
@@ -20,7 +27,7 @@ namespace NxtLib.Test.AssetExchange
 
         private void TestGetOrderTrades()
         {
-            using (Logger = new TestsessionLogger())
+            using (Logger = new TestsessionLogger(_logger))
             {
                 var result = _service.GetOrderTrades(OrderIdLocator.ByAskOrderId(3388049137599128377), includeAssetInfo:true).Result;
             }
@@ -28,7 +35,7 @@ namespace NxtLib.Test.AssetExchange
 
         private void TestGetExpectedOrderCancellations()
         {
-            using (Logger = new TestsessionLogger())
+            using (Logger = new TestsessionLogger(_logger))
             {
                 var result = _service.GetExpectedOrderCancellations().Result;
             }
@@ -36,7 +43,7 @@ namespace NxtLib.Test.AssetExchange
 
         private void TestDeleteAssetShares()
         {
-            using (Logger = new TestsessionLogger())
+            using (Logger = new TestsessionLogger(_logger))
             {
                 var deleteAssetSharesReply = _service.DeleteAssetShares(TestSettings.ExistingAssetId, 1, 
                     CreateTransaction.CreateTransactionByPublicKey()).Result;

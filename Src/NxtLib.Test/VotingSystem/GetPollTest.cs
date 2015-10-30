@@ -1,21 +1,29 @@
-﻿using NxtLib.VotingSystem;
+﻿using Microsoft.Framework.Logging;
+using NxtLib.VotingSystem;
 
 namespace NxtLib.Test.VotingSystem
 {
-    internal class GetPollTest : TestBase
+    public interface IGetPollTest
+    {
+        void Test();
+    }
+
+    public class GetPollTest : TestBase, IGetPollTest
     {
         private readonly IVotingSystemService _votingSystemService;
+        private readonly ILogger _logger;
         private readonly GetPollsReply _getPollsReply;
 
-        internal GetPollTest()
+        public GetPollTest(IVotingSystemService votingSystemService, ILogger logger)
         {
-            _votingSystemService = TestSettings.ServiceFactory.CreateVotingSystemService();
+            _votingSystemService = votingSystemService;
+            _logger = logger;
             _getPollsReply = _votingSystemService.GetPolls(includeFinished: true).Result;
         }
 
         public void Test()
         {
-            using (Logger = new TestsessionLogger())
+            using (Logger = new TestsessionLogger(_logger))
             {
                 foreach (var expected in _getPollsReply.Polls)
                 {

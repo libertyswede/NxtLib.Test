@@ -1,30 +1,42 @@
 ﻿using System.Collections.Generic;
-using NLog;
+using Microsoft.Framework.Logging;
 using NxtLib.Accounts;
 using NxtLib.VotingSystem;
 
 namespace NxtLib.Test
 {
-    public static class TestInitializer
+    public interface ITestInitializer
     {
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        void InitializeTest();
+    }
 
-        public static void InitializeTest()
+    public class TestInitializer : ITestInitializer
+    {
+        private readonly ILogger _logger;
+        private readonly IServiceFactory _serviceFactory;
+
+        public TestInitializer(IServiceFactory serviceFactory, ILogger logger)
         {
-            Logger.Info("Fetching number of blocks");
+            _logger = logger;
+            _serviceFactory = serviceFactory;
+        }
+
+        public void InitializeTest()
+        {
+            _logger.LogInformation("Fetching number of blocks");
             TestSettings.MaxHeight = GetCurrentHeight();
-            Logger.Info("Setting account properties");
+            _logger.LogInformation("Setting account properties");
             GetAccountProperties();
             if (TestSettings.RunCostlyTests)
             {
-                Logger.Info("Creating poll");
+                _logger.LogInformation("Creating poll");
                 CreatePoll();
             }
         }
 
-        private static void CreatePoll()
+        private void CreatePoll()
         {
-            var votingSystemServicer = TestSettings.ServiceFactory.CreateVotingSystemService();
+            var votingSystemServicer = _serviceFactory.CreateVotingSystemService();
             var createPollParameter = new CreatePollParameters("testpoll", "test poll", TestSettings.MaxHeight + 500,
                 VotingModel.Asset, 1, 1, 0, 1, new List<string> {"how are you doing?"})
             {
@@ -38,19 +50,19 @@ namespace NxtLib.Test
                 TestSettings.PollId = createPoll.TransactionId.Value;
         }
 
-        private static void GetAccountProperties()
+        private void GetAccountProperties()
         {
             var accountIdLocator = AccountIdLocator.BySecretPhrase(TestSettings.SecretPhrase);
-            var accountService = TestSettings.ServiceFactory.CreateAccountService();
+            var accountService = _serviceFactory.CreateAccountService();
             var accountIdReply = accountService.GetAccountId(accountIdLocator).Result;
             TestSettings.AccountId = accountIdReply.AccountId;
             TestSettings.AccountRs = accountIdReply.AccountRs;
             TestSettings.PublicKey = accountIdReply.PublicKey;
         }
 
-        private static int GetCurrentHeight()
+        private int GetCurrentHeight()
         {
-            var serverInfoService = TestSettings.ServiceFactory.CreateServerInfoService();
+            var serverInfoService = _serviceFactory.CreateServerInfoService();
             var blockchainStatus = serverInfoService.GetBlockchainStatus().Result;
             return blockchainStatus.NumberOfBlocks;
         }

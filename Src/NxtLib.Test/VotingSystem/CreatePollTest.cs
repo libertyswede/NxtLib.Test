@@ -1,15 +1,23 @@
 ﻿using System.Collections.Generic;
+using Microsoft.Framework.Logging;
 using NxtLib.VotingSystem;
 
 namespace NxtLib.Test.VotingSystem
 {
-    internal class CreatePollTest : TestBase
+    public interface ICreatePollTest
+    {
+        void Test();
+    }
+
+    public class CreatePollTest : TestBase, ICreatePollTest
     {
         private readonly IVotingSystemService _votingSystemService;
+        private readonly ILogger _logger;
 
-        public CreatePollTest()
+        public CreatePollTest(IVotingSystemService votingSystemService, ILogger logger)
         {
-            _votingSystemService = TestSettings.ServiceFactory.CreateVotingSystemService();
+            _votingSystemService = votingSystemService;
+            _logger = logger;
         }
 
         public void Test()
@@ -21,7 +29,7 @@ namespace NxtLib.Test.VotingSystem
 
         private void CreatePollByCurrency()
         {
-            using (Logger = new TestsessionLogger())
+            using (Logger = new TestsessionLogger(_logger))
             {
                 const VotingModel votingModel = VotingModel.Account;
                 const MinBalanceModel balanceModel = MinBalanceModel.Currency;
@@ -33,7 +41,7 @@ namespace NxtLib.Test.VotingSystem
 
         private void CreatePollByNqt()
         {
-            using (Logger = new TestsessionLogger())
+            using (Logger = new TestsessionLogger(_logger))
             {
                 const VotingModel votingModel = VotingModel.Nqt;
                 const MinBalanceModel balanceModel = MinBalanceModel.Nqt;
@@ -44,7 +52,7 @@ namespace NxtLib.Test.VotingSystem
 
         private void CreatePollByAsset()
         {
-            using (Logger = new TestsessionLogger())
+            using (Logger = new TestsessionLogger(_logger))
             {
                 const VotingModel votingModel = VotingModel.Asset;
                 const MinBalanceModel balanceModel = MinBalanceModel.Asset;

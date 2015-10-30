@@ -1,19 +1,34 @@
 ﻿using System;
 using System.Linq;
+using Microsoft.Framework.Logging;
 using NxtLib.ServerInfo;
 
 namespace NxtLib.Test.ServerInfo
 {
-    class ServerInfoServiceTest : TestBase
+    public interface IServerInfoServiceTest : ITest
+    {
+    }
+
+    class ServerInfoServiceTest : TestBase, IServerInfoServiceTest
     {
         private readonly IServerInfoService _serverInfoService;
+        private readonly ILogger _logger;
+        private readonly IGetBlockchainStatusTest _getBlockchainStatusTest;
+        private readonly IGetConstantsTest _getConstantsTest;
+        private readonly IGetStateTest _getStateTest;
 
-        internal ServerInfoServiceTest()
+        public ServerInfoServiceTest(IServerInfoService serverInfoService, ILogger logger,
+            IGetBlockchainStatusTest getBlockchainStatusTest, IGetConstantsTest getConstantsTest,
+            IGetStateTest getStateTest)
         {
-            _serverInfoService = TestSettings.ServiceFactory.CreateServerInfoService();
+            _serverInfoService = serverInfoService;
+            _logger = logger;
+            _getBlockchainStatusTest = getBlockchainStatusTest;
+            _getConstantsTest = getConstantsTest;
+            _getStateTest = getStateTest;
         }
 
-        internal void RunAllTests()
+        public void RunAllTests()
         {
             EventRegisterTest();
             EventWaitTest();
@@ -26,7 +41,7 @@ namespace NxtLib.Test.ServerInfo
 
         private void EventRegisterTest()
         {
-            using (Logger = new TestsessionLogger())
+            using (Logger = new TestsessionLogger(_logger))
             {
                 var eventRegisterResponse = _serverInfoService.EventRegister().Result;
                 if (!eventRegisterResponse.Registered)
@@ -38,7 +53,7 @@ namespace NxtLib.Test.ServerInfo
 
         private void EventWaitTest()
         {
-            using (Logger = new TestsessionLogger())
+            using (Logger = new TestsessionLogger(_logger))
             {
                 //_serverInfoService.EventWait(2).Wait();
             }
@@ -46,14 +61,12 @@ namespace NxtLib.Test.ServerInfo
 
         private void GetBlockchainStatusTest()
         {
-            var getBlockchainStatusTest = new GetBlockchainStatusTest(_serverInfoService);
-            getBlockchainStatusTest.Test();
+            _getBlockchainStatusTest.Test();
         }
 
         void GetConstantsTest()
         {
-            var getConstantsTest = new GetConstantsTest(_serverInfoService);
-            getConstantsTest.RunAllTests();
+            _getConstantsTest.RunAllTests();
         }
 
         private void GetPluginsTest()
@@ -71,8 +84,7 @@ namespace NxtLib.Test.ServerInfo
 
         private void GetStateTest()
         {
-            var getStateTest = new GetStateTest(_serverInfoService);
-            getStateTest.RunAllTests();
+            _getStateTest.RunAllTests();
         }
 
         private void GetTimeTest()
@@ -80,7 +92,7 @@ namespace NxtLib.Test.ServerInfo
             var getTimeReply = _serverInfoService.GetTime().Result;
             if (Math.Abs(getTimeReply.Time.Subtract(DateTime.UtcNow).TotalSeconds) > 10)
             {
-                Logger.Fail($"Unexpected Time, expected to be within 10 seconds ({DateTime.UtcNow.ToLongTimeString()}), actual: {getTimeReply.Time.ToLongTimeString()}");
+                Logger.Fail($"Unexpected Time, expected to be within 10 seconds ({DateTime.UtcNow.ToString("T")}), actual: {getTimeReply.Time.ToString("T")}");
             }
         }
     }

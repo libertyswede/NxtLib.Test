@@ -2,64 +2,69 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Microsoft.Framework.Logging;
 using NxtLib.Networking;
 using NxtLib.ServerInfo;
 using NxtLib.VotingSystem;
 
 namespace NxtLib.Test.ServerInfo
 {
-    internal class GetConstantsTest : TestBase
+    public interface IGetConstantsTest
+    {
+        void RunAllTests();
+    }
+
+    public class GetConstantsTest : TestBase, IGetConstantsTest
     {
         private readonly IServerInfoService _serverInfoService;
+        private readonly ILogger _logger;
         private GetConstantsReply _getConstantsReply;
-        private static readonly Dictionary<TransactionSubType, TransactionType> TransactionTypes = new Dictionary<TransactionSubType, TransactionType>();
+        private readonly Dictionary<TransactionSubType, TransactionType> _transactionTypes = new Dictionary<TransactionSubType, TransactionType>();
 
-        static GetConstantsTest()
-        {
-            TransactionTypes.Add(TransactionSubType.PaymentOrdinaryPayment, new TransactionType {CanHaveRecipient = true, IsPhasingSafe = true, MustHaveRecipient = true});
-            TransactionTypes.Add(TransactionSubType.MessagingArbitraryMessage, new TransactionType {CanHaveRecipient = true, IsPhasingSafe = false, MustHaveRecipient = false});
-            TransactionTypes.Add(TransactionSubType.MessagingAliasAssignment, new TransactionType {CanHaveRecipient = false, IsPhasingSafe = false, MustHaveRecipient = false});
-            TransactionTypes.Add(TransactionSubType.MessagingPollCreation, new TransactionType {CanHaveRecipient = false, IsPhasingSafe = false, MustHaveRecipient = false});
-            TransactionTypes.Add(TransactionSubType.MessagingVoteCasting, new TransactionType {CanHaveRecipient = false, IsPhasingSafe = false, MustHaveRecipient = false});
-            TransactionTypes.Add(TransactionSubType.MessagingHubTerminalAnnouncement, new TransactionType {CanHaveRecipient = false, IsPhasingSafe = true, MustHaveRecipient = false});
-            TransactionTypes.Add(TransactionSubType.MessagingAccountInfo, new TransactionType {CanHaveRecipient = false, IsPhasingSafe = true, MustHaveRecipient = false});
-            TransactionTypes.Add(TransactionSubType.MessagingAliasSell, new TransactionType {CanHaveRecipient = true, IsPhasingSafe = false, MustHaveRecipient = false});
-            TransactionTypes.Add(TransactionSubType.MessagingAliasBuy, new TransactionType {CanHaveRecipient = true, IsPhasingSafe = false, MustHaveRecipient = true});
-            TransactionTypes.Add(TransactionSubType.MessagingAliasDelete, new TransactionType {CanHaveRecipient = false, IsPhasingSafe = false, MustHaveRecipient = false});
-            TransactionTypes.Add(TransactionSubType.MessagingPhasingVoteCasting, new TransactionType {CanHaveRecipient = false, IsPhasingSafe = true, MustHaveRecipient = false});
-            TransactionTypes.Add(TransactionSubType.ColoredCoinsAssetIssuance, new TransactionType { CanHaveRecipient = false, IsPhasingSafe = true, MustHaveRecipient = false });
-            TransactionTypes.Add(TransactionSubType.ColoredCoinsAssetTransfer, new TransactionType { CanHaveRecipient = true, IsPhasingSafe = true, MustHaveRecipient = true });
-            TransactionTypes.Add(TransactionSubType.ColoredCoinsAskOrderPlacement, new TransactionType { CanHaveRecipient = false, IsPhasingSafe = true, MustHaveRecipient = false });
-            TransactionTypes.Add(TransactionSubType.ColoredCoinsBidOrderPlacement, new TransactionType { CanHaveRecipient = false, IsPhasingSafe = true, MustHaveRecipient = false });
-            TransactionTypes.Add(TransactionSubType.ColoredCoinsAskOrderCancellation, new TransactionType { CanHaveRecipient = false, IsPhasingSafe = true, MustHaveRecipient = false });
-            TransactionTypes.Add(TransactionSubType.ColoredCoinsBidOrderCancellation, new TransactionType { CanHaveRecipient = false, IsPhasingSafe = true, MustHaveRecipient = false });
-            TransactionTypes.Add(TransactionSubType.ColoredCoinsDividendPayment, new TransactionType { CanHaveRecipient = false, IsPhasingSafe = true, MustHaveRecipient = false });
-            TransactionTypes.Add(TransactionSubType.ColoredCoinsAssetDelete, new TransactionType { CanHaveRecipient = false, IsPhasingSafe = true, MustHaveRecipient = false });
-            TransactionTypes.Add(TransactionSubType.DigitalGoodsListing, new TransactionType { CanHaveRecipient = false, IsPhasingSafe = true, MustHaveRecipient = false });
-            TransactionTypes.Add(TransactionSubType.DigitalGoodsDelisting, new TransactionType { CanHaveRecipient = false, IsPhasingSafe = true, MustHaveRecipient = false });
-            TransactionTypes.Add(TransactionSubType.DigitalGoodsPriceChange, new TransactionType { CanHaveRecipient = false, IsPhasingSafe = false, MustHaveRecipient = false });
-            TransactionTypes.Add(TransactionSubType.DigitalGoodsQuantityChange, new TransactionType { CanHaveRecipient = false, IsPhasingSafe = false, MustHaveRecipient = false });
-            TransactionTypes.Add(TransactionSubType.DigitalGoodsPurchase, new TransactionType { CanHaveRecipient = true, IsPhasingSafe = false, MustHaveRecipient = true });
-            TransactionTypes.Add(TransactionSubType.DigitalGoodsDelivery, new TransactionType { CanHaveRecipient = true, IsPhasingSafe = false, MustHaveRecipient = true });
-            TransactionTypes.Add(TransactionSubType.DigitalGoodsFeedback, new TransactionType { CanHaveRecipient = true, IsPhasingSafe = false, MustHaveRecipient = true });
-            TransactionTypes.Add(TransactionSubType.DigitalGoodsRefund, new TransactionType { CanHaveRecipient = true, IsPhasingSafe = false, MustHaveRecipient = true });
-            TransactionTypes.Add(TransactionSubType.AccountControlEffectiveBalanceLeasing, new TransactionType { CanHaveRecipient = true, IsPhasingSafe = true, MustHaveRecipient = true });
-            TransactionTypes.Add(TransactionSubType.MonetarySystemCurrencyIssuance, new TransactionType {CanHaveRecipient = false, IsPhasingSafe = false, MustHaveRecipient = false});
-            TransactionTypes.Add(TransactionSubType.MonetarySystemReserveIncrease, new TransactionType {CanHaveRecipient = false, IsPhasingSafe = false, MustHaveRecipient = false});
-            TransactionTypes.Add(TransactionSubType.MonetarySystemReserveClaim, new TransactionType {CanHaveRecipient = false, IsPhasingSafe = false, MustHaveRecipient = false});
-            TransactionTypes.Add(TransactionSubType.MonetarySystemCurrencyTransfer, new TransactionType { CanHaveRecipient = true, IsPhasingSafe = false, MustHaveRecipient = true });
-            TransactionTypes.Add(TransactionSubType.MonetarySystemPublishExchangeOffer, new TransactionType {CanHaveRecipient = false, IsPhasingSafe = false, MustHaveRecipient = false});
-            TransactionTypes.Add(TransactionSubType.MonetarySystemExchangeBuy, new TransactionType {CanHaveRecipient = false, IsPhasingSafe = false, MustHaveRecipient = false});
-            TransactionTypes.Add(TransactionSubType.MonetarySystemExchangeSell, new TransactionType {CanHaveRecipient = false, IsPhasingSafe = false, MustHaveRecipient = false});
-            TransactionTypes.Add(TransactionSubType.MonetarySystemCurrencyMinting, new TransactionType {CanHaveRecipient = false, IsPhasingSafe = false, MustHaveRecipient = false});
-            TransactionTypes.Add(TransactionSubType.MonetarySystemCurrencyDeletion, new TransactionType {CanHaveRecipient = false, IsPhasingSafe = false, MustHaveRecipient = false});
-            TransactionTypes.Add(TransactionSubType.TaggedDataUpload, new TransactionType {CanHaveRecipient = false, IsPhasingSafe = false, MustHaveRecipient = false});
-            TransactionTypes.Add(TransactionSubType.TaggedDataExtend, new TransactionType {CanHaveRecipient = false, IsPhasingSafe = false, MustHaveRecipient = false});
-        }
-
-        public GetConstantsTest(IServerInfoService serverInfoService)
+        public GetConstantsTest(IServerInfoService serverInfoService, ILogger logger)
         {
             _serverInfoService = serverInfoService;
+            _logger = logger;
+
+            _transactionTypes.Add(TransactionSubType.PaymentOrdinaryPayment, new TransactionType {CanHaveRecipient = true, IsPhasingSafe = true, MustHaveRecipient = true});
+            _transactionTypes.Add(TransactionSubType.MessagingArbitraryMessage, new TransactionType {CanHaveRecipient = true, IsPhasingSafe = false, MustHaveRecipient = false});
+            _transactionTypes.Add(TransactionSubType.MessagingAliasAssignment, new TransactionType {CanHaveRecipient = false, IsPhasingSafe = false, MustHaveRecipient = false});
+            _transactionTypes.Add(TransactionSubType.MessagingPollCreation, new TransactionType {CanHaveRecipient = false, IsPhasingSafe = false, MustHaveRecipient = false});
+            _transactionTypes.Add(TransactionSubType.MessagingVoteCasting, new TransactionType {CanHaveRecipient = false, IsPhasingSafe = false, MustHaveRecipient = false});
+            _transactionTypes.Add(TransactionSubType.MessagingHubTerminalAnnouncement, new TransactionType {CanHaveRecipient = false, IsPhasingSafe = true, MustHaveRecipient = false});
+            _transactionTypes.Add(TransactionSubType.MessagingAccountInfo, new TransactionType {CanHaveRecipient = false, IsPhasingSafe = true, MustHaveRecipient = false});
+            _transactionTypes.Add(TransactionSubType.MessagingAliasSell, new TransactionType {CanHaveRecipient = true, IsPhasingSafe = false, MustHaveRecipient = false});
+            _transactionTypes.Add(TransactionSubType.MessagingAliasBuy, new TransactionType {CanHaveRecipient = true, IsPhasingSafe = false, MustHaveRecipient = true});
+            _transactionTypes.Add(TransactionSubType.MessagingAliasDelete, new TransactionType {CanHaveRecipient = false, IsPhasingSafe = false, MustHaveRecipient = false});
+            _transactionTypes.Add(TransactionSubType.MessagingPhasingVoteCasting, new TransactionType {CanHaveRecipient = false, IsPhasingSafe = true, MustHaveRecipient = false});
+            _transactionTypes.Add(TransactionSubType.ColoredCoinsAssetIssuance, new TransactionType { CanHaveRecipient = false, IsPhasingSafe = true, MustHaveRecipient = false });
+            _transactionTypes.Add(TransactionSubType.ColoredCoinsAssetTransfer, new TransactionType { CanHaveRecipient = true, IsPhasingSafe = true, MustHaveRecipient = true });
+            _transactionTypes.Add(TransactionSubType.ColoredCoinsAskOrderPlacement, new TransactionType { CanHaveRecipient = false, IsPhasingSafe = true, MustHaveRecipient = false });
+            _transactionTypes.Add(TransactionSubType.ColoredCoinsBidOrderPlacement, new TransactionType { CanHaveRecipient = false, IsPhasingSafe = true, MustHaveRecipient = false });
+            _transactionTypes.Add(TransactionSubType.ColoredCoinsAskOrderCancellation, new TransactionType { CanHaveRecipient = false, IsPhasingSafe = true, MustHaveRecipient = false });
+            _transactionTypes.Add(TransactionSubType.ColoredCoinsBidOrderCancellation, new TransactionType { CanHaveRecipient = false, IsPhasingSafe = true, MustHaveRecipient = false });
+            _transactionTypes.Add(TransactionSubType.ColoredCoinsDividendPayment, new TransactionType { CanHaveRecipient = false, IsPhasingSafe = true, MustHaveRecipient = false });
+            _transactionTypes.Add(TransactionSubType.ColoredCoinsAssetDelete, new TransactionType { CanHaveRecipient = false, IsPhasingSafe = true, MustHaveRecipient = false });
+            _transactionTypes.Add(TransactionSubType.DigitalGoodsListing, new TransactionType { CanHaveRecipient = false, IsPhasingSafe = true, MustHaveRecipient = false });
+            _transactionTypes.Add(TransactionSubType.DigitalGoodsDelisting, new TransactionType { CanHaveRecipient = false, IsPhasingSafe = true, MustHaveRecipient = false });
+            _transactionTypes.Add(TransactionSubType.DigitalGoodsPriceChange, new TransactionType { CanHaveRecipient = false, IsPhasingSafe = false, MustHaveRecipient = false });
+            _transactionTypes.Add(TransactionSubType.DigitalGoodsQuantityChange, new TransactionType { CanHaveRecipient = false, IsPhasingSafe = false, MustHaveRecipient = false });
+            _transactionTypes.Add(TransactionSubType.DigitalGoodsPurchase, new TransactionType { CanHaveRecipient = true, IsPhasingSafe = false, MustHaveRecipient = true });
+            _transactionTypes.Add(TransactionSubType.DigitalGoodsDelivery, new TransactionType { CanHaveRecipient = true, IsPhasingSafe = false, MustHaveRecipient = true });
+            _transactionTypes.Add(TransactionSubType.DigitalGoodsFeedback, new TransactionType { CanHaveRecipient = true, IsPhasingSafe = false, MustHaveRecipient = true });
+            _transactionTypes.Add(TransactionSubType.DigitalGoodsRefund, new TransactionType { CanHaveRecipient = true, IsPhasingSafe = false, MustHaveRecipient = true });
+            _transactionTypes.Add(TransactionSubType.AccountControlEffectiveBalanceLeasing, new TransactionType { CanHaveRecipient = true, IsPhasingSafe = true, MustHaveRecipient = true });
+            _transactionTypes.Add(TransactionSubType.MonetarySystemCurrencyIssuance, new TransactionType {CanHaveRecipient = false, IsPhasingSafe = false, MustHaveRecipient = false});
+            _transactionTypes.Add(TransactionSubType.MonetarySystemReserveIncrease, new TransactionType {CanHaveRecipient = false, IsPhasingSafe = false, MustHaveRecipient = false});
+            _transactionTypes.Add(TransactionSubType.MonetarySystemReserveClaim, new TransactionType {CanHaveRecipient = false, IsPhasingSafe = false, MustHaveRecipient = false});
+            _transactionTypes.Add(TransactionSubType.MonetarySystemCurrencyTransfer, new TransactionType { CanHaveRecipient = true, IsPhasingSafe = false, MustHaveRecipient = true });
+            _transactionTypes.Add(TransactionSubType.MonetarySystemPublishExchangeOffer, new TransactionType {CanHaveRecipient = false, IsPhasingSafe = false, MustHaveRecipient = false});
+            _transactionTypes.Add(TransactionSubType.MonetarySystemExchangeBuy, new TransactionType {CanHaveRecipient = false, IsPhasingSafe = false, MustHaveRecipient = false});
+            _transactionTypes.Add(TransactionSubType.MonetarySystemExchangeSell, new TransactionType {CanHaveRecipient = false, IsPhasingSafe = false, MustHaveRecipient = false});
+            _transactionTypes.Add(TransactionSubType.MonetarySystemCurrencyMinting, new TransactionType {CanHaveRecipient = false, IsPhasingSafe = false, MustHaveRecipient = false});
+            _transactionTypes.Add(TransactionSubType.MonetarySystemCurrencyDeletion, new TransactionType {CanHaveRecipient = false, IsPhasingSafe = false, MustHaveRecipient = false});
+            _transactionTypes.Add(TransactionSubType.TaggedDataUpload, new TransactionType {CanHaveRecipient = false, IsPhasingSafe = false, MustHaveRecipient = false});
+            _transactionTypes.Add(TransactionSubType.TaggedDataExtend, new TransactionType {CanHaveRecipient = false, IsPhasingSafe = false, MustHaveRecipient = false});
         }
 
         public void RunAllTests()
@@ -79,7 +84,7 @@ namespace NxtLib.Test.ServerInfo
 
         private void CheckConstants()
         {
-            using (Logger = new TestsessionLogger())
+            using (Logger = new TestsessionLogger(_logger))
             {
                 const ulong genesisAccountId = 1739068987193023818;
                 const ulong genesisBlockId = 2680262203532249785;
@@ -100,7 +105,7 @@ namespace NxtLib.Test.ServerInfo
 
         private void CheckCurrencyTypes()
         {
-            using (Logger = new TestsessionLogger())
+            using (Logger = new TestsessionLogger(_logger))
             {
                 var expected = Enum.GetValues(typeof (CurrencyType)).Cast<CurrencyType>().ToList();
                 CheckEnumCount(expected.Count, _getConstantsReply.CurrencyTypes.Count, "currency types");
@@ -110,37 +115,37 @@ namespace NxtLib.Test.ServerInfo
 
         private void CheckHashAlgorithms()
         {
-            using (Logger = new TestsessionLogger())
+            using (Logger = new TestsessionLogger(_logger))
             {
                 var expected = Enum.GetValues(typeof (HashAlgorithm)).Cast<HashAlgorithm>().ToList();
-                CheckEnumCount(expected.Count(), _getConstantsReply.HashAlgorithms.Count, "hash algorithms");
+                CheckEnumCount(expected.Count, _getConstantsReply.HashAlgorithms.Count, "hash algorithms");
                 expected.ForEach(e => CheckEnumValues(e, _getConstantsReply.HashAlgorithms));
             }
         }
 
         private void CheckMintingHashAlgorithms()
         {
-            using (Logger = new TestsessionLogger())
+            using (Logger = new TestsessionLogger(_logger))
             {
                 var expected = Enum.GetValues(typeof(MintingHashAlgorithm)).Cast<MintingHashAlgorithm>().ToList();
-                CheckEnumCount(expected.Count(), _getConstantsReply.MintingHashAlgorithms.Count, "minting hash algorithms");
+                CheckEnumCount(expected.Count, _getConstantsReply.MintingHashAlgorithms.Count, "minting hash algorithms");
                 expected.ForEach(e => CheckEnumValues(e, _getConstantsReply.MintingHashAlgorithms));
             }
         }
 
         private void CheckPhasingHashAlgorithms()
         {
-            using (Logger = new TestsessionLogger())
+            using (Logger = new TestsessionLogger(_logger))
             {
                 var expected = Enum.GetValues(typeof(PhasingHashAlgorithm)).Cast<PhasingHashAlgorithm>().ToList();
-                CheckEnumCount(expected.Count(), _getConstantsReply.PhasingHashAlgorithms.Count, "phasing hash algorithms");
+                CheckEnumCount(expected.Count, _getConstantsReply.PhasingHashAlgorithms.Count, "phasing hash algorithms");
                 expected.ForEach(e => CheckEnumValues(e, _getConstantsReply.PhasingHashAlgorithms));
             }
         }
 
         private void CheckMinBalanceModels()
         {
-            using (Logger = new TestsessionLogger())
+            using (Logger = new TestsessionLogger(_logger))
             {
                 var expected = Enum.GetValues(typeof (MinBalanceModel)).Cast<MinBalanceModel>().ToList();
                 CheckEnumCount(expected.Count, _getConstantsReply.MinBalanceModels.Count, "min balances");
@@ -150,7 +155,7 @@ namespace NxtLib.Test.ServerInfo
 
         private void CheckPeerStates()
         {
-            using (Logger = new TestsessionLogger())
+            using (Logger = new TestsessionLogger(_logger))
             {
                 var expected = Enum.GetValues(typeof (PeerInfo.PeerState)).Cast<PeerInfo.PeerState>().ToList();
                 CheckEnumCount(expected.Count, _getConstantsReply.PeerStates.Count, "peer states");
@@ -160,7 +165,7 @@ namespace NxtLib.Test.ServerInfo
 
         private void CheckVotingModels()
         {
-            using (Logger = new TestsessionLogger())
+            using (Logger = new TestsessionLogger(_logger))
             {
                 var expected = Enum.GetValues(typeof (VotingModel)).Cast<VotingModel>().ToList();
                 CheckEnumCount(expected.Count, _getConstantsReply.VotingModels.Count, "voting models");
@@ -170,7 +175,7 @@ namespace NxtLib.Test.ServerInfo
 
         private void CheckRequestTypes()
         {
-            using (Logger = new TestsessionLogger())
+            using (Logger = new TestsessionLogger(_logger))
             {
                 var expectedRequestTypes = new List<string>
                 {
@@ -415,7 +420,7 @@ namespace NxtLib.Test.ServerInfo
 
         private void CheckTransactionTypes()
         {
-            using (Logger = new TestsessionLogger())
+            using (Logger = new TestsessionLogger(_logger))
             {
                 var expectedMainTypes =
                     Enum.GetValues(typeof (TransactionMainType)).Cast<TransactionMainType>().ToList();
@@ -449,7 +454,7 @@ namespace NxtLib.Test.ServerInfo
             }
             else
             {
-                var expectedValues = TransactionTypes[expectedSubType];
+                var expectedValues = _transactionTypes[expectedSubType];
                 AssertEquals(expectedValues.CanHaveRecipient, actual.CanHaveRecipient, "CanHaveRecipient");
                 AssertEquals(expectedValues.IsPhasingSafe, actual.IsPhasingSafe, "IsPhasingSafe");
                 AssertEquals(expectedValues.MustHaveRecipient, actual.MustHaveRecipient, "MustHaveRecipient");

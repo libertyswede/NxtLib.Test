@@ -1,20 +1,34 @@
 ﻿using System.Linq;
+using Microsoft.Framework.Logging;
+using NxtLib.AssetExchange;
 using NxtLib.MonetarySystem;
 using NxtLib.Transactions;
 using NxtLib.VotingSystem;
 
 namespace NxtLib.Test.VotingSystem
 {
-    internal class GetPollResultTest : TestBase
+    public interface IGetPollResultTest
+    {
+        void Test();
+    }
+
+    public class GetPollResultTest : TestBase, IGetPollResultTest
     {
         private readonly IVotingSystemService _votingSystemService;
         private readonly GetPollsReply _getPolls;
         private readonly ITransactionService _transactionService;
+        private readonly IAssetExchangeService _assetExchangeService;
+        private readonly ILogger _logger;
+        private readonly IMonetarySystemService _monetarySystemService;
 
-        public GetPollResultTest()
+        public GetPollResultTest(IServiceFactory serviceFactory, ILogger logger)
         {
-            _votingSystemService = TestSettings.ServiceFactory.CreateVotingSystemService();
-            _transactionService = TestSettings.ServiceFactory.CreateTransactionService();
+            _votingSystemService = serviceFactory.CreateVotingSystemService();
+            _transactionService = serviceFactory.CreateTransactionService();
+            _assetExchangeService = serviceFactory.CreateAssetExchangeService();
+            _monetarySystemService = serviceFactory.CreateMonetarySystemService();
+
+            _logger = logger;
             _getPolls = _votingSystemService.GetPolls(includeFinished: true).Result;
         }
 
@@ -25,7 +39,7 @@ namespace NxtLib.Test.VotingSystem
 
         private void TestAllForExceptions()
         {
-            using (Logger = new TestsessionLogger())
+            using (Logger = new TestsessionLogger(_logger))
             {
                 foreach (var pollId in _getPolls.Polls.Where(p => p.PollId != 9315232938245213980).Select(p => p.PollId))
                 {
@@ -56,13 +70,12 @@ namespace NxtLib.Test.VotingSystem
         {
             if (attachment.MinBalanceModel == MinBalanceModel.Asset)
             {
-                var assetReply = TestSettings.ServiceFactory.CreateAssetExchangeService().GetAsset(attachment.HoldingId).Result;
+                var assetReply = _assetExchangeService.GetAsset(attachment.HoldingId).Result;
                 AssertEquals(assetReply.Decimals, getPollResult.Decimals, "Decimals");
             }
             else if (attachment.MinBalanceModel == MinBalanceModel.Currency)
             {
-                var currency = TestSettings.ServiceFactory.CreateMonetarySystemService()
-                    .GetCurrency(CurrencyLocator.ByCurrencyId(attachment.HoldingId)).Result;
+                var currency = _monetarySystemService.GetCurrency(CurrencyLocator.ByCurrencyId(attachment.HoldingId)).Result;
                 AssertEquals(currency.Decimals, getPollResult.Decimals, "Decimals");
             }
         }

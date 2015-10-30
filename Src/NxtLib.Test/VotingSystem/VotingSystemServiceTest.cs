@@ -1,7 +1,25 @@
 ﻿namespace NxtLib.Test.VotingSystem
 {
-    class VotingSystemServiceTest
+    public interface IVotingSystemServiceTest : ITest
     {
+    }
+
+    public class VotingSystemServiceTest : IVotingSystemServiceTest
+    {
+        private readonly IGetPollResultTest _getPollResultTest;
+        private readonly IGetPollTest _getPollTest;
+        private readonly ICastVoteTest _castVoteTest;
+        private readonly ICreatePollTest _createPollTest;
+
+        public VotingSystemServiceTest(IGetPollResultTest getPollResultTest, IGetPollTest getPollTest,
+            ICastVoteTest castVoteTest, ICreatePollTest createPollTest)
+        {
+            _getPollResultTest = getPollResultTest;
+            _getPollTest = getPollTest;
+            _castVoteTest = castVoteTest;
+            _createPollTest = createPollTest;
+        }
+
         public void RunAllTests()
         {
             TestCastVote();
@@ -12,26 +30,22 @@
 
         private void TestGetPollResult()
         {
-            var getPollResultTest = new GetPollResultTest();
-            getPollResultTest.Test();
+            _getPollResultTest.Test();
         }
 
         private void TestGetPoll()
         {
-            var getPollTest = new GetPollTest();
-            getPollTest.Test();
+            _getPollTest.Test();
         }
 
         private void TestCastVote()
         {
-            var castVoteTest = new CastVoteTest();
-            castVoteTest.Test();
+            _castVoteTest.Test();
         }
 
         private void TestCreatePoll()
         {
-            var createPollTest = new CreatePollTest();
-            createPollTest.Test();
+            _createPollTest.Test();
         }
     }
 }

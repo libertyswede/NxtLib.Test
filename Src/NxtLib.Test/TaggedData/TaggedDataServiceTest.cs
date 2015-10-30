@@ -1,10 +1,16 @@
-﻿using NxtLib.TaggedData;
+﻿using Microsoft.Framework.Logging;
+using NxtLib.TaggedData;
 
 namespace NxtLib.Test.TaggedData
 {
-    class TaggedDataServiceTest : TestBase
+    public interface ITaggedDataServiceTest : ITest
+    {
+    }
+
+    public class TaggedDataServiceTest : TestBase, ITaggedDataServiceTest
     {
         private readonly ITaggedDataService _taggedDataService;
+        private readonly ILogger _logger;
         const string Name = "testname";
         const string Data = "abc123";
         const string Description = "description";
@@ -14,12 +20,13 @@ namespace NxtLib.Test.TaggedData
         const string Filename = "test.txt";
         const bool IsText = true;
 
-        internal TaggedDataServiceTest()
+        public TaggedDataServiceTest(ITaggedDataService taggedDataService, ILogger logger)
         {
-            _taggedDataService = TestSettings.ServiceFactory.CreateTaggedDataService();
+            _taggedDataService = taggedDataService;
+            _logger = logger;
         }
 
-        internal void RunAllTests()
+        public void RunAllTests()
         {
             TestGetTaggedDataExtendTransactions();
             TestExtendTaggedData();
@@ -29,7 +36,7 @@ namespace NxtLib.Test.TaggedData
         
         private void TestGetTaggedDataExtendTransactions()
         {
-            using (Logger = new TestsessionLogger())
+            using (Logger = new TestsessionLogger(_logger))
             {
                 var result = _taggedDataService.GetTaggedDataExtendTransactions(8870885735414850668).Result;
                 // Verify result
@@ -39,7 +46,7 @@ namespace NxtLib.Test.TaggedData
         private void TestExtendTaggedData()
 
         {
-            using (Logger = new TestsessionLogger())
+            using (Logger = new TestsessionLogger(_logger))
             {
                 var parameters = CreateTransaction.CreateTransactionByPublicKey();
 
@@ -54,7 +61,7 @@ namespace NxtLib.Test.TaggedData
 
         internal void TestUploadTaggedData()
         {
-            using (Logger = new TestsessionLogger())
+            using (Logger = new TestsessionLogger(_logger))
             {
                 var parameters = CreateTransaction.CreateTransactionByPublicKey();
 
@@ -68,7 +75,7 @@ namespace NxtLib.Test.TaggedData
 
         internal void TestVerifyTaggedData()
         {
-            using (Logger = new TestsessionLogger())
+            using (Logger = new TestsessionLogger(_logger))
             {
                 var verifyTaggedDataReply = _taggedDataService.VerifyTaggedData(TestSettings.TaggedDataTransactionId, Name, Data, null,
                         Description, Tags, Channel, Type, IsText, Filename).Result;

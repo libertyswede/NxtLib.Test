@@ -1,16 +1,24 @@
-﻿using NxtLib.ServerInfo;
+﻿using Microsoft.Framework.Logging;
+using NxtLib.ServerInfo;
 
 namespace NxtLib.Test.ServerInfo
 {
-    internal class GetStateTest : TestBase
+    public interface IGetStateTest
+    {
+        void RunAllTests();
+    }
+
+    internal class GetStateTest : TestBase, IGetStateTest
     {
         private readonly IServerInfoService _serverInfoService;
-        private readonly GetBlockchainStatusTest _getBlockchainStatusTest;
+        private readonly ILogger _logger;
+        private readonly IGetBlockchainStatusTest _getBlockchainStatusTest;
 
-        public GetStateTest(IServerInfoService serverInfoService)
+        public GetStateTest(IServerInfoService serverInfoService, ILogger logger, IGetBlockchainStatusTest getBlockchainStatusTest)
         {
             _serverInfoService = serverInfoService;
-            _getBlockchainStatusTest = new GetBlockchainStatusTest(_serverInfoService);
+            _logger = logger;
+            _getBlockchainStatusTest = getBlockchainStatusTest;
         }
 
         public void RunAllTests()
@@ -22,7 +30,7 @@ namespace NxtLib.Test.ServerInfo
 
         private void GetStateWithCounts()
         {
-            using (Logger = new TestsessionLogger())
+            using (Logger = new TestsessionLogger(_logger))
             {
                 var getStateReplyWithExplicitCounts = _serverInfoService.GetState(true).Result;
                 _getBlockchainStatusTest.Test(getStateReplyWithExplicitCounts);
@@ -33,7 +41,7 @@ namespace NxtLib.Test.ServerInfo
 
         private void GetStateDefaultParameter()
         {
-            using (Logger = new TestsessionLogger())
+            using (Logger = new TestsessionLogger(_logger))
             {
                 var getStateReplyWithImplicitCounts = _serverInfoService.GetState().Result;
                 _getBlockchainStatusTest.Test(getStateReplyWithImplicitCounts);
@@ -44,7 +52,7 @@ namespace NxtLib.Test.ServerInfo
 
         private void GetStateNoCounts()
         {
-            using (Logger = new TestsessionLogger())
+            using (Logger = new TestsessionLogger(_logger))
             {
                 var getStateReplyNoCounts = _serverInfoService.GetState(false).Result;
                 _getBlockchainStatusTest.Test(getStateReplyNoCounts);

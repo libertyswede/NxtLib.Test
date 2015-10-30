@@ -1,5 +1,4 @@
-﻿using System.Configuration;
-using NxtLib.Local;
+﻿using NxtLib.Local;
 
 namespace NxtLib.Test
 {
@@ -12,7 +11,7 @@ namespace NxtLib.Test
         static CreateTransaction()
         {
             var localCrypto = new LocalCrypto();
-            SecretPhrase = ConfigurationManager.AppSettings["SecretPhrase"];
+            SecretPhrase = TestSettings.SecretPhrase;
             PublicKey = localCrypto.GetPublicKey(SecretPhrase);
             AccountId = localCrypto.GetAccountIdFromPublicKey(PublicKey);
         }

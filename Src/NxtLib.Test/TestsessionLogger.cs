@@ -1,7 +1,7 @@
-﻿using System;
+﻿using Microsoft.Framework.Logging;
+using System;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
-using NLog;
 
 namespace NxtLib.Test
 {
@@ -10,13 +10,14 @@ namespace NxtLib.Test
         private readonly string _function;
         private readonly string _class;
 
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        private readonly ILogger Logger;
         private int _failCount;
         private int _successCount;
         private string _errorMessage = string.Empty;
 
-        public TestsessionLogger([CallerMemberName] string function = "", [CallerFilePath] string callerFile = "")
+        public TestsessionLogger(ILogger logger, [CallerMemberName] string function = "", [CallerFilePath] string callerFile = "")
         {
+            Logger = logger;
             _function = function;
             _class = Regex.Match(callerFile, @".*\\([^\\]+)\.cs").Groups[1].Value;
             Log("Started");
@@ -41,8 +42,8 @@ namespace NxtLib.Test
             Log("Ended");
             if (_failCount > 0)
             {
-                Logger.Warn("{0} failed tests, {1} succeeded", _failCount, _successCount);
-                Logger.Error(_errorMessage);
+                Logger.LogWarning("{0} failed tests, {1} succeeded", _failCount, _successCount);
+                Logger.LogError(_errorMessage);
             }
             _failCount = 0;
             _successCount = 0;
@@ -50,7 +51,7 @@ namespace NxtLib.Test
 
         private void Log(string action)
         {
-            Logger.Info("{0} {1} {2}", action, _class, _function);
+            Logger.LogInformation("{0} {1} {2}", action, _class, _function);
         }
     }
 }

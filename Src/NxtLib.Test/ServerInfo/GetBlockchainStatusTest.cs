@@ -1,15 +1,24 @@
 ﻿using System;
 using System.Text.RegularExpressions;
+using Microsoft.Framework.Logging;
 using NxtLib.ServerInfo;
 
 namespace NxtLib.Test.ServerInfo
 {
-    internal class GetBlockchainStatusTest : TestBase
+    public interface IGetBlockchainStatusTest
     {
+        void Test();
+        void Test(BlockchainStatus blockchainStatus);
+    }
+
+    internal class GetBlockchainStatusTest : TestBase, IGetBlockchainStatusTest
+    {
+        private readonly ILogger _logger;
         private readonly GetBlockchainStatusReply _getBlockchainStatusReply;
 
-        public GetBlockchainStatusTest(IServerInfoService serverInfoService)
+        public GetBlockchainStatusTest(IServerInfoService serverInfoService, ILogger logger)
         {
+            _logger = logger;
             _getBlockchainStatusReply = serverInfoService.GetBlockchainStatus().Result;
         }
 
@@ -20,7 +29,7 @@ namespace NxtLib.Test.ServerInfo
 
         public void Test(BlockchainStatus blockchainStatus)
         {
-            using (Logger = new TestsessionLogger())
+            using (Logger = new TestsessionLogger(_logger))
             {
                 AssertEquals("NRS", blockchainStatus.Application, "Application");
                 AssertIsLargerThanZero(blockchainStatus.CumulativeDifficulty, "CumulativeDifficulty");
@@ -52,7 +61,7 @@ namespace NxtLib.Test.ServerInfo
         {
             if (Math.Abs(blockchainStatus.Time.Subtract(DateTime.UtcNow).TotalSeconds) > 10)
             {
-                Logger.Fail($"Unexpected Time, expected to be within 10 seconds ({DateTime.UtcNow.ToLongTimeString()}), actual: {blockchainStatus.Time.ToLongTimeString()}");
+                Logger.Fail($"Unexpected Time, expected to be within 10 seconds ({DateTime.UtcNow.ToString("T")}), actual: {blockchainStatus.Time.ToString("T")}");
             }
         }
     }

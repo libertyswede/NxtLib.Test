@@ -1,17 +1,27 @@
-﻿using NxtLib.Transactions;
+﻿using Microsoft.Framework.Logging;
+using NxtLib.Accounts;
+using NxtLib.Transactions;
 
 namespace NxtLib.Test.Transactions
 {
-    internal class TransactionServiceTest : TestBase
+    public interface ITransactionServiceTest : ITest
     {
-        private readonly ITransactionService _service;
+    }
 
-        internal TransactionServiceTest()
+    public class TransactionServiceTest : TestBase, ITransactionServiceTest
+    {
+        private readonly ITransactionService _transactionService;
+        private readonly IAccountService _accountService;
+        private readonly ILogger _logger;
+
+        public TransactionServiceTest(ITransactionService transactionService, IAccountService accountService, ILogger logger)
         {
-            _service = TestSettings.ServiceFactory.CreateTransactionService();
+            _transactionService = transactionService;
+            _accountService = accountService;
+            _logger = logger;
         }
 
-        internal void RunAllTests()
+        public void RunAllTests()
         {
             TestCalculateFullHash();
             TestGetExpectedTransactions();
@@ -20,28 +30,26 @@ namespace NxtLib.Test.Transactions
 
         private void TestCalculateFullHash()
         {
-            using (Logger = new TestsessionLogger())
+            using (Logger = new TestsessionLogger(_logger))
             {
-                var accountService = TestSettings.ServiceFactory.CreateAccountService();
-                var unsignedSendMoney = accountService.SendMoney(CreateTransaction.CreateTransactionByPublicKey(), TestSettings.Account2Rs, Amount.OneNqt).Result;
-                var signedTransaction = _service.SignTransaction(new TransactionParameter(unsignedSendMoney.UnsignedTransactionBytes), TestSettings.SecretPhrase).Result;
+                var unsignedSendMoney = _accountService.SendMoney(CreateTransaction.CreateTransactionByPublicKey(), TestSettings.Account2Rs, Amount.OneNqt).Result;
+                var signedTransaction = _transactionService.SignTransaction(new TransactionParameter(unsignedSendMoney.UnsignedTransactionBytes), TestSettings.SecretPhrase).Result;
                 var signatureHash = signedTransaction.Transaction.SignatureHash;
 
-                var calculateFullHash = _service.CalculateFullHash(new BinaryHexString(signatureHash), unsignedSendMoney.UnsignedTransactionBytes).Result;
+                var calculateFullHash = _transactionService.CalculateFullHash(new BinaryHexString(signatureHash), unsignedSendMoney.UnsignedTransactionBytes).Result;
                 AssertEquals(signedTransaction.FullHash.ToHexString(), calculateFullHash.FullHash.ToHexString(), "FullHash");
             }
         }
 
         private void TestSignTransaction()
         {
-            using (Logger = new TestsessionLogger())
+            using (Logger = new TestsessionLogger(_logger))
             {
                 var amount = Amount.OneNqt;
-                var accountService = TestSettings.ServiceFactory.CreateAccountService();
                 var recipient = TestSettings.Account2Rs;
-                var unsignedSendMoney = accountService.SendMoney(CreateTransaction.CreateTransactionByPublicKey(), recipient, amount).Result;
+                var unsignedSendMoney = _accountService.SendMoney(CreateTransaction.CreateTransactionByPublicKey(), recipient, amount).Result;
 
-                var signedTransaction = _service.SignTransaction(new TransactionParameter(unsignedSendMoney.UnsignedTransactionBytes), TestSettings.SecretPhrase).Result;
+                var signedTransaction = _transactionService.SignTransaction(new TransactionParameter(unsignedSendMoney.UnsignedTransactionBytes), TestSettings.SecretPhrase).Result;
 
                 var transaction = signedTransaction.Transaction;
                 AssertEquals(transaction.Amount.Nqt, Amount.OneNqt.Nqt, "Amount");
@@ -51,9 +59,9 @@ namespace NxtLib.Test.Transactions
 
         private void TestGetExpectedTransactions()
         {
-            using (Logger = new TestsessionLogger())
+            using (Logger = new TestsessionLogger(_logger))
             {
-                var result = _service.GetExpectedTransactions().Result;
+                var result = _transactionService.GetExpectedTransactions().Result;
             }
         }
     }

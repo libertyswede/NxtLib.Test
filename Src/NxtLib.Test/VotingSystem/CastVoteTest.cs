@@ -1,20 +1,28 @@
 ﻿using System.Collections.Generic;
+using Microsoft.Framework.Logging;
 using NxtLib.VotingSystem;
 
 namespace NxtLib.Test.VotingSystem
 {
-    public class CastVoteTest : TestBase
+    public interface ICastVoteTest
+    {
+        void Test();
+    }
+
+    public class CastVoteTest : TestBase, ICastVoteTest
     {
         private readonly IVotingSystemService _votingSystemService;
+        private readonly ILogger _logger;
 
-        public CastVoteTest()
+        public CastVoteTest(IVotingSystemService votingSystemService, ILogger logger)
         {
-            _votingSystemService = TestSettings.ServiceFactory.CreateVotingSystemService();
+            _votingSystemService = votingSystemService;
+            _logger = logger;
         }
 
         public void Test()
         {
-            using (Logger = new TestsessionLogger())
+            using (Logger = new TestsessionLogger(_logger))
             {
                 if (!TestSettings.RunCostlyTests)
                 {
