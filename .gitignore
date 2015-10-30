@@ -197,4 +197,5 @@ FakesAssemblies/
 
 # App.Debug.Config
 app.debug.config
-/Src/NxtLib.Test/project.lock.json
+project.lock.json
+config-Development.json
