@@ -13,6 +13,7 @@ using NxtLib.Test.Utils;
 using NxtLib.Test.VotingSystem;
 using Microsoft.Framework.Logging;
 using Microsoft.Framework.DependencyInjection;
+using NxtLib.Test.Messages;
 
 namespace NxtLib.Test
 {
@@ -72,6 +73,7 @@ namespace NxtLib.Test
             services.AddTransient<IGetPollTest, GetPollTest>();
             services.AddTransient<ICastVoteTest, CastVoteTest>();
             services.AddTransient<ICreatePollTest, CreatePollTest>();
+            services.AddTransient<IMessageServiceTest, MessageServiceTest>();
 
 
             services.AddSingleton<IServiceFactory>(provider => _serviceFactory);
@@ -104,6 +106,8 @@ namespace NxtLib.Test
             var testInitializer = _serviceProvider.GetService<ITestInitializer>();
             testInitializer.InitializeTest();
 
+            var messageServiceTest = _serviceProvider.GetService<IMessageServiceTest>();
+            messageServiceTest.RunAllTests();
             var transactionServiceTest = _serviceProvider.GetService<ITransactionServiceTest>();
             transactionServiceTest.RunAllTests();
             var serverInfoServiceTest = _serviceProvider.GetService<IServerInfoServiceTest>();
