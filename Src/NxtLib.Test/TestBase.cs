@@ -55,6 +55,24 @@ namespace NxtLib.Test
             }
         }
 
+        protected static void AssertEquals(byte[] expected, byte[] actual, string propertyName)
+        {
+            var expectedArray = expected.ToArray();
+            var actualArray = actual.ToArray();
+
+            if (expectedArray.Count() != actualArray.Count())
+            {
+                Logger.Fail($"Unexpected length of {propertyName}, expected: {expected.Count()}, actual: {actual.Count()}");
+            }
+            for (var i = 0; i < expectedArray.Count(); i++)
+            {
+                if (expectedArray[i] != actualArray[i])
+                {
+                    Logger.Fail($"Unexpected value of {propertyName}, index {i}, expected: {expectedArray[i]}, actual: {actualArray[i]}");
+                }
+            }
+        }
+
         protected static void AssertEquals(List<string> expected, List<string> actual, string propertyName)
         {
             if (expected.Count != actual.Count)

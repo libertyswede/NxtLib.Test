@@ -15,6 +15,9 @@ namespace NxtLib.Test
         public static string PublicKey { get; set; }
         public static bool RunCostlyTests => Convert.ToBoolean(Program.AppSettings["RunCostlyTests"]);
         public static string SecretPhrase => Program.AppSettings["SecretPhrase"];
+        public static string SecretPhrase2 => Program.AppSettings["SecretPhrase2"];
         public static ulong TaggedDataTransactionId => Convert.ToUInt64(Program.AppSettings["TaggedDataTransactionId"]);
+        public static ulong SentTextMessageTransactionId => Convert.ToUInt64(Program.AppSettings["SentTextMessageTransactionId"]);
+        public static ulong SentDataMessageTransactionId => Convert.ToUInt64(Program.AppSettings["SentDataMessageTransactionId"]);
     }
 }
