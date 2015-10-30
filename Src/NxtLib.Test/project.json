@@ -15,7 +15,7 @@
     "Microsoft.Framework.Logging": "1.0.0-beta8",
     "Microsoft.Framework.Logging.Console": "1.0.0-beta8",
     "Microsoft.Framework.Runtime.Abstractions": "1.0.0-beta6",
-    "NxtLib": "1.1.7"
+    "NxtLib": ""
   },
 
   "commands": {
