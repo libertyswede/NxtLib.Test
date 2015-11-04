@@ -33,7 +33,7 @@ namespace NxtLib.Test.Local
 
                 var compress = true;
 
-                var encrypted = localCrypto.EncryptTo(account.PublicKey, expected, nonce, compress, TestSettings.SecretPhrase2);
+                var encrypted = localCrypto.EncryptTextTo(account.PublicKey, expected, nonce, compress, TestSettings.SecretPhrase2);
 
                 var decrypted = _messageService.DecryptTextFrom(TestSettings.Account2Rs, encrypted, nonce, compress, TestSettings.SecretPhrase).Result;
                 AssertEquals(expected, decrypted.DecryptedMessage, nameof(decrypted.DecryptedMessage));
