@@ -79,8 +79,7 @@ namespace NxtLib.Test.TaggedData
             {
                 var verifyTaggedDataReply = _taggedDataService.VerifyTaggedData(TestSettings.TaggedDataTransactionId, Name, Data, null,
                         Description, Tags, Channel, Type, IsText, Filename).Result;
-
-                VerifyMembers(verifyTaggedDataReply);
+                
                 AssertIsTrue(verifyTaggedDataReply.Verify, "Verify");
             }
         }

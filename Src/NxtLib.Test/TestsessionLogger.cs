@@ -10,14 +10,16 @@ namespace NxtLib.Test
         private readonly string _function;
         private readonly string _class;
 
-        private readonly ILogger Logger;
+        private readonly ILogger _logger;
         private int _failCount;
+        private int _warnCount;
         private int _successCount;
         private string _errorMessage = string.Empty;
+        private string _warnMessage = string.Empty;
 
         public TestsessionLogger(ILogger logger, [CallerMemberName] string function = "", [CallerFilePath] string callerFile = "")
         {
-            Logger = logger;
+            _logger = logger;
             _function = function;
             _class = Regex.Match(callerFile, @".*\\([^\\]+)\.cs").Groups[1].Value;
             Log("Started");
@@ -42,8 +44,13 @@ namespace NxtLib.Test
             Log("Ended");
             if (_failCount > 0)
             {
-                Logger.LogWarning("{0} failed tests, {1} succeeded", _failCount, _successCount);
-                Logger.LogError(_errorMessage);
+                _logger.LogWarning("{0} failed tests, {1} succeeded", _failCount, _successCount);
+                _logger.LogError(_errorMessage);
+            }
+            if (_warnCount > 0)
+            {
+                _logger.LogWarning("{0} test warnings, {1} succeeded", _warnCount, _successCount);
+                _logger.LogWarning(_warnMessage);
             }
             _failCount = 0;
             _successCount = 0;
@@ -51,7 +58,16 @@ namespace NxtLib.Test
 
         private void Log(string action)
         {
-            Logger.LogInformation("{0} {1} {2}", action, _class, _function);
+            _logger.LogInformation("{0} {1} {2}", action, _class, _function);
+        }
+
+        public void Warn(string errorMessage)
+        {
+            if (_warnCount == 0 && !string.IsNullOrEmpty(errorMessage))
+            {
+                _warnMessage = errorMessage;
+            }
+            _warnCount++;
         }
     }
 }

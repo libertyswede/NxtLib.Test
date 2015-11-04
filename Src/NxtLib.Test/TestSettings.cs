@@ -12,7 +12,7 @@ namespace NxtLib.Test
         public static int MaxHeight { get; set; }
         public static string NxtServerUrl => Program.AppSettings["NxtServerUrl"];
         public static ulong PollId { get; set; }
-        public static string PublicKey { get; set; }
+        public static BinaryHexString PublicKey { get; set; }
         public static bool RunCostlyTests => Convert.ToBoolean(Program.AppSettings["RunCostlyTests"]);
         public static string SecretPhrase => Program.AppSettings["SecretPhrase"];
         public static string SecretPhrase2 => Program.AppSettings["SecretPhrase2"];

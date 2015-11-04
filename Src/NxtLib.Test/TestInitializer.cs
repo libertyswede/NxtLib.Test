@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Framework.Logging;
-using NxtLib.Accounts;
 using NxtLib.VotingSystem;
+using NxtLib.Local;
 
 namespace NxtLib.Test
 {
@@ -25,6 +25,7 @@ namespace NxtLib.Test
         {
             _logger.LogInformation("Fetching number of blocks");
             TestSettings.MaxHeight = GetCurrentHeight();
+            _logger.LogInformation($"Current height: {TestSettings.MaxHeight}");
             _logger.LogInformation("Setting account properties");
             GetAccountProperties();
             if (TestSettings.RunCostlyTests)
@@ -52,12 +53,10 @@ namespace NxtLib.Test
 
         private void GetAccountProperties()
         {
-            var accountIdLocator = AccountIdLocator.BySecretPhrase(TestSettings.SecretPhrase);
-            var accountService = _serviceFactory.CreateAccountService();
-            var accountIdReply = accountService.GetAccountId(accountIdLocator).Result;
-            TestSettings.AccountId = accountIdReply.AccountId;
-            TestSettings.AccountRs = accountIdReply.AccountRs;
-            TestSettings.PublicKey = accountIdReply.PublicKey;
+            var localCrypto = new LocalCrypto();
+            TestSettings.PublicKey = localCrypto.GetPublicKey(TestSettings.SecretPhrase);
+            TestSettings.AccountId = localCrypto.GetAccountIdFromPublicKey(TestSettings.PublicKey);
+            TestSettings.AccountRs = localCrypto.GetReedSolomonFromAccountId(TestSettings.AccountId);
         }
 
         private int GetCurrentHeight()

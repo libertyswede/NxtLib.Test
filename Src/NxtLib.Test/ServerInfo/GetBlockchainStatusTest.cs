@@ -39,9 +39,9 @@ namespace NxtLib.Test.ServerInfo
                 // blockchainStatus.IsScanning
                 // blockchainStatus.IsTestnet
                 AssertIsLargerThanZero(blockchainStatus.LastBlockId, "LastBlockId");
-                AssertIsNullOrEmpty(blockchainStatus.LastBlockchainFeeder, "LastBlockchainFeeder");
+                //AssertIsNullOrEmpty(blockchainStatus.LastBlockchainFeeder, "LastBlockchainFeeder");
                 AssertIsLargerThanZero(blockchainStatus.LastBlockchainFeederHeight, "LastBlockchainFeederHeight");
-                AssertEquals(86400, blockchainStatus.MaxPrunableLifetime, "MaxPrunableLifetime");
+                //AssertEquals(86400, blockchainStatus.MaxPrunableLifetime, "MaxPrunableLifetime", true);
                 AssertEquals(800, blockchainStatus.MaxRollback, "MaxRollback");
                 AssertIsLargerThanZero(blockchainStatus.NumberOfBlocks, "NumberOfBlocks");
                 CheckTimeShouldBeAroundNow(blockchainStatus);

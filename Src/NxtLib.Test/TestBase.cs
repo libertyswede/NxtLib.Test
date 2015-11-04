@@ -31,11 +31,18 @@ namespace NxtLib.Test
             }
         }
 
-        protected static void AssertEquals<T>(T expected, T actual, string propertyName) where T : struct
+        protected static void AssertEquals<T>(T expected, T actual, string propertyName, bool warn = false) where T : struct
         {
             if (!expected.Equals(actual))
             {
-                Logger.Fail($"Unexpected {propertyName}, expected: {expected}, actual: {actual}");
+                if (!warn)
+                {
+                    Logger.Fail($"Unexpected {propertyName}, expected: {expected}, actual: {actual}");
+                }
+                else
+                {
+                    Logger.Warn($"Unexpected {propertyName}, expected: {expected}, actual: {actual}");
+                }
             }
         }
 
@@ -60,11 +67,11 @@ namespace NxtLib.Test
             var expectedArray = expected.ToArray();
             var actualArray = actual.ToArray();
 
-            if (expectedArray.Count() != actualArray.Count())
+            if (expectedArray.Length != actualArray.Length)
             {
-                Logger.Fail($"Unexpected length of {propertyName}, expected: {expected.Count()}, actual: {actual.Count()}");
+                Logger.Fail($"Unexpected length of {propertyName}, expected: {expected.Length}, actual: {actual.Length}");
             }
-            for (var i = 0; i < expectedArray.Count(); i++)
+            for (var i = 0; i < expectedArray.Length; i++)
             {
                 if (expectedArray[i] != actualArray[i])
                 {
@@ -91,7 +98,7 @@ namespace NxtLib.Test
 
         protected static void AssertIsNullOrEmpty(string value, string propertyName)
         {
-            if (string.IsNullOrEmpty(value))
+            if (!string.IsNullOrEmpty(value))
             {
                 Logger.Fail($"Unexpected {propertyName}, expected: Something, actual: {value}");
             }

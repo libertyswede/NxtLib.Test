@@ -28,8 +28,6 @@ namespace NxtLib.Test.VotingSystem
                 foreach (var expected in _getPollsReply.Polls)
                 {
                     var getPollReply = _votingSystemService.GetPoll(expected.PollId).Result;
-                    AssertIsNullOrEmpty(getPollReply.Name, "Name");
-                    AssertIsNullOrEmpty(getPollReply.Description, "Description");
                     AssertIsLargerThanZero(getPollReply.FinishHeight, "FinishHeight");
                     AssertIsLargerThanZero(getPollReply.MinNumberOfOptions, "MinNumberOfOptions");
                     AssertIsLargerThanZero(getPollReply.MaxNumberOfOptions, "MaxNumberOfOptions");

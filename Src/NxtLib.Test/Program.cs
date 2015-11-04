@@ -15,6 +15,7 @@ using Microsoft.Framework.Logging;
 using Microsoft.Framework.DependencyInjection;
 using NxtLib.Test.Local;
 using NxtLib.Test.Messages;
+using NxtLib.Local;
 
 namespace NxtLib.Test
 {
@@ -96,6 +97,7 @@ namespace NxtLib.Test
             services.AddInstance(_serviceFactory.CreateTransactionService());
             services.AddInstance(_serviceFactory.CreateUtilService());
             services.AddInstance(_serviceFactory.CreateVotingSystemService());
+            services.AddTransient<ILocalCrypto, LocalCrypto>();
         }
 
         public void Main()
@@ -116,8 +118,6 @@ namespace NxtLib.Test
             transactionServiceTest.RunAllTests();
             var serverInfoServiceTest = _serviceProvider.GetService<IServerInfoServiceTest>();
             serverInfoServiceTest.RunAllTests();
-            //var debugService = new DebugServiceTest();
-            //debugService.RunAllTests();
             var utilsServiceTest = _serviceProvider.GetService<IUtilsServiceTest>();
             utilsServiceTest.RunAllTests();
             var accountServiceTest = _serviceProvider.GetService<IAccountServiceTest>();
@@ -130,6 +130,9 @@ namespace NxtLib.Test
             taggedDataServiceTest.RunAllTests();
             var tokenServiceTest = _serviceProvider.GetService<ITokenServiceTest>();
             tokenServiceTest.RunAllTests();
+
+            // var debugService = new DebugServiceTest();
+            // debugService.RunAllTests();
 
             Console.WriteLine("Test run complete");
             Console.ReadLine();

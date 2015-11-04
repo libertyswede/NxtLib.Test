@@ -26,7 +26,7 @@ namespace NxtLib.Test.VotingSystem
             {
                 if (!TestSettings.RunCostlyTests)
                 {
-                    Logger.Fail("RunCostlyTests is set to false, skipping CastVote");
+                    Logger.Warn("RunCostlyTests is set to false, skipping CastVote");
                     return;
                 }
 
