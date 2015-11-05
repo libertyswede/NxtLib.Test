@@ -11,14 +11,14 @@ namespace NxtLib.Test.TaggedData
     {
         private readonly ITaggedDataService _taggedDataService;
         private readonly ILogger _logger;
-        const string Name = "testname";
-        const string Data = "abc123";
-        const string Description = "description";
-        const string Tags = "tag1,tag2";
-        const string Channel = "channel?";
-        const string Type = "type?";
-        const string Filename = "test.txt";
-        const bool IsText = true;
+        private const string Name = "testname";
+        private const string Data = "abc123";
+        private const string Description = "description";
+        private const string Tags = "tag1,tag2";
+        private const string Channel = "channel?";
+        private const string Type = "type?";
+        private const string Filename = "test.txt";
+        private const bool IsText = true;
 
         public TaggedDataServiceTest(ITaggedDataService taggedDataService, ILogger logger)
         {
