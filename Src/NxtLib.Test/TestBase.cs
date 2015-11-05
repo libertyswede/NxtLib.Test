@@ -62,6 +62,14 @@ namespace NxtLib.Test
             }
         }
 
+        protected static void AssertIsNotNull(object actual, string propertyName)
+        {
+            if (actual == null)
+            {
+                Logger.Fail($"Unexpected {propertyName}, expected: not null, actual: null");
+            }
+        }
+
         protected static void AssertEquals(byte[] expected, byte[] actual, string propertyName)
         {
             var expectedArray = expected.ToArray();
@@ -100,7 +108,15 @@ namespace NxtLib.Test
         {
             if (!string.IsNullOrEmpty(value))
             {
-                Logger.Fail($"Unexpected {propertyName}, expected: Something, actual: {value}");
+                Logger.Fail($"Unexpected {propertyName}, expected: Null or empty, actual: {value}");
+            }
+        }
+
+        protected static void AssertIsNotNullOrEmpty(string value, string propertyName)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                Logger.Fail($"Unexpected {propertyName}, expected: Not null or empty, actual: {value}");
             }
         }
 
