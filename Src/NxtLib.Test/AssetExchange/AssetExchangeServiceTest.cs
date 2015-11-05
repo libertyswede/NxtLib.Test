@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Microsoft.Framework.Logging;
+﻿using Microsoft.Framework.Logging;
 using NxtLib.AssetExchange;
 
 namespace NxtLib.Test.AssetExchange
@@ -50,12 +49,11 @@ namespace NxtLib.Test.AssetExchange
             if (includeAssetInfo)
             {
                 result.AccountAssets.ForEach(a => AssertIsNotNullOrEmpty(a.Name, nameof(a.Name)));
-                result.AccountAssets.ForEach(a => AssertIsNotNull(a.Decimals, nameof(a.Decimals)));
             }
             else
             {
                 result.AccountAssets.ForEach(a => AssertIsNull(a.Name, nameof(a.Name)));
-                result.AccountAssets.ForEach(a => AssertIsNull(a.Decimals, nameof(a.Decimals)));
+                result.AccountAssets.ForEach(a => AssertEquals(0, a.Decimals, nameof(a.Decimals)));
             }
         }
 
