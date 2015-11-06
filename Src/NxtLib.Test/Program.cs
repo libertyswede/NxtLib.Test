@@ -112,6 +112,8 @@ namespace NxtLib.Test
 
             var localCryptoTest = _serviceProvider.GetService<ILocalCryptoTest>();
             localCryptoTest.RunAllTests();
+            var tokenServiceTest = _serviceProvider.GetService<ITokenServiceTest>();
+            tokenServiceTest.RunAllTests();
             var messageServiceTest = _serviceProvider.GetService<IMessageServiceTest>();
             messageServiceTest.RunAllTests();
             var transactionServiceTest = _serviceProvider.GetService<ITransactionServiceTest>();
@@ -128,8 +130,6 @@ namespace NxtLib.Test
             votingSystemServiceTest.RunAllTests();
             var taggedDataServiceTest = _serviceProvider.GetService<ITaggedDataServiceTest>();
             taggedDataServiceTest.RunAllTests();
-            var tokenServiceTest = _serviceProvider.GetService<ITokenServiceTest>();
-            tokenServiceTest.RunAllTests();
 
             // var debugService = new DebugServiceTest();
             // debugService.RunAllTests();

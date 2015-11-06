@@ -28,8 +28,17 @@ namespace NxtLib.Test.Local
         {
             EncryptTextToTest();
             EncryptDataToTest();
+            TestGenerateToken();
         }
-        
+
+        private void TestGenerateToken()
+        {
+            using (Logger = new TestsessionLogger(_logger))
+            {
+                var token = _localCrypto.GenerateToken(TestSettings.SecretPhrase, "nxt.org");
+            }
+        }
+
         private void EncryptDataToTest()
         {
             using (Logger = new TestsessionLogger(_logger))
