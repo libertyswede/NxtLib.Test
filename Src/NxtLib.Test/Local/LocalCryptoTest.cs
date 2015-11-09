@@ -4,6 +4,7 @@ using NxtLib.Local;
 using NxtLib.Messages;
 using System;
 using System.Linq;
+using NxtLib.Tokens;
 
 namespace NxtLib.Test.Local
 {
@@ -16,26 +17,59 @@ namespace NxtLib.Test.Local
         private readonly ILogger _logger;
         private readonly IMessageService _messageService;
         private readonly ILocalCrypto _localCrypto;
+        private readonly ITokenService _tokenService;
 
-        public LocalCryptoTest(ILogger logger, IMessageService messageService, ILocalCrypto localCrypto)
+        public LocalCryptoTest(ILogger logger, IMessageService messageService, ILocalCrypto localCrypto, ITokenService tokenService)
         {
             _logger = logger;
             _messageService = messageService;
             _localCrypto = localCrypto;
+            _tokenService = tokenService;
         }
 
         public void RunAllTests()
         {
+            TestDecodeToken();
+            TestGenerateToken();
+
             EncryptTextToTest();
             EncryptDataToTest();
-            TestGenerateToken();
+        }
+
+        private void TestDecodeToken()
+        {
+            var random = new Random();
+            using (Logger = new TestsessionLogger(_logger))
+            for (var i = 0; i < 1000; i++)
+            {
+                var expected = BuildString(random);
+                var timestamp = DateTime.UtcNow;
+                var token = _localCrypto.GenerateToken(TestSettings.SecretPhrase, expected, timestamp);
+
+                var decodedToken = _localCrypto.DecodeToken(expected, token.Token);
+
+                AssertEquals(timestamp, decodedToken.Timestamp, nameof(decodedToken.Timestamp));
+                AssertEquals(TestSettings.PublicKey.ToHexString(), decodedToken.PublicKey.ToHexString(), nameof(decodedToken.PublicKey));
+                AssertIsTrue(decodedToken.Valid, nameof(decodedToken.Valid));
+            }
         }
 
         private void TestGenerateToken()
         {
+            var random = new Random();
             using (Logger = new TestsessionLogger(_logger))
+            for (var i = 0; i < 1000; i++)
             {
-                var token = _localCrypto.GenerateToken(TestSettings.SecretPhrase, "nxt.org");
+                var message = BuildString(random);
+
+                var expected = _tokenService.GenerateToken(TestSettings.SecretPhrase, message).Result;
+                var actual = _localCrypto.GenerateToken(TestSettings.SecretPhrase, message, expected.Timestamp);
+
+                AssertEquals(expected.Token, actual.Token, nameof(actual.Token));
+                AssertEquals(expected.Timestamp, actual.Timestamp, nameof(actual.Timestamp));
+                AssertEquals(expected.Account, actual.Account.AccountId, nameof(actual.Account.AccountId));
+                AssertEquals(expected.AccountRs, actual.Account.AccountRs, nameof(actual.Account.AccountRs));
+                AssertEquals(expected.Valid, actual.Valid, nameof(actual.Valid));
             }
         }
 
