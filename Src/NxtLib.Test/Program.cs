@@ -77,6 +77,8 @@ namespace NxtLib.Test
             services.AddTransient<ICreatePollTest, CreatePollTest>();
             services.AddTransient<IMessageServiceTest, MessageServiceTest>();
             services.AddTransient<ILocalCryptoTest, LocalCryptoTest>();
+            services.AddTransient<IPasswordGenerator, PasswordGenerator>();
+            services.AddTransient<IPasswordGeneratorTest, PasswordGeneratorTest>();
 
 
             services.AddSingleton<IServiceFactory>(provider => _serviceFactory);

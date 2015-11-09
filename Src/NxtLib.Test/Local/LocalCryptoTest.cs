@@ -17,17 +17,22 @@ namespace NxtLib.Test.Local
         private readonly IMessageService _messageService;
         private readonly ILocalCrypto _localCrypto;
         private readonly ITokenService _tokenService;
+        private readonly IPasswordGeneratorTest _passwordGeneratorTest;
 
-        public LocalCryptoTest(ILogger logger, IMessageService messageService, ILocalCrypto localCrypto, ITokenService tokenService)
+        public LocalCryptoTest(ILogger logger, IMessageService messageService, ILocalCrypto localCrypto,
+            ITokenService tokenService, IPasswordGeneratorTest passwordGeneratorTest)
         {
             _logger = logger;
             _messageService = messageService;
             _localCrypto = localCrypto;
             _tokenService = tokenService;
+            _passwordGeneratorTest = passwordGeneratorTest;
         }
 
         public void RunAllTests()
         {
+            _passwordGeneratorTest.RunAllTests();
+
             TestDecodeToken();
             TestGenerateToken();
 
