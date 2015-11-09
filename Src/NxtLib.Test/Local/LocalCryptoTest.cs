@@ -47,12 +47,11 @@ namespace NxtLib.Test.Local
                 var decodedToken = _localCrypto.DecodeToken(expected, token.Token);
                 var serviceDecodedToken = _tokenService.DecodeToken(expected, token.Token).Result;
 
-                var accountId = _localCrypto.GetAccountIdFromPublicKey(decodedToken.PublicKey);
-                var accountRs = _localCrypto.GetReedSolomonFromAccountId(accountId);
+                var account = _localCrypto.GetAccountFromPublicKey(decodedToken.PublicKey);
 
                 AssertEquals(token.Timestamp, decodedToken.Timestamp, nameof(decodedToken.Timestamp));
-                AssertEquals(serviceDecodedToken.Account, accountId, nameof(decodedToken.PublicKey));
-                AssertEquals(serviceDecodedToken.AccountRs, accountRs, nameof(decodedToken.PublicKey));
+                AssertEquals(serviceDecodedToken.Account, account.AccountId, nameof(decodedToken.PublicKey));
+                AssertEquals(serviceDecodedToken.AccountRs, account.AccountRs, nameof(decodedToken.PublicKey));
                 AssertEquals(TestSettings.PublicKey.ToHexString(), decodedToken.PublicKey.ToHexString(), nameof(decodedToken.PublicKey));
                 AssertIsTrue(decodedToken.Valid, nameof(decodedToken.Valid));
             }

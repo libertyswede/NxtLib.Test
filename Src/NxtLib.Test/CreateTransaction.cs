@@ -13,7 +13,7 @@ namespace NxtLib.Test
             var localCrypto = new LocalCrypto();
             SecretPhrase = TestSettings.SecretPhrase;
             PublicKey = localCrypto.GetPublicKey(SecretPhrase);
-            AccountId = localCrypto.GetAccountIdFromPublicKey(PublicKey);
+            AccountId = localCrypto.GetAccountFromPublicKey(PublicKey).AccountId;
         }
 
         public static CreateTransactionByPublicKey CreateTransactionByPublicKey()

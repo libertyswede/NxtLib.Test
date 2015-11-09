@@ -55,8 +55,9 @@ namespace NxtLib.Test
         {
             var localCrypto = new LocalCrypto();
             TestSettings.PublicKey = localCrypto.GetPublicKey(TestSettings.SecretPhrase);
-            TestSettings.AccountId = localCrypto.GetAccountIdFromPublicKey(TestSettings.PublicKey);
-            TestSettings.AccountRs = localCrypto.GetReedSolomonFromAccountId(TestSettings.AccountId);
+            var account = localCrypto.GetAccountFromPublicKey(TestSettings.PublicKey);
+            TestSettings.AccountId = account.AccountId;
+            TestSettings.AccountRs = account.AccountRs;
         }
 
         private int GetCurrentHeight()
