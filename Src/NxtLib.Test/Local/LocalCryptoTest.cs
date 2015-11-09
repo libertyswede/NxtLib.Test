@@ -1,5 +1,4 @@
 ﻿using Microsoft.Framework.Logging;
-using NxtLib.Accounts;
 using NxtLib.Local;
 using NxtLib.Messages;
 using System;
@@ -40,15 +39,20 @@ namespace NxtLib.Test.Local
         {
             var random = new Random();
             using (Logger = new TestsessionLogger(_logger))
-            for (var i = 0; i < 1000; i++)
+            for (var i = 0; i < 100; i++)
             {
                 var expected = BuildString(random);
-                var timestamp = DateTime.UtcNow;
-                var token = _localCrypto.GenerateToken(TestSettings.SecretPhrase, expected, timestamp);
+                var token = _localCrypto.GenerateToken(TestSettings.SecretPhrase, expected);
 
                 var decodedToken = _localCrypto.DecodeToken(expected, token.Token);
+                var serviceDecodedToken = _tokenService.DecodeToken(expected, token.Token).Result;
 
-                AssertEquals(timestamp, decodedToken.Timestamp, nameof(decodedToken.Timestamp));
+                var accountId = _localCrypto.GetAccountIdFromPublicKey(decodedToken.PublicKey);
+                var accountRs = _localCrypto.GetReedSolomonFromAccountId(accountId);
+
+                AssertEquals(token.Timestamp, decodedToken.Timestamp, nameof(decodedToken.Timestamp));
+                AssertEquals(serviceDecodedToken.Account, accountId, nameof(decodedToken.PublicKey));
+                AssertEquals(serviceDecodedToken.AccountRs, accountRs, nameof(decodedToken.PublicKey));
                 AssertEquals(TestSettings.PublicKey.ToHexString(), decodedToken.PublicKey.ToHexString(), nameof(decodedToken.PublicKey));
                 AssertIsTrue(decodedToken.Valid, nameof(decodedToken.Valid));
             }
@@ -58,7 +62,7 @@ namespace NxtLib.Test.Local
         {
             var random = new Random();
             using (Logger = new TestsessionLogger(_logger))
-            for (var i = 0; i < 1000; i++)
+            for (var i = 0; i < 100; i++)
             {
                 var message = BuildString(random);
 
