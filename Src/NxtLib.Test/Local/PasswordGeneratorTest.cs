@@ -1,4 +1,5 @@
-﻿using Microsoft.Framework.Logging;
+﻿using System;
+using Microsoft.Framework.Logging;
 using NxtLib.Local;
 
 namespace NxtLib.Test.Local
@@ -20,8 +21,16 @@ namespace NxtLib.Test.Local
 
         public void RunAllTests()
         {
-            var password = _passwordGenerator.GeneratePassword(1);
-            AssertIsFalse(password.Contains(""), "PasswordLength");
+            try
+            {
+                _passwordGenerator.GeneratePassword(1);
+                // Fail
+            }
+            catch (ArgumentException)
+            {
+                
+            }
+            var password = _passwordGenerator.GeneratePassword();
         }
     }
 }
