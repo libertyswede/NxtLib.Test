@@ -21,16 +21,25 @@ namespace NxtLib.Test.Local
 
         public void RunAllTests()
         {
-            try
+            TestGeneratePassword();
+        }
+
+        private void TestGeneratePassword()
+        {
+            using (Logger = new TestsessionLogger(_logger))
             {
-                _passwordGenerator.GeneratePassword(1);
-                // Fail
+                try
+                {
+                    _passwordGenerator.GeneratePassword(1);
+                    Logger.Fail("No ArgumentException was thrown!");
+                }
+                catch (ArgumentException)
+                {
+                }
+                var password = _passwordGenerator.GeneratePassword();
+                var words = password.Split(' ');
+                AssertEquals(12, words.Length, "Number of words");
             }
-            catch (ArgumentException)
-            {
-                
-            }
-            var password = _passwordGenerator.GeneratePassword();
         }
     }
 }
