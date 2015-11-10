@@ -4,19 +4,19 @@ using NxtLib.Local;
 
 namespace NxtLib.Test.Local
 {
-    public interface IPasswordGeneratorTest : ITest
+    public interface ILocalPasswordGeneratorTest : ITest
     {
     }
 
-    public class PasswordGeneratorTest : TestBase, IPasswordGeneratorTest
+    public class LocalPasswordGeneratorTest : TestBase, ILocalPasswordGeneratorTest
     {
         private readonly ILogger _logger;
-        private readonly IPasswordGenerator _passwordGenerator;
+        private readonly ILocalPasswordGenerator _localPasswordGenerator;
 
-        public PasswordGeneratorTest(ILogger logger, IPasswordGenerator passwordGenerator)
+        public LocalPasswordGeneratorTest(ILogger logger, ILocalPasswordGenerator localPasswordGenerator)
         {
             _logger = logger;
-            _passwordGenerator = passwordGenerator;
+            _localPasswordGenerator = localPasswordGenerator;
         }
 
         public void RunAllTests()
@@ -30,13 +30,13 @@ namespace NxtLib.Test.Local
             {
                 try
                 {
-                    _passwordGenerator.GeneratePassword(1);
+                    _localPasswordGenerator.GeneratePassword(1);
                     Logger.Fail("No ArgumentException was thrown!");
                 }
                 catch (ArgumentException)
                 {
                 }
-                var password = _passwordGenerator.GeneratePassword();
+                var password = _localPasswordGenerator.GeneratePassword();
                 var words = password.Split(' ');
                 AssertEquals(12, words.Length, "Number of words");
             }

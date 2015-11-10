@@ -1,24 +1,23 @@
-﻿using NxtLib.Local;
+﻿using NxtLib.Accounts;
+using NxtLib.Local;
 
 namespace NxtLib.Test
 {
     public static class CreateTransaction
     {
         private static readonly string SecretPhrase;
-        private static readonly BinaryHexString PublicKey;
-        private static readonly ulong AccountId;
+        private static readonly AccountWithPublicKey Account;
 
         static CreateTransaction()
         {
-            var localCrypto = new LocalCrypto();
-            SecretPhrase = TestSettings.SecretPhrase;
-            PublicKey = localCrypto.GetPublicKey(SecretPhrase);
-            AccountId = localCrypto.GetAccountFromPublicKey(PublicKey).AccountId;
+            var localCrypto = new LocalAccountService();
+            SecretPhrase = TestSettings.SecretPhrase1;
+            Account = localCrypto.GetAccount(AccountIdLocator.BySecretPhrase(SecretPhrase));
         }
 
         public static CreateTransactionByPublicKey CreateTransactionByPublicKey()
         {
-            return new CreateTransactionByPublicKey(1440, Amount.OneNxt, PublicKey);
+            return new CreateTransactionByPublicKey(1440, Amount.OneNxt, Account.PublicKey);
         }
 
         public static CreateTransactionBySecretPhrase CreateTransactionBySecretPhrase(bool broadcast = false, Amount fee = null)

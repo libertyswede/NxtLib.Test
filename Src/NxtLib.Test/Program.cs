@@ -77,8 +77,15 @@ namespace NxtLib.Test
             services.AddTransient<ICreatePollTest, CreatePollTest>();
             services.AddTransient<IMessageServiceTest, MessageServiceTest>();
             services.AddTransient<ILocalCryptoTest, LocalCryptoTest>();
-            services.AddTransient<IPasswordGenerator, PasswordGenerator>();
-            services.AddTransient<IPasswordGeneratorTest, PasswordGeneratorTest>();
+            services.AddTransient<ILocalPasswordGenerator, LocalPasswordGenerator>();
+            services.AddTransient<ILocalPasswordGeneratorTest, LocalPasswordGeneratorTest>();
+            services.AddTransient<ILocalAccountService, LocalAccountService>();
+            services.AddTransient<ILocalAccountServiceTest, LocalAccountServiceTest>();
+            services.AddTransient<ILocalMessageService, LocalMessageService>();
+            services.AddTransient<ILocalMessageServiceTest, LocalMessageServiceTest>();
+            services.AddTransient<ILocalTokenService, LocalTokenService>();
+            services.AddTransient<ILocalTokenServiceTest, LocalTokenServiceTest>();
+            services.AddTransient<ILocalTransactionService, LocalTransactionService>();
 
 
             services.AddSingleton<IServiceFactory>(provider => _serviceFactory);
@@ -99,7 +106,6 @@ namespace NxtLib.Test
             services.AddInstance(_serviceFactory.CreateTransactionService());
             services.AddInstance(_serviceFactory.CreateUtilService());
             services.AddInstance(_serviceFactory.CreateVotingSystemService());
-            services.AddTransient<ILocalCrypto, LocalCrypto>();
         }
 
         public void Main()

@@ -1,12 +1,11 @@
 ﻿{
   "NxtServerUrl": "http://localhost:6876/nxt",
-  "SecretPhrase": "insert secret phrase here",
-  "Account2Rs": "NXT-5MYN-AP7M-NKMH-CRQJZ",
+  "RunCostlyTests": "false",
+  "SecretPhrase1": "insert secret phrase here",
   "SecretPhrase2": "insert secret phrase here",
-  "ExistingCurrencyId": "17567790753261292408",
   "ExistingAssetId": "5920455660623529270",
+  "ExistingCurrencyId": "17567790753261292408",
   "TaggedDataTransactionId": "6516817350077398921",
   "SentTextMessageTransactionId": "7343783215663306330",
-  "SentDataMessageTransactionId": "5406044206065727071",
-  "RunCostlyTests": "false"
+  "SentDataMessageTransactionId": "5406044206065727071"
 }

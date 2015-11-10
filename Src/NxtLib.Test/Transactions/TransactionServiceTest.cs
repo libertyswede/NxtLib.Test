@@ -32,8 +32,8 @@ namespace NxtLib.Test.Transactions
         {
             using (Logger = new TestsessionLogger(_logger))
             {
-                var unsignedSendMoney = _accountService.SendMoney(CreateTransaction.CreateTransactionByPublicKey(), TestSettings.Account2Rs, Amount.OneNqt).Result;
-                var signedTransaction = _transactionService.SignTransaction(new TransactionParameter(unsignedSendMoney.UnsignedTransactionBytes), TestSettings.SecretPhrase).Result;
+                var unsignedSendMoney = _accountService.SendMoney(CreateTransaction.CreateTransactionByPublicKey(), TestSettings.Account2.AccountRs, Amount.OneNqt).Result;
+                var signedTransaction = _transactionService.SignTransaction(new TransactionParameter(unsignedSendMoney.UnsignedTransactionBytes), TestSettings.SecretPhrase1).Result;
                 var signatureHash = signedTransaction.Transaction.SignatureHash;
 
                 var calculateFullHash = _transactionService.CalculateFullHash(new BinaryHexString(signatureHash), unsignedSendMoney.UnsignedTransactionBytes).Result;
@@ -46,10 +46,10 @@ namespace NxtLib.Test.Transactions
             using (Logger = new TestsessionLogger(_logger))
             {
                 var amount = Amount.OneNqt;
-                var recipient = TestSettings.Account2Rs;
+                var recipient = TestSettings.Account2.AccountRs;
                 var unsignedSendMoney = _accountService.SendMoney(CreateTransaction.CreateTransactionByPublicKey(), recipient, amount).Result;
 
-                var signedTransaction = _transactionService.SignTransaction(new TransactionParameter(unsignedSendMoney.UnsignedTransactionBytes), TestSettings.SecretPhrase).Result;
+                var signedTransaction = _transactionService.SignTransaction(new TransactionParameter(unsignedSendMoney.UnsignedTransactionBytes), TestSettings.SecretPhrase1).Result;
 
                 var transaction = signedTransaction.Transaction;
                 AssertEquals(transaction.Amount.Nqt, Amount.OneNqt.Nqt, "Amount");

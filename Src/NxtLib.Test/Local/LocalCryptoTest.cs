@@ -1,137 +1,33 @@
-﻿using Microsoft.Framework.Logging;
-using NxtLib.Local;
-using NxtLib.Messages;
-using System;
-using System.Linq;
-using NxtLib.Tokens;
-
-namespace NxtLib.Test.Local
+﻿namespace NxtLib.Test.Local
 {
+
     public interface ILocalCryptoTest : ITest
     {
     }
 
     public class LocalCryptoTest : TestBase, ILocalCryptoTest
     {
-        private readonly ILogger _logger;
-        private readonly IMessageService _messageService;
-        private readonly ILocalCrypto _localCrypto;
-        private readonly ITokenService _tokenService;
-        private readonly IPasswordGeneratorTest _passwordGeneratorTest;
+        private readonly ILocalAccountServiceTest _localAccountServiceTest;
+        private readonly ILocalMessageServiceTest _localMessageServiceTest;
+        private readonly ILocalPasswordGeneratorTest _localPasswordGeneratorTest;
+        private readonly ILocalTokenServiceTest _localTokenServiceTest;
 
-        public LocalCryptoTest(ILogger logger, IMessageService messageService, ILocalCrypto localCrypto,
-            ITokenService tokenService, IPasswordGeneratorTest passwordGeneratorTest)
+        public LocalCryptoTest(ILocalAccountServiceTest localAccountServiceTest,
+            ILocalMessageServiceTest localMessageServiceTest, ILocalPasswordGeneratorTest localPasswordGeneratorTest,
+            ILocalTokenServiceTest localTokenServiceTest)
         {
-            _logger = logger;
-            _messageService = messageService;
-            _localCrypto = localCrypto;
-            _tokenService = tokenService;
-            _passwordGeneratorTest = passwordGeneratorTest;
+            _localAccountServiceTest = localAccountServiceTest;
+            _localMessageServiceTest = localMessageServiceTest;
+            _localPasswordGeneratorTest = localPasswordGeneratorTest;
+            _localTokenServiceTest = localTokenServiceTest;
         }
 
         public void RunAllTests()
         {
-            _passwordGeneratorTest.RunAllTests();
-
-            TestDecodeToken();
-            TestGenerateToken();
-
-            EncryptTextToTest();
-            EncryptDataToTest();
-        }
-
-        private void TestDecodeToken()
-        {
-            var random = new Random();
-            using (Logger = new TestsessionLogger(_logger))
-            for (var i = 0; i < 100; i++)
-            {
-                var expected = BuildString(random);
-                var token = _localCrypto.GenerateToken(TestSettings.SecretPhrase, expected);
-
-                var decodedToken = _localCrypto.DecodeToken(expected, token.Token);
-                var serviceDecodedToken = _tokenService.DecodeToken(expected, token.Token).Result;
-
-                var account = _localCrypto.GetAccountFromPublicKey(decodedToken.PublicKey);
-
-                AssertEquals(token.Timestamp, decodedToken.Timestamp, nameof(decodedToken.Timestamp));
-                AssertEquals(serviceDecodedToken.Account, account.AccountId, nameof(decodedToken.PublicKey));
-                AssertEquals(serviceDecodedToken.AccountRs, account.AccountRs, nameof(decodedToken.PublicKey));
-                AssertEquals(TestSettings.PublicKey.ToHexString(), decodedToken.PublicKey.ToHexString(), nameof(decodedToken.PublicKey));
-                AssertIsTrue(decodedToken.Valid, nameof(decodedToken.Valid));
-            }
-        }
-
-        private void TestGenerateToken()
-        {
-            var random = new Random();
-            using (Logger = new TestsessionLogger(_logger))
-            for (var i = 0; i < 100; i++)
-            {
-                var message = BuildString(random);
-
-                var expected = _tokenService.GenerateToken(TestSettings.SecretPhrase, message).Result;
-                var actual = _localCrypto.GenerateToken(TestSettings.SecretPhrase, message, expected.Timestamp);
-
-                AssertEquals(expected.Token, actual.Token, nameof(actual.Token));
-                AssertEquals(expected.Timestamp, actual.Timestamp, nameof(actual.Timestamp));
-                AssertEquals(expected.Account, actual.Account.AccountId, nameof(actual.Account.AccountId));
-                AssertEquals(expected.AccountRs, actual.Account.AccountRs, nameof(actual.Account.AccountRs));
-                AssertEquals(expected.Valid, actual.Valid, nameof(actual.Valid));
-            }
-        }
-
-        private void EncryptDataToTest()
-        {
-            using (Logger = new TestsessionLogger(_logger))
-            {
-                var random = new Random();
-                for (var i = 0; i < 100; i++)
-                {
-                    var expected = BuildBytes(random);
-                    var nonce = _localCrypto.CreateNonce();
-                    var compress = random.Next(0, 2) == 0;
-
-                    var encrypted = _localCrypto.EncryptDataTo(TestSettings.PublicKey, expected, nonce, compress, TestSettings.SecretPhrase2);
-    
-                    var decrypted = _messageService.DecryptDataFrom(TestSettings.Account2Rs, encrypted, nonce, compress, TestSettings.SecretPhrase).Result;
-                    AssertEquals(expected, decrypted.Data.ToBytes().ToArray(), nameof(decrypted.Data));
-                }
-            }
-        }
-        
-        private void EncryptTextToTest()
-        {
-            using (Logger = new TestsessionLogger(_logger))
-            {
-                var random = new Random();
-                for (var i = 0; i < 100; i++)
-                {
-                    var expected = BuildString(random);
-                    var nonce = _localCrypto.CreateNonce();
-                    var compress = random.Next(0, 2) == 0;
-
-                    var encrypted = _localCrypto.EncryptTextTo(TestSettings.PublicKey, expected, nonce, compress, TestSettings.SecretPhrase2);
-    
-                    var decrypted = _messageService.DecryptTextFrom(TestSettings.Account2Rs, encrypted, nonce, compress, TestSettings.SecretPhrase).Result;
-                    AssertEquals(expected, decrypted.DecryptedMessage, nameof(decrypted.DecryptedMessage));
-                }
-            }
-        }
-        
-        private byte[] BuildBytes(Random random)
-        {
-            var length = random.Next(10, 1000);
-            var bytes = new byte[length];
-            random.NextBytes(bytes);
-            return bytes;
-        }
-        
-        private string BuildString(Random random)
-        {
-            var length = random.Next(10, 1000);
-            const string chars = @"ABCDEFGHIJKLMNOPQRSTUVWXYZÅÄÖabcdefghijklmnopqrstuvwxyzåäö0123456789+-*/_.,;:!""#¤%&()=?`´\}][{$£@§½|^¨~";
-            return new string(Enumerable.Repeat(chars, length).Select(s => s[random.Next(s.Length)]).ToArray());
+            _localAccountServiceTest.RunAllTests();
+            _localMessageServiceTest.RunAllTests();
+            _localPasswordGeneratorTest.RunAllTests();
+            _localTokenServiceTest.RunAllTests();
         }
     }
 }

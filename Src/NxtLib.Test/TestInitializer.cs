@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Framework.Logging;
+using NxtLib.Accounts;
 using NxtLib.VotingSystem;
 using NxtLib.Local;
 
@@ -53,11 +54,9 @@ namespace NxtLib.Test
 
         private void GetAccountProperties()
         {
-            var localCrypto = new LocalCrypto();
-            TestSettings.PublicKey = localCrypto.GetPublicKey(TestSettings.SecretPhrase);
-            var account = localCrypto.GetAccountFromPublicKey(TestSettings.PublicKey);
-            TestSettings.AccountId = account.AccountId;
-            TestSettings.AccountRs = account.AccountRs;
+            var localAccountService = new LocalAccountService();
+            TestSettings.Account1 = localAccountService.GetAccount(AccountIdLocator.BySecretPhrase(TestSettings.SecretPhrase1));
+            TestSettings.Account2 = localAccountService.GetAccount(AccountIdLocator.BySecretPhrase(TestSettings.SecretPhrase2));
         }
 
         private int GetCurrentHeight()

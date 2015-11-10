@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace NxtLib.Test
@@ -180,5 +181,21 @@ namespace NxtLib.Test
                     $"Unexpected relative values {largerPropertyName} and {smallerPropertyName}. Expected: {largerValue} >= {smallerValue}");
             }
         }
+
+        protected string BuildRandomString(Random random)
+        {
+            var length = random.Next(10, 1000);
+            const string chars = @"ABCDEFGHIJKLMNOPQRSTUVWXYZÅÄÖabcdefghijklmnopqrstuvwxyzåäö0123456789+-*/_.,;:!""#¤%&()=?`´\}][{$£@§½|^¨~";
+            return new string(Enumerable.Repeat(chars, length).Select(s => s[random.Next(s.Length)]).ToArray());
+        }
+
+        protected byte[] BuildRandomBytes(Random random)
+        {
+            var length = random.Next(10, 1000);
+            var bytes = new byte[length];
+            random.NextBytes(bytes);
+            return bytes;
+        }
+
     }
 }

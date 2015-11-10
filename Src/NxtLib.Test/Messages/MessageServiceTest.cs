@@ -15,14 +15,15 @@ namespace NxtLib.Test.Messages
         private readonly ILogger _logger;
         private readonly IMessageService _messageService;
         private readonly ITransactionService _transactionService;
-        private readonly ILocalCrypto _localCrypto;
+        private readonly ILocalMessageService _localMessageService;
 
-        public MessageServiceTest(ILogger logger, IMessageService messageService, ITransactionService transactionService, ILocalCrypto localCrypto)
+        public MessageServiceTest(ILogger logger, IMessageService messageService, ITransactionService transactionService,
+            ILocalMessageService localMessageService)
         {
             _logger = logger;
             _messageService = messageService;
             _transactionService = transactionService;
-            _localCrypto = localCrypto;
+            _localMessageService = localMessageService;
         }
 
         public void RunAllTests()
@@ -52,7 +53,7 @@ namespace NxtLib.Test.Messages
                 const string expected = "Hello World!";
                 var parameters = CreateTransaction.CreateTransactionBySecretPhrase();
                 parameters.EncryptedMessage = new CreateTransactionParameters.MessageToBeEncrypted(expected, true, true);
-                var sendMesageResult = _messageService.SendMessage(parameters, TestSettings.Account2Rs).Result;
+                var sendMesageResult = _messageService.SendMessage(parameters, TestSettings.Account2.AccountRs).Result;
                 var actual = sendMesageResult.Transaction.EncryptedMessage;
 
                 AssertIsTrue(actual.IsPrunable, nameof(actual.IsPrunable));
@@ -121,13 +122,12 @@ namespace NxtLib.Test.Messages
         {
             using (Logger = new TestsessionLogger(_logger))
             {
-                var nonce = _localCrypto.CreateNonce();
-                var recipientPublicKey = _localCrypto.GetPublicKey(TestSettings.SecretPhrase2);
-                var encrypted = _localCrypto.EncryptTextTo(recipientPublicKey, "Hello World!", nonce, true, TestSettings.SecretPhrase);
+                var nonce = _localMessageService.CreateNonce();
+                var encrypted = _localMessageService.EncryptTextTo(TestSettings.Account2.PublicKey, "Hello World!", nonce, true, TestSettings.SecretPhrase1);
 
                 var parameters = CreateTransaction.CreateTransactionByPublicKey();
                 parameters.EncryptedMessage = new CreateTransactionParameters.AlreadyEncryptedMessage(encrypted, nonce, true, true);
-                var sendMesageResult = _messageService.SendMessage(parameters, TestSettings.Account2Rs).Result;
+                var sendMesageResult = _messageService.SendMessage(parameters, TestSettings.Account2.AccountRs).Result;
                 var actual = sendMesageResult.Transaction.EncryptedMessage;
 
                 AssertIsFalse(actual.IsPrunable, nameof(actual.IsPrunable));
@@ -147,7 +147,7 @@ namespace NxtLib.Test.Messages
                 const string expected = "Hello World!";
                 var parameters = CreateTransaction.CreateTransactionByPublicKey();
                 parameters.EncryptedMessage = new CreateTransactionParameters.MessageToBeEncrypted(expected, true);
-                var sendMesageResult = _messageService.SendMessage(parameters, TestSettings.Account2Rs).Result;
+                var sendMesageResult = _messageService.SendMessage(parameters, TestSettings.Account2.AccountRs).Result;
                 var actual = sendMesageResult.Transaction.EncryptedMessage;
 
                 AssertIsFalse(actual.IsPrunable, nameof(actual.IsPrunable));
@@ -167,7 +167,7 @@ namespace NxtLib.Test.Messages
                 const string expected = "Hello World!";
                 var parameters = CreateTransaction.CreateTransactionBySecretPhrase();
                 parameters.EncryptedMessage = new CreateTransactionParameters.MessageToBeEncrypted(expected, true);
-                var sendMesageResult = _messageService.SendMessage(parameters, TestSettings.Account2Rs).Result;
+                var sendMesageResult = _messageService.SendMessage(parameters, TestSettings.Account2.AccountRs).Result;
                 var actual = sendMesageResult.Transaction.EncryptedMessage;
 
                 AssertIsFalse(actual.IsPrunable, nameof(actual.IsPrunable));
@@ -188,7 +188,7 @@ namespace NxtLib.Test.Messages
                 var expected = new BinaryHexString(bytes);
                 var parameters = CreateTransaction.CreateTransactionByPublicKey();
                 parameters.EncryptedMessage = new CreateTransactionParameters.MessageToBeEncrypted(bytes, true);
-                var sendMesageResult = _messageService.SendMessage(parameters, TestSettings.Account2Rs).Result;
+                var sendMesageResult = _messageService.SendMessage(parameters, TestSettings.Account2.AccountRs).Result;
                 var actual = sendMesageResult.Transaction.EncryptedMessage;
 
                 AssertIsFalse(actual.IsPrunable, nameof(actual.IsPrunable));
@@ -208,7 +208,7 @@ namespace NxtLib.Test.Messages
                 byte[] expected = { 4, 7, 1, 64, 23, 91, 1, 45, 23 };
                 var parameters = CreateTransaction.CreateTransactionBySecretPhrase();
                 parameters.EncryptedMessage = new CreateTransactionParameters.MessageToBeEncrypted(expected, true);
-                var sendMesageResult = _messageService.SendMessage(parameters, TestSettings.Account2Rs).Result;
+                var sendMesageResult = _messageService.SendMessage(parameters, TestSettings.Account2.AccountRs).Result;
                 var actual = sendMesageResult.Transaction.EncryptedMessage;
 
                 AssertIsFalse(actual.IsPrunable, nameof(actual.IsPrunable));
@@ -259,8 +259,8 @@ namespace NxtLib.Test.Messages
 
             using (Logger = new TestsessionLogger(_logger))
             {
-                var encrypted = _messageService.EncryptDataTo(TestSettings.Account2Rs, expected, true, TestSettings.SecretPhrase).Result;
-                var decrypted = _messageService.DecryptDataFrom(TestSettings.AccountId, encrypted.Data, encrypted.Nonce, true, TestSettings.SecretPhrase2).Result;
+                var encrypted = _messageService.EncryptDataTo(TestSettings.Account2.AccountRs, expected, true, TestSettings.SecretPhrase1).Result;
+                var decrypted = _messageService.DecryptDataFrom(TestSettings.Account1.AccountId, encrypted.Data, encrypted.Nonce, true, TestSettings.SecretPhrase2).Result;
                 AssertEquals(expected, decrypted.Data.ToBytes().ToArray(), nameof(decrypted.Data));
             }
         }
@@ -271,8 +271,8 @@ namespace NxtLib.Test.Messages
 
             using (Logger = new TestsessionLogger(_logger))
             {
-                var encrypted = _messageService.EncryptTextTo(TestSettings.Account2Rs, expected, true, TestSettings.SecretPhrase).Result;
-                var decrypted = _messageService.DecryptTextFrom(TestSettings.AccountId, encrypted.Data, encrypted.Nonce, true, TestSettings.SecretPhrase2).Result;
+                var encrypted = _messageService.EncryptTextTo(TestSettings.Account2.AccountRs, expected, true, TestSettings.SecretPhrase1).Result;
+                var decrypted = _messageService.DecryptTextFrom(TestSettings.Account1.AccountId, encrypted.Data, encrypted.Nonce, true, TestSettings.SecretPhrase2).Result;
                 AssertEquals(expected, decrypted.DecryptedMessage, nameof(decrypted.DecryptedMessage));
             }
         }
@@ -285,12 +285,12 @@ namespace NxtLib.Test.Messages
 
             using (Logger = new TestsessionLogger(_logger))
             {
-                var decrypted = _messageService.DecryptDataFrom(TestSettings.Account2Rs, data, nonce, false, TestSettings.SecretPhrase).Result;
+                var decrypted = _messageService.DecryptDataFrom(TestSettings.Account2.AccountRs, data, nonce, false, TestSettings.SecretPhrase1).Result;
                 AssertEquals(expected, decrypted.Data.ToBytes().ToArray(), nameof(decrypted.Data));
 
                 var transaction = _transactionService.GetTransaction(TestSettings.SentDataMessageTransactionId).Result;
-                decrypted = _messageService.DecryptDataFrom(TestSettings.Account2Rs, transaction.EncryptedMessage.Data,
-                    transaction.EncryptedMessage.Nonce, transaction.EncryptedMessage.IsCompressed, TestSettings.SecretPhrase).Result;
+                decrypted = _messageService.DecryptDataFrom(TestSettings.Account2.AccountRs, transaction.EncryptedMessage.Data,
+                    transaction.EncryptedMessage.Nonce, transaction.EncryptedMessage.IsCompressed, TestSettings.SecretPhrase1).Result;
                 AssertEquals(expected, decrypted.Data.ToBytes().ToArray(), nameof(decrypted.Data));
             }
         }
@@ -303,12 +303,12 @@ namespace NxtLib.Test.Messages
 
             using (Logger = new TestsessionLogger(_logger))
             {
-                var decrypted = _messageService.DecryptTextFrom(TestSettings.Account2Rs, data, nonce, false, TestSettings.SecretPhrase).Result;
+                var decrypted = _messageService.DecryptTextFrom(TestSettings.Account2.AccountRs, data, nonce, false, TestSettings.SecretPhrase1).Result;
                 AssertEquals(expected, decrypted.DecryptedMessage, nameof(decrypted.DecryptedMessage));
 
                 var transaction = _transactionService.GetTransaction(TestSettings.SentTextMessageTransactionId).Result;
-                decrypted = _messageService.DecryptTextFrom(TestSettings.Account2Rs, transaction.EncryptedMessage.Data,
-                    transaction.EncryptedMessage.Nonce, transaction.EncryptedMessage.IsCompressed, TestSettings.SecretPhrase).Result;
+                decrypted = _messageService.DecryptTextFrom(TestSettings.Account2.AccountRs, transaction.EncryptedMessage.Data,
+                    transaction.EncryptedMessage.Nonce, transaction.EncryptedMessage.IsCompressed, TestSettings.SecretPhrase1).Result;
                 AssertEquals(expected, decrypted.DecryptedMessage, nameof(decrypted.DecryptedMessage));
             }
         }
