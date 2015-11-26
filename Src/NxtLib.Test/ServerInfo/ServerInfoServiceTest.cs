@@ -76,7 +76,7 @@ namespace NxtLib.Test.ServerInfo
             {
                 Logger.Fail($"Unexpected number of plugins, expected: 1, actual: {getPluginsReply.Plugins.Count}");
             }
-            if (!getPluginsReply.Plugins.Single().Equals("hello_world"))
+            if (!getPluginsReply.Plugins.Any(p => p.Equals("hello_world")))
             {
                 Logger.Fail($"Unexpected name of plugin, expected: hello_world, actual: {getPluginsReply.Plugins.Single()}");
             }
