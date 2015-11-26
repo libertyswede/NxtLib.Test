@@ -1,8 +1,8 @@
 ﻿using System;
-using Microsoft.Framework.Logging;
 using NxtLib.Local;
 using NxtLib.Messages;
 using System.Linq;
+using Microsoft.Extensions.Logging;
 
 namespace NxtLib.Test.Local
 {

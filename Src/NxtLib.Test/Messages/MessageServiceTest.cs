@@ -1,4 +1,4 @@
-﻿using Microsoft.Framework.Logging;
+﻿using Microsoft.Extensions.Logging;
 using NxtLib.Messages;
 using NxtLib.Transactions;
 using System.Linq;

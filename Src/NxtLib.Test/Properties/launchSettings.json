@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "NxtLib.Test": {
+      "commandName": "NxtLib.Test",
+      "sdkVersion": "dnx-coreclr-win-x86.1.0.0-rc1-final"
+    }
+  }
+}

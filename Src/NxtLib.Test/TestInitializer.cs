@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Microsoft.Framework.Logging;
+using Microsoft.Extensions.Logging;
 using NxtLib.Accounts;
 using NxtLib.VotingSystem;
 using NxtLib.Local;

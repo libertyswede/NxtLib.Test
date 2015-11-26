@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using Microsoft.Framework.Logging;
+using Microsoft.Extensions.Logging;
 using NxtLib.Accounts;
 
 namespace NxtLib.Test.Accounts

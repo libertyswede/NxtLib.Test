@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Microsoft.Framework.Logging;
+using Microsoft.Extensions.Logging;
 using NxtLib.Networking;
 using NxtLib.ServerInfo;
 using NxtLib.VotingSystem;

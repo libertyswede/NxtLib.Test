@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Microsoft.Framework.Logging;
+using Microsoft.Extensions.Logging;
 using NxtLib.VotingSystem;
 
 namespace NxtLib.Test.VotingSystem

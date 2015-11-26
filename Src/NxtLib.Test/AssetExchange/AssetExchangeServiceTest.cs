@@ -1,4 +1,4 @@
-﻿using Microsoft.Framework.Logging;
+﻿using Microsoft.Extensions.Logging;
 using NxtLib.AssetExchange;
 
 namespace NxtLib.Test.AssetExchange

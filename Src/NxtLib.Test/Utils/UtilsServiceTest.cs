@@ -1,4 +1,4 @@
-﻿using Microsoft.Framework.Logging;
+﻿using Microsoft.Extensions.Logging;
 using NxtLib.Utils;
 
 namespace NxtLib.Test.Utils
