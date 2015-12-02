@@ -63,7 +63,7 @@ namespace NxtLib.Test
         {
             var serverInfoService = _serviceFactory.CreateServerInfoService();
             var blockchainStatus = serverInfoService.GetBlockchainStatus().Result;
-            return blockchainStatus.NumberOfBlocks;
+            return blockchainStatus.NumberOfBlocks - 1;
         }
     }
 }
