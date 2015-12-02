@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NxtLib.Test.Accounts;
@@ -13,9 +14,11 @@ using NxtLib.Test.Utils;
 using NxtLib.Test.VotingSystem;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.PlatformAbstractions;
+using NxtLib.Blocks;
 using NxtLib.Test.Local;
 using NxtLib.Test.Messages;
 using NxtLib.Local;
+using NxtLib.Test.Shuffling;
 
 namespace NxtLib.Test
 {
@@ -86,6 +89,7 @@ namespace NxtLib.Test
             services.AddTransient<ILocalTokenService, LocalTokenService>();
             services.AddTransient<ILocalTokenServiceTest, LocalTokenServiceTest>();
             services.AddTransient<ILocalTransactionService, LocalTransactionService>();
+            services.AddTransient<IShufflingServiceTest, ShufflingServiceTest>();
 
 
             services.AddSingleton<IServiceFactory>(provider => _serviceFactory);
@@ -106,6 +110,7 @@ namespace NxtLib.Test
             services.AddInstance(_serviceFactory.CreateTransactionService());
             services.AddInstance(_serviceFactory.CreateUtilService());
             services.AddInstance(_serviceFactory.CreateVotingSystemService());
+            services.AddInstance(_serviceFactory.CreateShufflingService());
         }
 
         public void Main()
@@ -118,6 +123,11 @@ namespace NxtLib.Test
             var testInitializer = _serviceProvider.GetService<ITestInitializer>();
             testInitializer.InitializeTest();
 
+            //CheckTestNetBlockTimes();
+            //CheckMainNetBlockTimes();
+
+            var shufflingTest = _serviceProvider.GetService<IShufflingServiceTest>();
+            shufflingTest.RunAllTests();
             var localCryptoTest = _serviceProvider.GetService<ILocalCryptoTest>();
             localCryptoTest.RunAllTests();
             var tokenServiceTest = _serviceProvider.GetService<ITokenServiceTest>();
@@ -144,6 +154,66 @@ namespace NxtLib.Test
 
             Console.WriteLine("Test run complete");
             Console.ReadLine();
+        }
+
+        private void CheckTestNetBlockTimes()
+        {
+            var logger = _serviceProvider.GetService<ILogger>();
+            var service = _serviceProvider.GetService<IBlockService>();
+            var activationHeight = 483000;
+            var blocksToCheck = (TestSettings.MaxHeight - activationHeight) / 1000 * 1000;
+            var startHeight = activationHeight - blocksToCheck;
+            var stopHeight = activationHeight + blocksToCheck;
+
+            logger.LogInformation($"Checking {blocksToCheck} blocks, starting from height {startHeight} to {activationHeight} as \"before\"");
+            logger.LogInformation($"Checking {blocksToCheck} blocks, starting from height {activationHeight} to {stopHeight} as \"after\"");
+
+            var blockTimesBefore = GetBlockTimespans(startHeight, activationHeight, service);
+            var blockTimesAfter = GetBlockTimespans(activationHeight, stopHeight, service);
+
+            var averageSecondsBefore = new TimeSpan(0, 0, (int)blockTimesBefore.Average(t => t.TotalSeconds));
+            var maxSecondsBefore = new TimeSpan(0, 0, (int)blockTimesBefore.Max(t => t.TotalSeconds));
+            var averageSecondsAfter = new TimeSpan(0, 0, (int)blockTimesAfter.Average(t => t.TotalSeconds));
+            var maxSecondsAfter = new TimeSpan(0, 0, (int)blockTimesAfter.Max(t => t.TotalSeconds));
+
+            logger.LogInformation($"Average block time \"before\": {averageSecondsBefore:hh\\:mm\\:ss}");
+            logger.LogInformation($"Maximum block time \"before\": {maxSecondsBefore:hh\\:mm\\:ss}");
+            logger.LogInformation($"Average block time \"after\" : {averageSecondsAfter:hh\\:mm\\:ss}");
+            logger.LogInformation($"Maximum block time \"after\" : {maxSecondsAfter:hh\\:mm\\:ss}");
+        }
+
+        private void CheckMainNetBlockTimes()
+        {
+            var logger = _serviceProvider.GetService<ILogger>();
+
+            var stopHeight = 581000;
+            var blocksToCheck = 100000;
+            var startHeight = stopHeight - blocksToCheck;
+
+            var blockTimesBefore = GetBlockTimespans(startHeight, stopHeight, new BlockService());
+            var averageSecondsBefore = new TimeSpan(0, 0, (int)blockTimesBefore.Average(t => t.TotalSeconds));
+            var maxSecondsBefore = new TimeSpan(0, 0, (int)blockTimesBefore.Max(t => t.TotalSeconds));
+
+            logger.LogInformation($"Checking {blocksToCheck} blocks ON MAINNET, starting from height {startHeight} to {stopHeight} as \"after\"");
+            logger.LogInformation($"Average block time ON MAINNET \"before\": {averageSecondsBefore:hh\\:mm\\:ss}");
+            logger.LogInformation($"Maximum block time ON MAINNET \"before\": {maxSecondsBefore:hh\\:mm\\:ss}");
+        }
+
+        private List<TimeSpan> GetBlockTimespans(int startHeight, int stopHeight, IBlockService service)
+        {
+            var previousTimestamp = DateTime.MinValue;
+            var timeSpans = new List<TimeSpan>();
+
+            for (var i = startHeight; i <= stopHeight; i++)
+            {
+                var block = service.GetBlock(BlockLocator.ByHeight(i)).Result;
+                if (i != startHeight)
+                {
+                    timeSpans.Add(block.Timestamp.Subtract(previousTimestamp));
+                }
+                previousTimestamp = block.Timestamp;
+            }
+            return timeSpans;
         }
     }
 }
