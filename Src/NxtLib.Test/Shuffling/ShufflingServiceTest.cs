@@ -30,6 +30,8 @@ namespace NxtLib.Test.Shuffling
             TestGetShufflers();
             TestGetShuffling();
             TestGetShufflingParticipants();
+            //TestShufflingCancel();
+            TestShufflingProcess();
         }
 
         private void TestGetAccountShufflings()
@@ -136,6 +138,22 @@ namespace NxtLib.Test.Shuffling
                 AssertEquals("NXT-EVHD-5FLM-3NMQ-G46NR", me.NextAccountRs, nameof(me.NextAccountRs));
                 AssertEquals(16992224448242675179, me.NextAccountId, nameof(me.NextAccountId));
                 AssertEquals(_knownShufflingId, me.ShufflingId, nameof(me.ShufflingId));
+            }
+        }
+
+        private void TestShufflingCancel()
+        {
+            using (Logger = new TestsessionLogger(_logger))
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        private void TestShufflingProcess()
+        {
+            using (Logger = new TestsessionLogger(_logger))
+            {
+                var create = _shufflingService.ShufflingCreate(Amount.CreateAmountFromNxt(10), 3, 720, CreateTransaction.CreateTransactionByPublicKey()).Result;
             }
         }
     }
