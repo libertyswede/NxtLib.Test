@@ -27,7 +27,7 @@ namespace NxtLib.Test.Shuffling
             TestGetAllShufflings();
             TestGetAssignedShufflings();
             TestGetHoldingShufflings();
-            //TestGetShufflers();
+            TestGetShufflers();
             TestGetShuffling();
             TestGetShufflingParticipants();
         }
@@ -97,6 +97,9 @@ namespace NxtLib.Test.Shuffling
                     AssertEquals(HoldingType.Asset, shuffling.HoldingType, nameof(shuffling.HoldingType));
                     AssertIsNull(shuffling.HoldingInfo, nameof(shuffling.HoldingInfo));
                 }
+
+                var allShufflings = _shufflingService.GetHoldingShufflings(includeFinished: true, firstIndex: 0, lastIndex: 100).Result;
+                AssertIsLargerThanZero(allShufflings.Shufflings.Count(), nameof(allShufflings.Shufflings));
             }
         }
 
@@ -104,7 +107,9 @@ namespace NxtLib.Test.Shuffling
         {
             using (Logger = new TestsessionLogger(_logger))
             {
-                throw new NotImplementedException();
+                // Just testing for exceptions here
+                // ReSharper disable once UnusedVariable
+                var test = _shufflingService.GetShufflers().Result;
             }
         }
 
