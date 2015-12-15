@@ -153,7 +153,20 @@ namespace NxtLib.Test.Shuffling
         {
             using (Logger = new TestsessionLogger(_logger))
             {
-                var create = _shufflingService.ShufflingCreate(Amount.CreateAmountFromNxt(10), 3, 720, CreateTransaction.CreateTransactionByPublicKey()).Result;
+                var expectedAmount = Amount.CreateAmountFromNxt(10);
+                const int expectedParticipantCount = 3;
+                const int expectedRegistrationPeriod = 720;
+
+                var create = _shufflingService.ShufflingCreate(expectedAmount, expectedParticipantCount, expectedRegistrationPeriod, 
+                    CreateTransaction.CreateTransactionByPublicKey()).Result;
+
+                var attachment = (ShufflingCreationAttachment) create.Transaction.Attachment;
+
+                AssertEquals(expectedAmount.Nqt, attachment.Amount.Nqt, nameof(attachment.Amount));
+                AssertEquals(0, attachment.HoldingId, nameof(attachment.HoldingId));
+                AssertEquals((int)HoldingType.Nxt, (int)attachment.HoldingType, nameof(attachment.HoldingType));
+                AssertEquals(expectedParticipantCount, attachment.ParticipantCount, nameof(attachment.ParticipantCount));
+                AssertEquals(expectedRegistrationPeriod, attachment.RegistrationPeriod, nameof(attachment.RegistrationPeriod));
             }
         }
     }
