@@ -123,6 +123,7 @@ namespace NxtLib.Test
             var testInitializer = _serviceProvider.GetService<ITestInitializer>();
             testInitializer.InitializeTest();
 
+            CheckTransactions();
             //CheckTestNetBlockTimes();
             //CheckMainNetBlockTimes();
 
@@ -154,6 +155,17 @@ namespace NxtLib.Test
 
             Console.WriteLine("Test run complete");
             Console.ReadLine();
+        }
+
+        private void CheckTransactions()
+        {
+            var height = 483000;
+            var service = _serviceProvider.GetService<IBlockService>();
+            while (height < TestSettings.MaxHeight)
+            {
+                var block = service.GetBlockIncludeTransactions(BlockLocator.ByHeight(height)).Result;
+                height++;
+            }
         }
 
         private void CheckTestNetBlockTimes()
