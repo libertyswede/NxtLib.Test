@@ -18,6 +18,7 @@ using NxtLib.Blocks;
 using NxtLib.Test.Local;
 using NxtLib.Test.Messages;
 using NxtLib.Local;
+using NxtLib.Test.AccountControl;
 using NxtLib.Test.Shuffling;
 
 namespace NxtLib.Test
@@ -90,9 +91,11 @@ namespace NxtLib.Test
             services.AddTransient<ILocalTokenServiceTest, LocalTokenServiceTest>();
             services.AddTransient<ILocalTransactionService, LocalTransactionService>();
             services.AddTransient<IShufflingServiceTest, ShufflingServiceTest>();
+            services.AddTransient<IAccountControlTest, AccountControlTest>();
 
 
             services.AddSingleton<IServiceFactory>(provider => _serviceFactory);
+            services.AddInstance(_serviceFactory.CreateAccountControlService());
             services.AddInstance(_serviceFactory.CreateAccountService());
             services.AddInstance(_serviceFactory.CreateAliasService());
             services.AddInstance(_serviceFactory.CreateAssetExchangeService());
@@ -123,10 +126,12 @@ namespace NxtLib.Test
             var testInitializer = _serviceProvider.GetService<ITestInitializer>();
             testInitializer.InitializeTest();
 
-            CheckTransactions();
+            //CheckTransactions();
             //CheckTestNetBlockTimes();
             //CheckMainNetBlockTimes();
 
+            var accountControlTest = _serviceProvider.GetService<IAccountControlTest>();
+            accountControlTest.RunAllTests();
             var shufflingTest = _serviceProvider.GetService<IShufflingServiceTest>();
             shufflingTest.RunAllTests();
             var localCryptoTest = _serviceProvider.GetService<ILocalCryptoTest>();
