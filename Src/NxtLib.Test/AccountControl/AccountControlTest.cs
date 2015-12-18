@@ -23,7 +23,16 @@ namespace NxtLib.Test.AccountControl
 
         public void RunAllTests()
         {
+            TestGetAllPhasingOnlyControls();
             TestSetPhasingOnlyControl();
+        }
+
+        private void TestGetAllPhasingOnlyControls()
+        {
+            using (Logger = new TestsessionLogger(_logger))
+            {
+                var phasingOnlyControls = _accountControlService.GetAllPhasingOnlyControls().Result;
+            }
         }
 
         private void TestSetPhasingOnlyControl()
