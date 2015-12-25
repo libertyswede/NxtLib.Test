@@ -26,6 +26,7 @@ namespace NxtLib.Test.Accounts
             TestGetAccountLedgerEntry();
             TestSetAccountProperty();
             TestGetAccountProperties();
+            TestDeleteAccountProperty();
         }
 
         private void TestGetAccountLedger()
@@ -72,6 +73,17 @@ namespace NxtLib.Test.Accounts
                 var property = reply.Properties.Single();
                 AssertEquals("testkey1", property.Property, nameof(property.Property));
                 AssertEquals("testvalue1", property.Value, nameof(property.Value));
+            }
+        }
+
+        private void TestDeleteAccountProperty()
+        {
+            using (Logger = new TestsessionLogger(_logger))
+            {
+                var reply = _service.DeleteAccountProperty(CreateTransaction.CreateTransactionByPublicKey(), "testkey1").Result;
+
+                var attachment = (MessagingAccountPropertyDeleteAttachment) reply.Transaction.Attachment;
+                AssertEquals(940296349549404868, attachment.Property, nameof(attachment.Property));
             }
         }
     }
