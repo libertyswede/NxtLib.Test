@@ -5,6 +5,7 @@ using System.Reflection;
 using Microsoft.Extensions.Logging;
 using NxtLib.Networking;
 using NxtLib.ServerInfo;
+using NxtLib.Shuffling;
 using NxtLib.VotingSystem;
 
 namespace NxtLib.Test.ServerInfo
@@ -73,11 +74,14 @@ namespace NxtLib.Test.ServerInfo
             CheckConstants();
             CheckCurrencyTypes();
             CheckHashAlgorithms();
+            CheckHoldingTypes();
             CheckMintingHashAlgorithms();
             CheckMinBalanceModels();
             CheckPhasingHashAlgorithms();
             CheckPeerStates();
             CheckRequestTypes();
+            CheckShufflingParticipantStates();
+            CheckShufflingStages();
             CheckVotingModels();
             CheckTransactionTypes();
         }
@@ -92,6 +96,7 @@ namespace NxtLib.Test.ServerInfo
                 const int maxArbitraryMessageLength = 160;
                 const int maxBlockPayloadLength = 44880;
                 const int maxTaggedDataDataLength = 43008;
+                const int maxPhasingDuration = 20160;
 
                 AssertEquals(epochBeginning, _getConstantsReply.EpochBeginning, "EpochBeginning");
                 AssertEquals(genesisAccountId, _getConstantsReply.GenesisAccountId, "GenesisAccountId");
@@ -99,6 +104,7 @@ namespace NxtLib.Test.ServerInfo
                 AssertEquals(maxArbitraryMessageLength, _getConstantsReply.MaxArbitraryMessageLength,
                     "MaxArbitraryMessageLength");
                 AssertEquals(maxBlockPayloadLength, _getConstantsReply.MaxBlockPayloadLength, "MaxBlockPayloadLength");
+                AssertEquals(maxPhasingDuration, _getConstantsReply.MaxPhasingDuration, "MaxPhasingDuration");
                 AssertEquals(maxTaggedDataDataLength, _getConstantsReply.MaxTaggedDataDataLength, "MaxTaggedDataDataLength");
             }
         }
@@ -123,6 +129,16 @@ namespace NxtLib.Test.ServerInfo
             }
         }
 
+        private void CheckHoldingTypes()
+        {
+            using (Logger = new TestsessionLogger(_logger))
+            {
+                var expected = Enum.GetValues(typeof(HoldingType)).Cast<HoldingType>().ToList();
+                CheckEnumCount(expected.Count, _getConstantsReply.HoldingTypes.Count, "holding types");
+                expected.ForEach(e => CheckEnumValues(e, _getConstantsReply.HoldingTypes));
+            }
+        }
+        
         private void CheckMintingHashAlgorithms()
         {
             using (Logger = new TestsessionLogger(_logger))
@@ -160,6 +176,26 @@ namespace NxtLib.Test.ServerInfo
                 var expected = Enum.GetValues(typeof (PeerInfo.PeerState)).Cast<PeerInfo.PeerState>().ToList();
                 CheckEnumCount(expected.Count, _getConstantsReply.PeerStates.Count, "peer states");
                 expected.ForEach(e => CheckEnumValues(e, _getConstantsReply.PeerStates));
+            }
+        }
+
+        private void CheckShufflingParticipantStates()
+        {
+            using (Logger = new TestsessionLogger(_logger))
+            {
+                var expected = Enum.GetValues(typeof(ShufflingParticipantState)).Cast<ShufflingParticipantState>().ToList();
+                CheckEnumCount(expected.Count, _getConstantsReply.ShufflingParticipantStates.Count, "shuffling participant states");
+                expected.ForEach(e => CheckEnumValues(e, _getConstantsReply.ShufflingParticipantStates));
+            }
+        }
+
+        private void CheckShufflingStages()
+        {
+            using (Logger = new TestsessionLogger(_logger))
+            {
+                var expected = Enum.GetValues(typeof(ShufflingStage)).Cast<ShufflingStage>().ToList();
+                CheckEnumCount(expected.Count, _getConstantsReply.ShufflingStages.Count, "shuffling stages");
+                expected.ForEach(e => CheckEnumValues(e, _getConstantsReply.ShufflingStages));
             }
         }
 
