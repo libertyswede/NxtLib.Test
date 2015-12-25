@@ -89,7 +89,7 @@ namespace NxtLib.Test.ServerInfo
                 const ulong genesisAccountId = 1739068987193023818;
                 const ulong genesisBlockId = 2680262203532249785;
                 const long epochBeginning = 1385294400000;
-                const int maxArbitraryMessageLength = 1000;
+                const int maxArbitraryMessageLength = 160;
                 const int maxBlockPayloadLength = 44880;
                 const int maxTaggedDataDataLength = 43008;
 
