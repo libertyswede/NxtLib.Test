@@ -312,6 +312,8 @@ namespace NxtLib.Test.ServerInfo
                     "getAssetsByIssuer",
                     "getAssetTransfers",
                     "getAssignedShufflings",
+                    "getAvailableToBuy",
+                    "getAvailableToSell",
                     "getBalance",
                     "getBidOrder",
                     "getBidOrderIds",
