@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System;
+using System.Linq;
+using Microsoft.Extensions.Logging;
 using NxtLib.AssetExchange;
 
 namespace NxtLib.Test.AssetExchange
@@ -22,8 +24,26 @@ namespace NxtLib.Test.AssetExchange
         {
             TestDeleteAssetShares();
             TestGetAccountAssets();
+            TestGetAssetDeletes();
             TestGetExpectedOrderCancellations();
             TestGetOrderTrades();
+        }
+
+        private void TestGetAssetDeletes()
+        {
+            using (Logger = new TestsessionLogger(_logger))
+            {
+                var result = _service.GetAssetDeletes(AssetIdOrAccountId.ByAssetId(TestSettings.ExistingAssetId)).Result;
+
+                var txTime = new DateTime(2015, 12, 26, 16, 3, 15);
+                var deleted = result.Deletes.Single(d => d.AssetDeleteId == 14523372185703177675);
+                AssertEquals(TestSettings.Account1.AccountId, deleted.AccountId, nameof(deleted.AccountId));
+                AssertEquals(TestSettings.Account1.AccountRs, deleted.AccountRs, nameof(deleted.AccountRs));
+                AssertEquals(TestSettings.ExistingAssetId, deleted.AssetId, nameof(deleted.AssetId));
+                AssertEquals(512164, deleted.Height, nameof(deleted.Height));
+                AssertEquals(1, deleted.QuantityQnt, nameof(deleted.QuantityQnt));
+                AssertEquals(txTime.Ticks, deleted.Timestamp.Ticks, nameof(deleted.Timestamp));
+            }
         }
 
         private void TestGetAccountAssets()
@@ -77,8 +97,14 @@ namespace NxtLib.Test.AssetExchange
         {
             using (Logger = new TestsessionLogger(_logger))
             {
-                var deleteAssetSharesReply = _service.DeleteAssetShares(TestSettings.ExistingAssetId, 1, 
+                var quantityQnt = 1;
+                var deleteAssetSharesReply = _service.DeleteAssetShares(TestSettings.ExistingAssetId, quantityQnt, 
                     CreateTransaction.CreateTransactionByPublicKey()).Result;
+
+                var attachment = (ColoredCoinsDeleteAttachment) deleteAssetSharesReply.Transaction.Attachment;
+
+                AssertEquals(TestSettings.ExistingAssetId, attachment.AssetId, nameof(attachment.AssetId));
+                AssertEquals(quantityQnt, attachment.QuantityQnt, nameof(attachment.QuantityQnt));
             }
         }
     }

@@ -305,6 +305,7 @@ namespace NxtLib.Test.ServerInfo
                     "getAsset",
                     "getAssetAccountCount",
                     "getAssetAccounts",
+                    "getAssetDeletes",
                     "getAssetIds",
                     "getAssetPhasedTransactions",
                     "getAssets",

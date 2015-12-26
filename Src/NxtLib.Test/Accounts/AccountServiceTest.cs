@@ -34,7 +34,10 @@ namespace NxtLib.Test.Accounts
             using (Logger = new TestsessionLogger(_logger))
             {
                 var result = _service.GetAccountLedger("NXT-DV37-DD8K-3Q74-8LE2W", includeTransactions: true).Result;
-                _ledgerId = result.Entries.First().LedgerId;
+                if (result.Entries.Any())
+                {
+                    _ledgerId = result.Entries.First().LedgerId;
+                }
             }
         }
 
@@ -42,7 +45,10 @@ namespace NxtLib.Test.Accounts
         {
             using (Logger = new TestsessionLogger(_logger))
             {
-                var result = _service.GetAccountLedgerEntry(_ledgerId, true).Result;
+                if (_ledgerId != 0)
+                {
+                    var result = _service.GetAccountLedgerEntry(_ledgerId, true).Result;
+                }
             }
         }
 
