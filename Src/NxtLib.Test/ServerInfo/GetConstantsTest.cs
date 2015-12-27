@@ -424,6 +424,7 @@ namespace NxtLib.Test.ServerInfo
                     "rebroadcastUnconfirmedTransactions",
                     "requeueUnconfirmedTransactions",
                     "retrievePrunedData",
+                    "retrievePrunedTransaction",
                     "rsConvert",
                     "scan",
                     "searchAccounts",
