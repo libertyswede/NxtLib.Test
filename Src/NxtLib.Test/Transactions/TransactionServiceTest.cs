@@ -25,8 +25,17 @@ namespace NxtLib.Test.Transactions
         {
             TestCalculateFullHash();
             TestGetExpectedTransactions();
+            TestGetReferencingTransactions();
             TestRetrievePrunedTransaction();
             TestSignTransaction();
+        }
+
+        private void TestGetReferencingTransactions()
+        {
+            using (Logger = new TestsessionLogger(_logger))
+            {
+                var reply = _transactionService.GetReferencingTransactions(15001419771432747352).Result;
+            }
         }
 
         private void TestRetrievePrunedTransaction()

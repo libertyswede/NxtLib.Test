@@ -392,6 +392,7 @@ namespace NxtLib.Test.ServerInfo
                     "getPollVotes",
                     "getPrunableMessage",
                     "getPrunableMessages",
+                    "getReferencingTransactions",
                     "getSellOffers",
                     "getShufflers",
                     "getShuffling",
