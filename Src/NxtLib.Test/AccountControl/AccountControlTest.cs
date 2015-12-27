@@ -13,17 +13,18 @@ namespace NxtLib.Test.AccountControl
     public class AccountControlTest : TestBase, IAccountControlTest
     {
         private readonly ILogger _logger;
-        private readonly IAccountControlService _accountControlService;
+        private readonly IAccountControlService _service;
 
-        public AccountControlTest(ILogger logger, IAccountControlService accountControlService)
+        public AccountControlTest(ILogger logger, IAccountControlService service)
         {
             _logger = logger;
-            _accountControlService = accountControlService;
+            _service = service;
         }
 
         public void RunAllTests()
         {
             TestGetAllPhasingOnlyControls();
+            TestGetPhasingOnlyControl();
             TestSetPhasingOnlyControl();
         }
 
@@ -31,7 +32,15 @@ namespace NxtLib.Test.AccountControl
         {
             using (Logger = new TestsessionLogger(_logger))
             {
-                var phasingOnlyControls = _accountControlService.GetAllPhasingOnlyControls().Result;
+                var phasingOnlyControls = _service.GetAllPhasingOnlyControls().Result;
+            }
+        }
+
+        private void TestGetPhasingOnlyControl()
+        {
+            using (Logger = new TestsessionLogger(_logger))
+            {
+                var result = _service.GetPhasingOnlyControl(TestSettings.Account1).Result;
             }
         }
 
@@ -46,7 +55,7 @@ namespace NxtLib.Test.AccountControl
                 var controlMinBalanceModel = VotingModel.Nqt;
                 var controlMaxFees = Amount.CreateAmountFromNxt(1000);
 
-                var phasingOnlyControl = _accountControlService.SetPhasingOnlyControl(votingModel, controlQuorum,
+                var phasingOnlyControl = _service.SetPhasingOnlyControl(votingModel, controlQuorum,
                     byPublicKey, controlMinBalance, controlMinBalanceModel, null,
                     new[] {TestSettings.Account2.AccountRs}, controlMaxFees).Result;
 
