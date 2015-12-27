@@ -51,7 +51,7 @@ namespace NxtLib.Test.Messages
             using (Logger = new TestsessionLogger(_logger))
             {
                 const string expected = "Hello World!";
-                var parameters = CreateTransaction.CreateTransactionBySecretPhrase();
+                var parameters = CreateTransaction.CreateTransactionBySecretPhrase(false, Amount.CreateAmountFromNxt(3));
                 parameters.EncryptedMessage = new CreateTransactionParameters.MessageToBeEncrypted(expected, true, true);
                 var sendMesageResult = _messageService.SendMessage(parameters, TestSettings.Account2.AccountRs).Result;
                 var actual = sendMesageResult.Transaction.EncryptedMessage;
@@ -71,7 +71,7 @@ namespace NxtLib.Test.Messages
             using (Logger = new TestsessionLogger(_logger))
             {
                 const string expected = "Hello World!";
-                var parameters = CreateTransaction.CreateTransactionByPublicKey();
+                var parameters = CreateTransaction.CreateTransactionByPublicKey(Amount.CreateAmountFromNxt(3));
                 parameters.Message = new CreateTransactionParameters.UnencryptedMessage(expected, true);
                 var sendMessageResult = _messageService.SendMessage(parameters).Result;
                 var actual = sendMessageResult.Transaction.Message;
@@ -87,7 +87,7 @@ namespace NxtLib.Test.Messages
             using (Logger = new TestsessionLogger(_logger))
             {
                 const string expected = "Hello World!";
-                var parameters = CreateTransaction.CreateTransactionBySecretPhrase();
+                var parameters = CreateTransaction.CreateTransactionBySecretPhrase(false, Amount.CreateAmountFromNxt(3));
                 parameters.EncryptedMessageToSelf = new CreateTransactionParameters.MessageToBeEncryptedToSelf(expected, true);
                 var sendMesageResult = _messageService.SendMessage(parameters).Result;
                 var actual = sendMesageResult.Transaction.EncryptToSelfMessage;
@@ -105,7 +105,7 @@ namespace NxtLib.Test.Messages
             using (Logger = new TestsessionLogger(_logger))
             {
                 const string expected = "Hello World!";
-                var parameters = CreateTransaction.CreateTransactionByPublicKey();
+                var parameters = CreateTransaction.CreateTransactionByPublicKey(Amount.CreateAmountFromNxt(3));
                 parameters.EncryptedMessageToSelf = new CreateTransactionParameters.MessageToBeEncryptedToSelf(expected, true);
                 var sendMesageResult = _messageService.SendMessage(parameters).Result;
                 var actual = sendMesageResult.Transaction.EncryptToSelfMessage;
@@ -125,7 +125,7 @@ namespace NxtLib.Test.Messages
                 var nonce = _localMessageService.CreateNonce();
                 var encrypted = _localMessageService.EncryptTextTo(TestSettings.Account2.PublicKey, "Hello World!", nonce, true, TestSettings.SecretPhrase1);
 
-                var parameters = CreateTransaction.CreateTransactionByPublicKey();
+                var parameters = CreateTransaction.CreateTransactionByPublicKey(Amount.CreateAmountFromNxt(3));
                 parameters.EncryptedMessage = new CreateTransactionParameters.AlreadyEncryptedMessage(encrypted, nonce, true, true);
                 var sendMesageResult = _messageService.SendMessage(parameters, TestSettings.Account2.AccountRs).Result;
                 var actual = sendMesageResult.Transaction.EncryptedMessage;
@@ -145,7 +145,7 @@ namespace NxtLib.Test.Messages
             using (Logger = new TestsessionLogger(_logger))
             {
                 const string expected = "Hello World!";
-                var parameters = CreateTransaction.CreateTransactionByPublicKey();
+                var parameters = CreateTransaction.CreateTransactionByPublicKey(Amount.CreateAmountFromNxt(3));
                 parameters.EncryptedMessage = new CreateTransactionParameters.MessageToBeEncrypted(expected, true);
                 var sendMesageResult = _messageService.SendMessage(parameters, TestSettings.Account2.AccountRs).Result;
                 var actual = sendMesageResult.Transaction.EncryptedMessage;
@@ -165,7 +165,7 @@ namespace NxtLib.Test.Messages
             using (Logger = new TestsessionLogger(_logger))
             {
                 const string expected = "Hello World!";
-                var parameters = CreateTransaction.CreateTransactionBySecretPhrase();
+                var parameters = CreateTransaction.CreateTransactionBySecretPhrase(false, Amount.CreateAmountFromNxt(3));
                 parameters.EncryptedMessage = new CreateTransactionParameters.MessageToBeEncrypted(expected, true);
                 var sendMesageResult = _messageService.SendMessage(parameters, TestSettings.Account2.AccountRs).Result;
                 var actual = sendMesageResult.Transaction.EncryptedMessage;
@@ -186,7 +186,7 @@ namespace NxtLib.Test.Messages
             {
                 byte[] bytes = {4, 7, 1, 64, 23, 91, 1, 45, 23};
                 var expected = new BinaryHexString(bytes);
-                var parameters = CreateTransaction.CreateTransactionByPublicKey();
+                var parameters = CreateTransaction.CreateTransactionByPublicKey(Amount.CreateAmountFromNxt(3));
                 parameters.EncryptedMessage = new CreateTransactionParameters.MessageToBeEncrypted(bytes, true);
                 var sendMesageResult = _messageService.SendMessage(parameters, TestSettings.Account2.AccountRs).Result;
                 var actual = sendMesageResult.Transaction.EncryptedMessage;
@@ -206,7 +206,7 @@ namespace NxtLib.Test.Messages
             using (Logger = new TestsessionLogger(_logger))
             {
                 byte[] expected = { 4, 7, 1, 64, 23, 91, 1, 45, 23 };
-                var parameters = CreateTransaction.CreateTransactionBySecretPhrase();
+                var parameters = CreateTransaction.CreateTransactionBySecretPhrase(false, Amount.CreateAmountFromNxt(3));
                 parameters.EncryptedMessage = new CreateTransactionParameters.MessageToBeEncrypted(expected, true);
                 var sendMesageResult = _messageService.SendMessage(parameters, TestSettings.Account2.AccountRs).Result;
                 var actual = sendMesageResult.Transaction.EncryptedMessage;
@@ -226,7 +226,7 @@ namespace NxtLib.Test.Messages
             using (Logger = new TestsessionLogger(_logger))
             {
                 const string expected = "Hello World!";
-                var parameters = CreateTransaction.CreateTransactionByPublicKey();
+                var parameters = CreateTransaction.CreateTransactionByPublicKey(Amount.CreateAmountFromNxt(3));
                 parameters.Message = new CreateTransactionParameters.UnencryptedMessage(expected);
                 var sendMessageResult = _messageService.SendMessage(parameters).Result;
                 var actual = sendMessageResult.Transaction.Message;
@@ -242,7 +242,7 @@ namespace NxtLib.Test.Messages
             using (Logger = new TestsessionLogger(_logger))
             {
                 byte[] expected = {4, 7, 1, 64, 23, 91, 1, 45, 23};
-                var parameters = CreateTransaction.CreateTransactionByPublicKey();
+                var parameters = CreateTransaction.CreateTransactionByPublicKey(Amount.CreateAmountFromNxt(3));
                 parameters.Message = new CreateTransactionParameters.UnencryptedMessage(expected);
                 var sendMessageResult = _messageService.SendMessage(parameters).Result;
                 var actual = sendMessageResult.Transaction.Message;

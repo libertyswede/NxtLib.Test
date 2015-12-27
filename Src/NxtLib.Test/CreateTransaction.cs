@@ -15,9 +15,13 @@ namespace NxtLib.Test
             Account = localCrypto.GetAccount(AccountIdLocator.BySecretPhrase(SecretPhrase));
         }
 
-        public static CreateTransactionByPublicKey CreateTransactionByPublicKey()
+        public static CreateTransactionByPublicKey CreateTransactionByPublicKey(Amount fee = null)
         {
-            return new CreateTransactionByPublicKey(1440, Amount.OneNxt, Account.PublicKey);
+            if (fee == null)
+            {
+                fee = Amount.OneNxt;
+            }
+            return new CreateTransactionByPublicKey(1440, fee, Account.PublicKey);
         }
 
         public static CreateTransactionBySecretPhrase CreateTransactionBySecretPhrase(bool broadcast = false, Amount fee = null)

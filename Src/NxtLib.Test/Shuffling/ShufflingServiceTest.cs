@@ -42,7 +42,7 @@ namespace NxtLib.Test.Shuffling
 
                 var knownShuffling = shufflings.Shufflings.Single(s => s.ShufflingId == _knownShufflingId);
 
-                AssertEquals(3, shufflings.Shufflings.Count(), "Shufflings.Count()");
+                AssertEquals(4, shufflings.Shufflings.Count(), "Shufflings.Count()");
                 AssertKnownShuffling(knownShuffling);
             }
         }
