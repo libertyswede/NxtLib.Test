@@ -372,6 +372,7 @@ namespace NxtLib.Test.ServerInfo
                     "getInboundPeers",
                     "getLastExchanges",
                     "getLastTrades",
+                    "getLinkedPhasedTransactions",
                     "getLog",
                     "getMintingTarget",
                     "getMyInfo",
