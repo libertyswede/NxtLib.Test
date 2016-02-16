@@ -19,6 +19,7 @@ using NxtLib.Test.Local;
 using NxtLib.Test.Messages;
 using NxtLib.Local;
 using NxtLib.Test.AccountControl;
+using NxtLib.Test.MonetarySystem;
 using NxtLib.Test.Shuffling;
 
 namespace NxtLib.Test
@@ -92,7 +93,7 @@ namespace NxtLib.Test
             services.AddTransient<ILocalTransactionService, LocalTransactionService>();
             services.AddTransient<IShufflingServiceTest, ShufflingServiceTest>();
             services.AddTransient<IAccountControlTest, AccountControlTest>();
-
+            services.AddTransient<IMonetarySystemServiceTest, MonetarySystemServiceTest>();
 
             services.AddSingleton<IServiceFactory>(provider => _serviceFactory);
             services.AddInstance(_serviceFactory.CreateAccountControlService());
@@ -132,6 +133,8 @@ namespace NxtLib.Test
 
             var accountControlTest = _serviceProvider.GetService<IAccountControlTest>();
             accountControlTest.RunAllTests();
+            var monetarySystemServiceTest = _serviceProvider.GetService<IMonetarySystemServiceTest>();
+            monetarySystemServiceTest.RunAllTests();
             var shufflingTest = _serviceProvider.GetService<IShufflingServiceTest>();
             shufflingTest.RunAllTests();
             var localCryptoTest = _serviceProvider.GetService<ILocalCryptoTest>();
