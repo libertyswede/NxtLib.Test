@@ -67,6 +67,7 @@ namespace NxtLib.Test.ServerInfo
             _transactionTypes.Add(TransactionSubType.MonetarySystemExchangeSell, new TransactionType {CanHaveRecipient = false, IsPhasingSafe = false, MustHaveRecipient = false});
             _transactionTypes.Add(TransactionSubType.MonetarySystemCurrencyMinting, new TransactionType {CanHaveRecipient = false, IsPhasingSafe = false, MustHaveRecipient = false});
             _transactionTypes.Add(TransactionSubType.MonetarySystemCurrencyDeletion, new TransactionType {CanHaveRecipient = false, IsPhasingSafe = false, MustHaveRecipient = false});
+            _transactionTypes.Add(TransactionSubType.ShufflingCancellation, new TransactionType { CanHaveRecipient = false, IsPhasingSafe = false, MustHaveRecipient = false });
             _transactionTypes.Add(TransactionSubType.ShufflingCreation, new TransactionType { CanHaveRecipient = false, IsPhasingSafe = false, MustHaveRecipient = false });
             _transactionTypes.Add(TransactionSubType.ShufflingRegistration, new TransactionType { CanHaveRecipient = false, IsPhasingSafe = false, MustHaveRecipient = false });
             _transactionTypes.Add(TransactionSubType.ShufflingProcessing, new TransactionType { CanHaveRecipient = false, IsPhasingSafe = false, MustHaveRecipient = false });
@@ -79,6 +80,7 @@ namespace NxtLib.Test.ServerInfo
         public void RunAllTests()
         {
             _getConstantsReply = _serverInfoService.GetConstants().Result;
+            CheckApiTags();
             CheckConstants();
             CheckCurrencyTypes();
             CheckHashAlgorithms();
@@ -92,6 +94,20 @@ namespace NxtLib.Test.ServerInfo
             CheckShufflingStages();
             CheckVotingModels();
             CheckTransactionTypes();
+        }
+
+        private void CheckApiTags()
+        {
+            using (Logger = new TestsessionLogger(_logger))
+            {
+                foreach (var apiTag in _getConstantsReply.ApiTags.Values)
+                {
+                    AssertIsTrue(apiTag.Enabled, apiTag.Name);
+                }
+
+                AssertIsFalse(_getConstantsReply.DisabledApis.Single().Any(), nameof(_getConstantsReply.DisabledApis));
+                AssertIsFalse(_getConstantsReply.DisabledApiTags.Any(), nameof(_getConstantsReply.DisabledApiTags));
+            }
         }
 
         private void CheckConstants()
