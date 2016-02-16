@@ -265,6 +265,7 @@ namespace NxtLib.Test.ServerInfo
                     "deleteAlias",
                     "deleteAssetShares",
                     "deleteCurrency",
+                    "detectMimeType",
                     "dgsDelisting",
                     "dgsDelivery",
                     "dgsFeedback",
