@@ -72,7 +72,7 @@ namespace NxtLib.Test.Shuffling
             {
                 // Just testing for exceptions here
                 // ReSharper disable once UnusedVariable
-                var shufflings = _shufflingService.GetAllShufflings(true, true, 0, 100).Result;
+                var shufflings = _shufflingService.GetAllShufflings(true, true, null, 0, 100).Result;
             }
         }
 

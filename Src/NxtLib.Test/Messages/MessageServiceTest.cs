@@ -44,6 +44,8 @@ namespace NxtLib.Test.Messages
             DecryptDataFrom();
             EncryptTextTo();
             EncryptDataTo();
+
+            GetSharedKeyTest();
         }
 
         private void SendEncryptedPrunableMessage()
@@ -310,6 +312,23 @@ namespace NxtLib.Test.Messages
                 decrypted = _messageService.DecryptTextFrom(TestSettings.Account2.AccountRs, transaction.EncryptedMessage.Data,
                     transaction.EncryptedMessage.Nonce, transaction.EncryptedMessage.IsCompressed, TestSettings.SecretPhrase1).Result;
                 AssertEquals(expected, decrypted.DecryptedMessage, nameof(decrypted.DecryptedMessage));
+            }
+        }
+
+        private void GetSharedKeyTest()
+        {
+            using (Logger = new TestsessionLogger(_logger))
+            {
+                var nonce = new byte[]
+                {
+                    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28,
+                    29, 30, 31, 32
+                };
+                const string secret = "123";
+                var account = TestSettings.Account1;
+                var sharedKeyResult = _messageService.GetSharedKey(account, secret, nonce).Result;
+
+                AssertEquals("8d4632ddd2f5f75a09e0e64923921bb63489692528ee8224243402c2df93bb70", sharedKeyResult.SharedKey.ToHexString(), nameof(sharedKeyResult.SharedKey));
             }
         }
     }
