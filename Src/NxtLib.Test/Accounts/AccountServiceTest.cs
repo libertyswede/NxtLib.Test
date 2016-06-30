@@ -75,8 +75,8 @@ namespace NxtLib.Test.Accounts
             {
                 var reply = _service.GetAccountProperties(TestSettings.Account1.AccountId, null).Result;
 
-                AssertEquals(1, reply.Properties.Count(), "Properties count");
-                var property = reply.Properties.Single();
+                AssertEquals(7, reply.Properties.Count(), "Properties count");
+                var property = reply.Properties.Single(p => p.Property == "testkey1" && p.Value == "testvalue1");
                 AssertEquals("testkey1", property.Property, nameof(property.Property));
                 AssertEquals("testvalue1", property.Value, nameof(property.Value));
             }

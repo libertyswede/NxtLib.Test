@@ -91,6 +91,7 @@ namespace NxtLib.Test
             services.AddTransient<ILocalTokenService, LocalTokenService>();
             services.AddTransient<ILocalTokenServiceTest, LocalTokenServiceTest>();
             services.AddTransient<ILocalTransactionService, LocalTransactionService>();
+            services.AddTransient<ILocalTransactionServiceTest, LocalTransactionServiceTest>();
             services.AddTransient<IShufflingServiceTest, ShufflingServiceTest>();
             services.AddTransient<IAccountControlTest, AccountControlTest>();
             services.AddTransient<IMonetarySystemServiceTest, MonetarySystemServiceTest>();
@@ -122,10 +123,13 @@ namespace NxtLib.Test
             var logger = _serviceProvider.GetService<ILogger>();
             logger.LogInformation("Starting test run");
             logger.LogWarning("Have you rememberd to switch on MissingMemberHandling in NxtLib?");
-            Console.ReadLine();
+            //Console.ReadLine();
 
             var testInitializer = _serviceProvider.GetService<ITestInitializer>();
             testInitializer.InitializeTest();
+
+            var localTransactionServiceTest = _serviceProvider.GetService<ILocalTransactionServiceTest>();
+            localTransactionServiceTest.RunAllTests();
 
             //CheckTransactions();
             //CheckTestNetBlockTimes();
