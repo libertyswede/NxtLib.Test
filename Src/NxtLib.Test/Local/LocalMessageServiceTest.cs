@@ -29,6 +29,20 @@ namespace NxtLib.Test.Local
             EncryptTextToTest();
 
             GetSharedSecretTest();
+            BugTest();
+        }
+
+        private void BugTest()
+        {
+            using (Logger = new TestsessionLogger(_logger))
+            {
+                //Tx id: 16323631254126447505(testnet)
+                var data = "c79dc1b5081633f3eadd5f97da42464b1cb1dea96fa62bcdb0052d9badf6b90e61f9a02b6a62ef75f572eb689d88bc71";
+                var nonce = "703a8145d71aa65b109309789a91d3ffbd50f821e82e5adf26918fec7accee0e";
+                var isCompressed = true;
+                var sharedKey = "da1c6c08a576ab6fdd91b5b6db4eb277b9d8d65362374b8a608588b738d87e5a";
+                var test = _localMessageService.DecryptText(data, nonce, isCompressed, sharedKey);
+            }
         }
 
         private void EncryptDataToTest()
