@@ -43,13 +43,12 @@ namespace NxtLib.Test
             var testInitializer = _serviceProvider.GetService<ITestInitializer>();
             testInitializer.InitializeTest();
 
-            var localTransactionServiceTest = _serviceProvider.GetService<ILocalTransactionServiceTest>();
-            localTransactionServiceTest.RunAllTests();
-
             //CheckTransactions();
             //CheckTestNetBlockTimes();
             //CheckMainNetBlockTimes();
 
+            var localTransactionServiceTest = _serviceProvider.GetService<ILocalTransactionServiceTest>();
+            localTransactionServiceTest.RunAllTests();
             var accountControlTest = _serviceProvider.GetService<IAccountControlTest>();
             accountControlTest.RunAllTests();
             var monetarySystemServiceTest = _serviceProvider.GetService<IMonetarySystemServiceTest>();
