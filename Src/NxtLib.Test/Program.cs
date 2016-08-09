@@ -90,11 +90,20 @@ namespace NxtLib.Test
             AddConfigurationSources(applicationEnvironment);
 
             var services = new ServiceCollection();
+            services.AddLogging();
+            services.AddSingleton(provider => applicationEnvironment);
             _serviceProvider = services.BuildServiceProvider();
-            SetupLogging(services);
 
+            ConfigureLogging(services);
             ConfigureServices(services, applicationEnvironment);
-            //_serviceProvider = services.BuildServiceProvider(); //Needed?
+            _serviceProvider = services.BuildServiceProvider();
+        }
+
+        private static void ConfigureLogging(ServiceCollection services)
+        {
+            var loggerFactory = _serviceProvider.GetService<ILoggerFactory>();
+            services.AddSingleton(loggerFactory.CreateLogger(""));
+            loggerFactory.AddConsole(LogLevel.Debug);
         }
 
         private static void AddConfigurationSources(ApplicationEnvironment applicationEnvironment)
@@ -112,10 +121,8 @@ namespace NxtLib.Test
 
         private static void ConfigureServices(ServiceCollection services, ApplicationEnvironment applicationEnvironment)
         {
-
             _serviceFactory = new ServiceFactory(TestSettings.NxtServerUrl);
 
-            services.AddSingleton(provider => applicationEnvironment);
             services.AddTransient<ITestInitializer, TestInitializer>();
             services.AddTransient<ITransactionServiceTest, TransactionServiceTest>();
             services.AddTransient<IServerInfoServiceTest, ServerInfoServiceTest>();
@@ -172,9 +179,6 @@ namespace NxtLib.Test
 
         private static void SetupLogging(ServiceCollection services)
         {
-            services.AddLogging();
-            var loggerFactory = _serviceProvider.GetService<ILoggerFactory>();
-            loggerFactory.AddConsole(LogLevel.Debug);
             // TODO: Fix this
             //services.AddTransient(provider => loggerFactory.CreateLogger(""));
         }
