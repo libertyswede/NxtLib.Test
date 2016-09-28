@@ -22,6 +22,20 @@ namespace NxtLib.Test.Local
         public void RunAllTests()
         {
             TestGeneratePassword();
+            TestGenerateDeterenisticPassword();
+        }
+
+        private void TestGenerateDeterenisticPassword()
+        {
+            using (Logger = new TestsessionLogger(_logger))
+            {
+                var seed = _localPasswordGenerator.GeneratePassword();
+                var password1 = _localPasswordGenerator.GenerateDetermenisticPassword(seed, 42);
+                var password2 = _localPasswordGenerator.GenerateDetermenisticPassword(seed, 42);
+                var password3 = _localPasswordGenerator.GenerateDetermenisticPassword(seed, 43);
+                AssertEquals(password1, password2, "Should be deterministic!");
+                AssertIsFalse(password1.Equals(password3), "Should not be deterministic!");
+            }
         }
 
         private void TestGeneratePassword()
