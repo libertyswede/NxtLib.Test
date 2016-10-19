@@ -4,6 +4,8 @@ using NxtLib.Local;
 using NxtLib.Messages;
 using static NxtLib.CreateTransactionParameters;
 using NxtLib.VotingSystem;
+using NxtLib.MonetarySystem;
+using NxtLib.AssetExchange;
 
 namespace NxtLib.Test.Local
 {
@@ -17,18 +19,25 @@ namespace NxtLib.Test.Local
         private readonly ILocalTransactionService _localTransactionService;
         private readonly IAccountService _accountService;
         private readonly IMessageService _messageService;
+        private readonly IMonetarySystemService _monetarySystemService;
+        private readonly IAssetExchangeService _assetExchangeService;
 
         public LocalTransactionServiceTest(ILogger logger, ILocalTransactionService localTransactionService, 
-            IAccountService accountService, IMessageService messageService)
+            IAccountService accountService, IMessageService messageService, IMonetarySystemService monetarySystemService,
+            IAssetExchangeService assetExchangeService)
         {
             _logger = logger;
             _localTransactionService = localTransactionService;
             _accountService = accountService;
             _messageService = messageService;
+            _monetarySystemService = monetarySystemService;
+            _assetExchangeService = assetExchangeService;
         }
 
         public void RunAllTests()
         {
+            TestTransferAsset();
+            TestTransferCurrency();
             TestPhasing();
             TestSendEncryptedMessageToSelf();
             TestPublicKeyAnnouncement();
@@ -137,6 +146,26 @@ namespace NxtLib.Test.Local
                 var parameters = new CreateTransactionByPublicKey(1440, Amount.OneNxt, TestSettings.Account1.PublicKey);
                 var sendMoneyReply = _accountService.SendMoney(parameters, TestSettings.Account2, Amount.OneNxt).Result;
                 _localTransactionService.VerifySendMoneyTransactionBytes(sendMoneyReply, parameters, TestSettings.Account2, Amount.OneNxt);
+            }
+        }
+
+        private void TestTransferCurrency()
+        {
+            using (Logger = new TestsessionLogger(_logger))
+            {
+                var parameters = new CreateTransactionByPublicKey(1440, Amount.OneNxt, TestSettings.Account1.PublicKey);
+                var transferCurrencyReply = _monetarySystemService.TransferCurrency(TestSettings.Account2, TestSettings.ExistingCurrencyId, 10, parameters).Result;
+                _localTransactionService.VerifyTransferCurrencyTransactionBytes(transferCurrencyReply, parameters, TestSettings.Account2, TestSettings.ExistingCurrencyId, 10);
+            }
+        }
+
+        private void TestTransferAsset()
+        {
+            using (Logger = new TestsessionLogger(_logger))
+            {
+                var parameters = new CreateTransactionByPublicKey(1440, Amount.OneNxt, TestSettings.Account1.PublicKey);
+                var transferAssetReply = _assetExchangeService.TransferAsset(TestSettings.Account2, TestSettings.ExistingAssetId, 100, parameters).Result;
+                _localTransactionService.VerifyTransferAssetTransactionBytes(transferAssetReply, parameters, TestSettings.Account2, TestSettings.ExistingAssetId, 100);
             }
         }
     }
